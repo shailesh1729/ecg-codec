@@ -1,0 +1,11 @@
+jax>=0.3.14
+jaxlib>=0.3.14
+numpy>=1.18.0
+scipy
+matplotlib
+click
+wfdb
+cr-nimble
+cr-sparse
+cr-biosignals
+python-dotenv
