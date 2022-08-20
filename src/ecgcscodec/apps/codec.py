@@ -48,12 +48,6 @@ def get_db_dir():
     return db_dir
 
 
-
-@click.command()
-@click.argument('name', type=str)
-def build():
-    pass
-
 @click.command()
 @click.argument('record_num', type=int)
 def encode(record_num):
@@ -123,7 +117,6 @@ def assess(record_num):
     pass
 
 
-main.add_command(build)
 main.add_command(encode)
 main.add_command(decode)
 main.add_command(assess)
