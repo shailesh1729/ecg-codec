@@ -126,6 +126,7 @@ setup(
     entry_points={
         'console_scripts': [
             'ecg-codec=ecgcscodec.apps.codec:main',
+            'ecg-analyze-excerpt=ecgcscodec.apps.analyze_excerpt:analyze',
         ],
     },
 )
