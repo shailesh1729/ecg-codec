@@ -127,6 +127,7 @@ setup(
         'console_scripts': [
             'ecg-codec=ecgcscodec.apps.codec:main',
             'ecg-analyze-excerpt=ecgcscodec.apps.analyze_excerpt:analyze',
+            'ecg-locate-extremes=ecgcscodec.apps.locate_extremes:main',
         ],
     },
 )
