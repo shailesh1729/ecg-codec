@@ -12,7 +12,7 @@ from setuptools import setup, find_namespace_packages
 from codecs import open
 from os import path
 
-exec(open('src/ecgcscodec/version.py').read())
+exec(open('src/skecg/version.py').read())
 here = path.abspath(path.dirname(__file__))
 
 def read(*names, **kwargs):
@@ -35,7 +35,7 @@ def _parse_requirements(filename):
     ]
 
 setup(
-    name='ecg-cs-codec',
+    name='sk-ecg',
 
     version=__version__,
 
@@ -44,8 +44,8 @@ setup(
     long_description_content_type="text/markdown",
 
     # The project's main homepage.
-    url='https://github.com/shailesh1729/ecg-cs-codec',
-    download_url=f"https://github.com/shailesh1729/ecg-cs-codec/v{__version__}.tar.gz",
+    url='https://github.com/shailesh1729/ecg',
+    download_url=f"https://github.com/shailesh1729/ecg/v{__version__}.tar.gz",
 
     # Author details
     author='Shailesh Kumar',
@@ -81,13 +81,13 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
     ],
     project_urls={
-        'Issue Tracker': "https://github.com/shailesh1729/ecg-cs-codec/issues"
+        'Issue Tracker': "https://github.com/shailesh1729/ecg/issues"
     },
     # What does your project relate to?
     keywords='ECG, Compression, Compressive Sensing',
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=['ecgcscodec'],
+    packages=['skecg'],
     package_dir={'': 'src'},
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
     python_requires=">=3.8",
@@ -125,9 +125,9 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'ecg-codec=ecgcscodec.apps.codec:main',
-            'ecg-analyze-excerpt=ecgcscodec.apps.analyze_excerpt:analyze',
-            'ecg-locate-extremes=ecgcscodec.apps.locate_extremes:main',
+            'ecg-codec=skecg.apps.codec:main',
+            'ecg-analyze-excerpt=skecg.apps.analyze_excerpt:analyze',
+            'ecg-locate-extremes=skecg.apps.locate_extremes:main',
         ],
     },
 )
