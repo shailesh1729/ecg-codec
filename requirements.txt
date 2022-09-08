@@ -5,6 +5,7 @@ scipy
 matplotlib
 click
 wfdb
+constriction
 cr-nimble
 cr-sparse
 cr-biosignals

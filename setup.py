@@ -128,6 +128,7 @@ setup(
             'ecg-codec=skecg.apps.codec:main',
             'ecg-analyze-excerpt=skecg.apps.analyze_excerpt:analyze',
             'ecg-locate-extremes=skecg.apps.locate_extremes:main',
+            'ecg-sim-codec=skecg.apps.bsbl_codec_sim:main',
         ],
     },
 )
