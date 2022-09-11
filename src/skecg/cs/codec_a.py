@@ -33,6 +33,66 @@ class DecodedData(NamedTuple):
     def total_time(self):
         return np.sum(self.r_times)
 
+
+class CompressionStats(NamedTuple):
+    q_mean: int
+    "mean of quantized values"
+    q_std: int
+    "standard deviation of quantized values"
+    u_bits: int
+    "Uncompressed bits count"
+    c_bits: int
+    "compressed bits count"
+    bpm: float
+    "bits per measurement"
+    bps: float
+    "bits per sample"
+    cr: float
+    "compression ratio"
+    pss: float
+    "percentage space savings"
+    snr: float
+    "signal to noise ratio (dB)"
+    prd: float
+    "percent root mean square difference"
+    nmse: float
+    "normalized mean square difference"
+    rtime: float
+
+
+def compression_stats(ecg, coded_ecg, decoded_ecg):
+    n_samples = coded_ecg.n_samples
+    n_windows = coded_ecg.n_windows
+    n_measurements = coded_ecg.n_measurements
+    y = coded_ecg.measurements
+    uncompressed_bits = n_samples * 11
+    compressed_bits = len(coded_ecg.compressed)*32
+    ratio = crn.compression_ratio(uncompressed_bits, compressed_bits)
+    pss = crn.percent_space_saving(uncompressed_bits, compressed_bits)
+    bpm = compressed_bits  / coded_ecg.n_measurements
+    bps = compressed_bits/coded_ecg.n_samples
+    y_max = np.max(np.abs(y))
+    print(f'Uncompressed bits: {uncompressed_bits} Compressed bits: {compressed_bits}, ratio: {ratio:.2f}x')
+    print(f'bits per measurement in compressed data: {bpm:.2f}')
+    print(f'bits per measurement in cs measurements: {np.round(np.log2(2* y_max + 1))}')
+    print(f'Compressed bits per sample: {bps:.2f}')
+    rtime = decoded_ecg.total_time
+    x = ecg[:coded_ecg.n_samples]
+    x_hat = decoded_ecg.x
+    snr = crn.signal_noise_ratio(x, x_hat)
+    prd = crn.percent_rms_diff(x, x_hat)
+    nmse = crn.normalized_mse(x, x_hat)
+    print(f'SNR: {snr:.2f} dB, PRD: {prd:.1f}%, NMSE: {nmse:.5f}, Time: {rtime:.2f} sec')
+    return CompressionStats(
+            q_mean=coded_ecg.mean_val,
+            q_std=coded_ecg.std_val,
+            u_bits=uncompressed_bits,
+            c_bits=compressed_bits,
+            cr=ratio, pss=pss,
+            bpm=bpm, bps=bps,
+            snr=float(snr), prd=float(prd), nmse=float(nmse), rtime=rtime
+        )
+
 def build_codec(n, m, d, block_size, q_bits):
 
     n_sigma = 3
@@ -49,7 +109,8 @@ def build_codec(n, m, d, block_size, q_bits):
         Y = Phi @ X
         # Convert to numpy
         Y_np = np.array(Y).astype(int)
-        Y2 = Y_np.flatten(order='F')
+        y = Y_np.flatten(order='F')
+        Y2 = y
         # quantization
         if q_bits > 0:
             Y2 = Y2 >> q_bits
@@ -78,12 +139,12 @@ def build_codec(n, m, d, block_size, q_bits):
             n_samples=n_samples, n_windows=n_windows,
             n_measurements=n_measurements,
             mean_val=mean_val, std_val=std_val,
-            compressed=compressed, measurements=Y_np)
+            compressed=compressed, measurements=y)
 
 
-    def ecg_decoder(coded_ecg):
+    def ecg_decoder(coded_ecg, n_windows=None):
         n_samples = coded_ecg.n_samples
-        n_windows = coded_ecg.n_windows
+        n_windows = coded_ecg.n_windows if n_windows is None else n_windows
         n_measurements = coded_ecg.n_measurements
         mean_val = coded_ecg.mean_val
         std_val = coded_ecg.std_val

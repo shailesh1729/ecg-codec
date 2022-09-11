@@ -40,6 +40,8 @@ def main(record_num, n, m, d, block_size, q_bits):
     ecg = np.squeeze(record.d_signal)
 
     coded_ecg = encoder(ecg)
+    decoded_ecg = decoder(coded_ecg)
+
     n_samples = coded_ecg.n_samples
     n_windows = coded_ecg.n_windows
     n_measurements = coded_ecg.n_measurements
@@ -55,7 +57,6 @@ def main(record_num, n, m, d, block_size, q_bits):
     print(f'Compressed bits per sample: {compressed_bits/coded_ecg.n_samples:.2f}')
 
 
-    decoded_ecg = decoder(coded_ecg)
     rtime = decoded_ecg.total_time
 
     x = ecg[:coded_ecg.n_samples]
