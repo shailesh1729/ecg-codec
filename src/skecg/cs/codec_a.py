@@ -101,7 +101,7 @@ def build_codec(n, m, d, block_size, q_bits):
     DPhi = Phi.todense()
 
     def ecg_encoder(ecg):
-        X = crn.vec_to_windows(ecg, n) - 1024
+        X = crn.vec_to_windows(ecg, n)
         n_samples = X.size
         n_windows = X.shape[1]
         print(f'n_samples: {n_samples}, n_windows: {n_windows}')
@@ -119,7 +119,9 @@ def build_codec(n, m, d, block_size, q_bits):
         max_val = np.max(Y2)
         min_val = np.min(Y2)
         mean_val = int(np.round(Y2.mean()))
-        std_val = int(np.round(Y2.std()))
+        std_val = int(np.ceil(Y2.std()))
+        # make sure that std-val is positive
+        std_val = std_val if std_val > 0 else 1
         print(f'min: {min_val}, max: {max_val}, mean: {mean_val}, std: {std_val}')
         g_max = max(np.abs(max_val), np.abs(min_val))
         a_min = int(mean_val - n_sigma * std_val)
@@ -180,6 +182,6 @@ def build_codec(n, m, d, block_size, q_bits):
             r_times[i] = rtime
             r_iters[i] = sol.iterations
             print(f'[{i}/{n_windows}], time: {rtime:.2f} sec')
-        x = X_hat.flatten(order='F') + 1024
+        x = X_hat.flatten(order='F')
         return DecodedData(x=x, r_times=r_times, r_iters=r_iters)
     return ecg_encoder, ecg_decoder

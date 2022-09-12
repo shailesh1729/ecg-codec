@@ -60,21 +60,21 @@ class Row(NamedTuple):
 @click.option('-d', default=6, help='Ones in sensing matrix')
 @click.option('-b', '--block-size', default=32, help='BSBL block size')
 def main(record_num, n, d, block_size):
-    destination = f'codec-a-n={n}-d={d}-m-q-var-stats.csv'
+    destination = f'codec-a-rec={record_num}-n={n}-d={d}-m-q-var-stats.csv'
     mit_bih_dir = get_db_dir()
     path = f'{mit_bih_dir}/{record_num}'
     header = wfdb.rdheader(path)
     click.echo(f'Processing record: {record_num}: Sampling rate: {header.fs}')
 
     sampfrom=0
-    # sampto = 10*360
+    sampto = 10*360
     sampto=None
     record = wfdb.rdrecord(f'{mit_bih_dir}/{record_num}', channels=[0]
         , sampfrom=sampfrom, sampto=sampto, physical=False)
-    ecg = np.squeeze(record.d_signal)
+    ecg = np.squeeze(record.d_signal) - int(record.baseline[0])
 
     mrs = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
-    qs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    qs = [0, 1, 2, 3, 4, 5, 6, 7, 8]
     all_stats = []
     for mr in mrs:
         for q in qs:

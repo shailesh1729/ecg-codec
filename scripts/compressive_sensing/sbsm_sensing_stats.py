@@ -31,7 +31,7 @@ def main(m, n, d):
         record = wfdb.rdrecord(path, channels=[0], physical=False)
         signal = np.squeeze(record.d_signal)
         # adjust the zero level
-        signal = signal - 1024
+        signal = signal - int(record.baseline[0])
         # convert to blocks
         X = crn.vec_to_windows(signal, n).astype(jnp.int32)
         # sense measurement vectors

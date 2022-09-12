@@ -10,3 +10,5 @@ cr-nimble
 cr-sparse
 cr-biosignals
 python-dotenv
+distrax
+

@@ -6,6 +6,7 @@ import pandas as pd
 from statsmodels.stats import descriptivestats
 
 from skecg.cs.codec_a import build_codec
+from skecg.util import kld_normal
 
 class Row(NamedTuple):
     record: int
@@ -60,6 +61,7 @@ class Row(NamedTuple):
     y_kurtosis: float
     y_jbera: float
     y_jb_pval: float
+    y_kld: float
 
 
 @click.command()
@@ -86,7 +88,7 @@ def main(n, m, d, block_size, q_bits):
         record = wfdb.rdrecord(path, channels=[0]
             , sampfrom=sampfrom, sampto=sampto, physical=False)
         # data
-        ecg = np.squeeze(record.d_signal)
+        ecg = np.squeeze(record.d_signal) - int(record.baseline[0])
         # compression
         coded_ecg = encoder(ecg)
         # decompression
@@ -110,6 +112,7 @@ def main(n, m, d, block_size, q_bits):
         y_kurtosis = stats.loc['kurtosis'][0]
         y_jbera = stats.loc['jarque_bera'][0]
         y_jb_pval = stats.loc['jarque_bera_pval'][0]
+        y_kld = kld_normal(y)
 
         uncompressed_bits = n_samples * 11
         compressed_bits = len(coded_ecg.compressed)*32
@@ -144,7 +147,8 @@ def main(n, m, d, block_size, q_bits):
             snr=float(snr), prd=float(prd), nmse=float(nmse), rtime=rtime,
             y_min=y_min, y_max=y_max, y_range=y_range, y_iqr=y_iqr, 
             y_mean=y_mean, y_std=y_std, y_median=y_median, y_mad=y_mad, 
-            y_skew=y_skew, y_kurtosis=y_kurtosis, y_jbera=y_jbera, y_jb_pval=y_jb_pval
+            y_skew=y_skew, y_kurtosis=y_kurtosis, y_jbera=y_jbera, y_jb_pval=y_jb_pval,
+            y_kld=y_kld,
             )
         click.echo(row)
         all_stats.append(row)
