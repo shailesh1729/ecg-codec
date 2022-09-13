@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Kumar
+    given-names: Shailesh
+    orcid: https://orcid.org/0000-0003-2217-4768
+title: "Compressive Sensing based Codec for ECG"
+version: 0.1.0
+doi: TBD
+date-released: TBD
