@@ -43,7 +43,7 @@ Q_MIN = 0
 SEC_MEAN_BITS = 16
 SEC_STD_BITS = 16
 SEC_Q_BITS = 3
-SEC_RNG_BITS = 3
+SEC_RNG_BITS = 4
 SEC_WORD_BITS = 16
 
 
@@ -61,7 +61,7 @@ class EncoderParams(NamedTuple):
     d: int
     "Number of ones per column in sparse binary sensing matrix"
     w: int
-    "number of windows in each section of the signal"
+    "number of windows in each frame of the signal"
     adaptive: bool    
     "A flag to indicate if the quantization is adaptive"
     q: int
@@ -72,7 +72,7 @@ class EncoderParams(NamedTuple):
     "NMSE limit for the clipping step"
 
     @property
-    def section_length(self):
+    def frame_length(self):
         return self.n * self.w
 
     def __eq__(self, other):
@@ -101,8 +101,8 @@ class EncoderParams(NamedTuple):
         else:
             return False
 
-class EncodedSection(NamedTuple):
-    "Information about each encoded section"
+class EncodedFrame(NamedTuple):
+    "Information about each encoded frame"
     n_measurements: int
     n_windows: int
     max_val: int
@@ -112,22 +112,120 @@ class EncodedSection(NamedTuple):
     q : int
     rng_mult: int
     n_words : int
+    n_header_bits: int
+    n_payload_bits: int
+    n_bits: int
     q_nmse: float
     c_nmse: float
     qc_nmse: float
     qc_snr: float
 
+    @property
+    def overhead(self):
+        return self.n_header_bits / self.n_payload_bits
+
 class EncodedStream(NamedTuple):
     n_samples: int
     n_windows: int
-    n_sections: int
+    n_frames: int
     n_measurements: int
-    sections: List[EncodedSection]
+    n_header_bits: int
+    n_bits: int
+    frames: List[EncodedFrame]
+
+    @property
+    def q_vals(self):
+        return np.array([frame.q for frame in self.frames])
+
+    @property
+    def mean_vals(self):
+        return np.array([frame.mean_val for frame in self.frames])
+
+    @property
+    def std_vals(self):
+        return np.array([frame.std_val for frame in self.frames])
+
+    @property
+    def rng_mults(self):
+        return np.array([frame.rng_mult for frame in self.frames])
+
+    @property
+    def overheads(self):
+        return np.array([frame.overhead for frame in self.frames])
+
+    @property
+    def q_nmses(self):
+        return np.array([frame.q_nmse for frame in self.frames])
+
+    @property
+    def c_nmses(self):
+        return np.array([frame.c_nmse for frame in self.frames])
+
+    @property
+    def qc_nmses(self):
+        return np.array([frame.qc_nmse for frame in self.frames])
+
+    @property
+    def qc_snrs(self):
+        return np.array([frame.qc_snr for frame in self.frames])
+
+    @property
+    def overhead_bits(self):
+        hbits = np.sum([frame.n_header_bits for frame in self.frames])
+        hbits += self.n_header_bits
+        return hbits
+
+    @property
+    def total_overhead(self):
+        return self.overhead_bits / self.n_bits
+
+    @property
+    def compressed_bits(self):
+        return self.n_bits
+
+    @property
+    def uncompressed_bits(self):
+        return self.n_samples * 11
+
+    @property
+    def cr(self):
+        return crn.compression_ratio(self.uncompressed_bits , self.compressed_bits)
+
+    @property
+    def pss(self):
+        return crn.percent_space_saving(self.uncompressed_bits, self.compressed_bits)
+
+    @property
+    def bps(self):
+        return self.compressed_bits / self.n_samples
+
+    @property
+    def bpm(self):
+        return self.compressed_bits / self.n_measurements
+
+    def __str__(self):
+        s = []
+        s.append(f'n_samples={self.n_samples}')
+        s.append(f'n_measurements={self.n_measurements}')
+        s.append(f'n_windows={self.n_windows}')
+        s.append(f'n_frames={self.n_frames}')
+        s.append(f'n_header_bits={self.n_header_bits}')
+        s.append(f'overhead_bits={self.overhead_bits}')
+        s.append(f'compressed_bits={self.compressed_bits}')
+        s.append(f'uncompressed_bits={self.uncompressed_bits}')
+        s.append(f'compression_ratio={self.cr:.2f}')
+        s.append(f'percent_space_saving={self.pss:.1f} %')
+        s.append(f'bps={self.bps:.2f}')
+        s.append(f'bpm={self.bpm:.2f}')
+        s.append(f'overhead={self.total_overhead * 100:.2f} %')
+        return '\n'.join(s)
+
 
 class EncodedData(NamedTuple):
     info: EncodedStream
     y: np.ndarray
     bits: bitarray
+
 
 def serialize_encoder_params(params: EncoderParams):
     a = bitarray()
@@ -175,6 +273,7 @@ def encode(params: EncoderParams, ecg: np.ndarray):
     stream.extend(serialize_encoder_params(params))
     # fill to the multiple of 8
     stream.fill()
+    n_header_bits = len(stream)
     # sensing matrix
     Phi = build_sensor(params)
     # measurements
@@ -182,27 +281,29 @@ def encode(params: EncoderParams, ecg: np.ndarray):
     n_measurements = y.size
     n_windows = n_measurements // params.m
     n_samples = params.n * n_windows
-    # compute number of sections
-    n_sections = math.ceil(n_windows / params.w)
-    # length of each section of measurements
+    # compute number of frames
+    n_frames = math.ceil(n_windows / params.w)
+    # length of each frame of measurements
     sl = params.m * params.w
-    # work section by section
+    # work frame by frame
     start = 0
-    sections = []
-    for i_sec in range(n_sections):
-        print(f'Encoding section {i_sec}')
-        sec_info, bits = encode_section(params, y[start:start+sl])
+    frames = []
+    for i_sec in range(n_frames):
+        # print(f'Encoding frame {i_sec}')
+        sec_info, bits = encode_frame(params, y[start:start+sl])
         start += sl
         stream.extend(bits)
-        sections.append(sec_info)
+        frames.append(sec_info)
+    n_bits = len(stream)
     info = EncodedStream(n_samples=n_samples, n_windows=n_windows,
-        n_sections=n_sections, n_measurements=n_measurements,
-        sections=sections)
+        n_frames=n_frames, n_measurements=n_measurements,
+        n_header_bits=n_header_bits, n_bits=n_bits,
+        frames=frames)
     data = EncodedData(info=info, y=y, bits=stream)
     return data
 
 
-def encode_section(params: EncoderParams, y: np.ndarray):
+def encode_frame(params: EncoderParams, y: np.ndarray):
     n_measurements=len(y)
     n_windows = n_measurements // params.m
     q_nmse_limit = float(params.q_nmse_limit)
@@ -227,7 +328,7 @@ def encode_section(params: EncoderParams, y: np.ndarray):
     std_val = std_val if std_val > 0 else 1
     s_max = max(np.abs(max_val), np.abs(min_val))
 
-    for rng_mult in range(3,8):
+    for rng_mult in range(2,9):
         a_min = int(mean_val - rng_mult * std_val)
         a_max = int(mean_val + rng_mult * std_val)
         yc = np.clip(yq, a_min, a_max)
@@ -254,14 +355,18 @@ def encode_section(params: EncoderParams, y: np.ndarray):
     stream.extend(int2ba(n_windows, W_BITS))
     stream.extend(int2ba(n_words, SEC_WORD_BITS))
     stream.fill()
+    n_header_bits = len(stream)
     for word in compressed:
-        # print(word)
         stream.extend(int2ba(int(word), 32))
-    info = EncodedSection(n_measurements=n_measurements,
+    n_bits = len(stream)
+    n_payload_bits = n_bits - n_header_bits
+    info = EncodedFrame(n_measurements=n_measurements,
         n_windows=n_windows,
         max_val=max_val, min_val=min_val,
         mean_val=mean_val, std_val=std_val,
-        q=q, rng_mult=rng_mult, n_words=n_words,
+        q=q, rng_mult=rng_mult,
+        n_words=n_words, n_header_bits=n_header_bits,
+        n_payload_bits=n_payload_bits, n_bits=n_bits,
         q_nmse=float(q_nmse), c_nmse=float(c_nmse), 
         qc_nmse=float(qc_nmse), qc_snr=float(qc_snr))
     return info, stream
@@ -311,6 +416,7 @@ def next_byte_pos(pos):
 
 class DecodedData(NamedTuple):
     x: np.ndarray
+    y_hat: np.ndarray
     r_times: np.ndarray
     r_iters: np.ndarray
 
@@ -321,14 +427,12 @@ class DecodedData(NamedTuple):
 def decode(bits: bitarray, block_size=32):
     # read the parameters
     params, pos = deserialize_encoder_params(bits)
-    print(params)
     # extend the pos to next multiple of 8
     pos = next_byte_pos(pos)
-    print(pos)
-    yhat = read_measurements(params, bits, pos)
+    y_hat = read_measurements(params, bits, pos)
 
     # Arrange measurements into column vectors
-    Yhat = crn.vec_to_windows(jnp.asarray(yhat, dtype=float), params.m)
+    Yhat = crn.vec_to_windows(jnp.asarray(y_hat, dtype=float), params.m)
     n_windows = Yhat.shape[1]
     options = bsbl.bsbl_bo_options(max_iters=20)
     X_hat = np.zeros((params.n, n_windows))
@@ -351,15 +455,15 @@ def decode(bits: bitarray, block_size=32):
         r_iters[i] = sol.iterations
         print(f'[{i}/{n_windows}], time: {rtime:.2f} sec')
     x = X_hat.flatten(order='F')
-    return DecodedData(x=x, r_times=r_times, r_iters=r_iters)
+    return DecodedData(x=x, y_hat=y_hat, r_times=r_times, r_iters=r_iters)
 
 def read_measurements(params, bits, pos):
     # total bits
     n_bits = len(bits)
     yhats = []
     while pos < n_bits:
-        # decode a section
-        # read section header
+        # decode a frame
+        # read frame header
         mean_val = ba2int(bits[pos:pos+SEC_MEAN_BITS], signed=True)
         pos += SEC_MEAN_BITS
         std_val = ba2int(bits[pos:pos+SEC_STD_BITS])
@@ -386,7 +490,7 @@ def read_measurements(params, bits, pos):
             mean=mean_val, std=std_val)
         # Decode the message:
         ans_decoder = constriction.stream.stack.AnsCoder(compressed)
-        # number of measurements in the section
+        # number of measurements in the frame
         sl = params.m * n_windows
         yc = ans_decoder.decode(model, sl)
         yhat = yc << q
@@ -418,6 +522,12 @@ class CompressionStats(NamedTuple):
     nmse: float
     "normalized mean square difference"
     rtime: float
+    "reconstruction time"
+    qc_snr: float
+    "signal to noise ratio (dB)"
+    qc_prd: float
+    "percent root mean square difference"
+    qc_nmse: float
 
 
 def compression_stats(ecg, coded_ecg, decoded_ecg):
@@ -444,10 +554,19 @@ def compression_stats(ecg, coded_ecg, decoded_ecg):
     prd = crn.percent_rms_diff(x, x_hat)
     nmse = crn.normalized_mse(x, x_hat)
     print(f'SNR: {snr:.2f} dB, PRD: {prd:.1f}%, NMSE: {nmse:.5f}, Time: {rtime:.2f} sec')
+    
+    # measurement SNR
+    y = coded_ecg.y
+    y_hat = decoded_ecg.y_hat
+    qc_snr = crn.signal_noise_ratio(y, y_hat)
+    qc_prd = crn.percent_rms_diff(y, y_hat)
+    qc_nmse = crn.normalized_mse(y, y_hat)
+
     return CompressionStats(
             u_bits=uncompressed_bits,
             c_bits=compressed_bits,
             cr=ratio, pss=pss,
             bpm=bpm, bps=bps,
-            snr=float(snr), prd=float(prd), nmse=float(nmse), rtime=rtime
+            snr=float(snr), prd=float(prd), nmse=float(nmse), rtime=rtime,
+            qc_snr=qc_snr, qc_prd=qc_prd, qc_nmse=qc_nmse
         )
