@@ -37,6 +37,7 @@ N_BITS = 12
 M_BITS = 12
 D_BITS = 6
 W_BITS = 8
+Q_BITS = 4
 Q_MAX = 6
 Q_MIN = 0
 
@@ -238,7 +239,7 @@ def serialize_encoder_params(params: EncoderParams):
     a.extend(int2ba(params.w, W_BITS))
     a.append(params.adaptive)
     if not params.adaptive:
-        a.append(params.q, 4)
+        a.extend(int2ba(params.q, Q_BITS))
     else:
         s, digits, exp = params.q_nmse_limit.as_tuple()
         a.extend(int2ba(digits[0], 4))
@@ -319,6 +320,7 @@ def encode_frame(params: EncoderParams, y: np.ndarray):
                 break
     else:
         yq = y >> q
+        yhat = yq << q
         q_nmse = crn.normalized_root_mse(y, yhat)
     max_val = np.max(yq)
     min_val = np.min(yq)
@@ -394,8 +396,9 @@ def deserialize_encoder_params(bits: bitarray, pos=0):
     pos += 1
     q = 0
     if not adaptive:
-        q = ba2int(bits[pos:pos+4])
+        q = ba2int(bits[pos:pos+Q_BITS])
         pos += 4
+        q_nmse_limit = Decimal((0, (0,), 0))
     else:
         digit = ba2int(bits[pos:pos+4])
         pos += 4
@@ -521,6 +524,8 @@ class CompressionStats(NamedTuple):
     "percent root mean square difference"
     nmse: float
     "normalized mean square difference"
+    qs : float
+    "Quality score"
     rtime: float
     "reconstruction time"
     qc_snr: float
@@ -553,7 +558,8 @@ def compression_stats(ecg, coded_ecg, decoded_ecg):
     snr = crn.signal_noise_ratio(x, x_hat)
     prd = crn.percent_rms_diff(x, x_hat)
     nmse = crn.normalized_mse(x, x_hat)
-    print(f'SNR: {snr:.2f} dB, PRD: {prd:.1f}%, NMSE: {nmse:.5f}, Time: {rtime:.2f} sec')
+    qs = float(ratio * 100 / prd)
+    print(f'SNR: {snr:.2f} dB, PRD: {prd:.1f}%, QS: {qs:.5f}, Time: {rtime:.2f} sec')
     
     # measurement SNR
     y = coded_ecg.y
@@ -567,6 +573,6 @@ def compression_stats(ecg, coded_ecg, decoded_ecg):
             c_bits=compressed_bits,
             cr=ratio, pss=pss,
             bpm=bpm, bps=bps,
-            snr=float(snr), prd=float(prd), nmse=float(nmse), rtime=rtime,
+            snr=float(snr), prd=float(prd), nmse=float(nmse), qs=qs, rtime=rtime,
             qc_snr=qc_snr, qc_prd=qc_prd, qc_nmse=qc_nmse
         )
