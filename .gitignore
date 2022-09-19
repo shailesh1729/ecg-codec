@@ -134,3 +134,12 @@ docs/gallery/
 experiments/*
 scripts/**/*.csv
 
+
+# latex related stuff
+
+*.aux
+*.bbl
+*.blg
+*.out
+*.pdf
+*.gz
