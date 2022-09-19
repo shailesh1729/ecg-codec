@@ -1,0 +1,61 @@
+%!TEX root = paper_ecg_cs_codec.tex
+\section{Conclusion and Future Work}
+\label{sec:conclusion}
+
+\subsection{Contributions}
+
+The key contributions of our encoder architecture are the following:
+
+\begin{itemize}
+    \item We have presented a digital compressive sensing based encoder
+    design including adaptive digital quantization
+    and entropy coding which can be
+    implemented entirely using integer arithmetic.
+    \item We have demonstrated that ANS based arithmetic coding can
+    lead to significant space savings.
+    \item We have demonstrated that we don't need a hard-coded
+    code-book for entropy coding. We can simply model the
+    measurement values distributed as quantized Gaussian values
+    for effective entropy coding.
+    \item We use simple mean and standard deviation as the entropy model
+    parameters which can be dynamically adapted. The overhead of
+    the side information is negligible.
+    \item We have demonstrated up to $16\%$ of additional space
+    savings contributed by the quantization and entropy coding steps.
+    \item We have described a complete bitstream specification for
+    carriage of all the side information needed to decode the
+    entropy coded compressive measurements.
+\end{itemize}
+
+The software code implementing this codec
+and all scripts for the experimental studies conducted
+in this work have been released as open source software
+on GitHub \cite{kumar2022ecgcodec}.
+
+\subsection{Future Work}
+
+The reconstruction algorithm in the decoder is replaceable.
+Deep learning based architectures can provide further boost
+to the quality of reconstruction. The impact of quantization
+and clipping on deep learning based reconstruction needs
+to be further studied.
+
+The quantization, clipping and entropy coding blocks in our
+codec design are general purpose and should be useful
+in other CS based applications (e.g., EEG, EMG, FECG etc.).
+
+During the course of long term ECG monitoring, one may
+need to change the encoder parameters ($m,n,d$) to
+respond to changing characteristics of the ECG data.
+Enhancements in the bitstream specification can be
+done accordingly.
+
+One advantage of using fixed length coding for measurements
+is random access to any part of the bitstream.
+This is not straightforward in stream codes. ANS however
+makes it easy to build a seakable decoder by introducing
+checkpoints \cite{bamler2022constriction}. Such checkpoints
+may be communicated as in the frame headers. 
+
+
+

@@ -51,7 +51,21 @@ candes2006compressive, candes2008introduction, candes2006near}
 uses a sub-Nyquist sampling method by acquiring a small number
 of incoherent measurements which are sufficient to reconstruct
 the signal if the signal is sufficiently sparse in some
-basis. However, much of the use of CS in ECG follows
+basis. For a sparse signal $\bx \in \RR^n$, one would make
+$m$ linear measurements where $m \ll n$ which can be
+mathematically represented by a sensing operation
+\begin{equation}
+\by = \Phi \bx
+\end{equation}
+where $\Phi \in \RR^{m \times n}$ is a matrix
+representation of the sensing process and $\by \in \RR^m$
+the set of $m$ measurements collected for $\bx$.
+A suitable reconstruction algorithm can recovery $\bx$
+from $\by$.
+
+Ideally, the sensing process should be implemented at the
+hardware level in the analog to digital conversion (ADC) process.
+However, much of the use of CS in ECG follows
 a digital CS paradigm \cite{mamaghanian2011compressed} where
 the ECG samples are acquired first by the ADC circuit on the
 device and then they are translated into a incoherent
@@ -72,17 +86,40 @@ deep learning based algorithms \cite{zhang2021csnet}.
 In order to keep the sensing matrix multiplication
 simple and efficient, sparse binary sensing matrices
 are a popular choice \cite{mamaghanian2011compressed,zhang2012compressed}.
+
 To the best of our knowledge, (digital) quantization and entropy coding of
 the compressive measurements of ECG data hasn't received
 much attention in the past.
+
 Mamaghanian et al.\cite{mamaghanian2011compressed} use a Huffman codebook
-which is deployed inside the sensor device. However, they don't
+which is deployed inside the sensor device.
+However, they don't
 provide much detail on how the codebook was designed or how should
 it be customized for variations in ECG signals.
+They clearly define the compression ratio in terms
+of a ratio between the uncompressed bits $\bits_u$
+and the compressed bits $\bits_c$. They define it
+as $\frac{\bits_u - \bits_c}{\bits_u} \times 100$.
+This is often known in literature as
+\emph{percentage space savings}.
+
 Simulation based studies often send the real valued compressive
 measurements to the decoder modules and don't consider the issue
-of number of bits required to encode each measurement
-\cite{zhang2012compressed}. 
+of number of bits required to encode each measurement.
+Zhang et al. \cite{zhang2012compressed},
+Zhang et al. \cite{zhang2021csnet} define
+$\frac{n - m}{n} \times 100$ as compression ratio. 
+Mangia et al. \cite{mangia2020deep} define $\frac{n}{m}$
+as the compression ratio.
+Polania et al. \cite{polania2018compressed} define
+$\frac{m}{n}$ as compression ratio.
+
+ Asymmetric Numeral Systems (ANS) \cite{duda2013asymmetric}
+ based entropy coding schemes have seen much success
+ in recent years for lossless data compression.
+ \emph{zstd} by Facebook Inc. \cite{zstd}
+ and \emph{LZFSE} by Apple Inc. are popular lossless
+ data compression formats based on ANS.
 
 \subsection{Contributions}
 In this paper, we present an adaptive quantization and
@@ -122,9 +159,9 @@ The rest of the paper is organized as follows.
 used for the evaluation of the codec and the
 performance metrics.
 \Cref{sec:arch} describes the proposed codec architecture.
-% The analysis of the experimental results is covered in \cref{sec:results}.
-% \Cref{sec:conclusion} summarizes our contributions and
-% identifies future work.
+The analysis of the experimental results is covered in \cref{sec:results}.
+\Cref{sec:conclusion} summarizes our contributions and
+identifies future work.
 \Cref{appsec:cs} provides a short overview on
 compressive sensing.
 \Cref{appsec:ec} provides a short overview on
