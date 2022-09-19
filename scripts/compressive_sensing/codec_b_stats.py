@@ -72,9 +72,10 @@ class Row(NamedTuple):
 @click.option('-c', default=2, help='Clipping nmse factor')
 @click.option('-w', default=16, help='Windows per frame')
 @click.option('-b', '--block-size', default=32, help='BSBL block size')
-def main(n, m, d, q, c, w, block_size):
+@click.option("--dry", is_flag=True, 
+    show_default=True, default=False, help="Dry run with small samples")
+def main(n, m, d, q, c, w, block_size, dry):
     destination = f'codec-b-m={m}-n={n}-d={d}-q={q}-c={c}-b={block_size}-stats.csv'
-
 
     q_nmse_limit = Decimal((0, (q,), -2))
     c_nmse_limit = Decimal((0, (c,), -2))
@@ -87,8 +88,10 @@ def main(n, m, d, q, c, w, block_size):
     all_stats = []
 
     sampfrom=0
-    # sampto=10*360
-    sampto=None
+    if dry:
+        sampto=10*360
+    else:
+        sampto=None
 
     for record_num in record_nums:
         click.echo(f'Processing: {record_num}')
@@ -101,7 +104,7 @@ def main(n, m, d, q, c, w, block_size):
         # compression
         coded_ecg = codec.encode(params, ecg)
         # decompression
-        decoded_ecg = codec.decode(coded_ecg.bits)
+        decoded_ecg = codec.decode(coded_ecg.bits, block_size)
         # encoding info
         info = coded_ecg.info
         print(info)
