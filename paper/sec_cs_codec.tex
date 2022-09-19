@@ -319,7 +319,9 @@ in deep learning based architectures.
 This limitation doesn't exist with BSBL type
 algorithms.
 
-\subsection{Measurement statistics}
+\subsection{Discussion}
+
+\subsubsection{Measurement statistics}
 Several aspects of our encoder architecture are based on the
 statistics of the measurements $\by$. We collected the summary
 statistics including mean $\mu$, standard deviation $\sigma$,
@@ -333,12 +335,12 @@ $\frac{\text{rng}}{\sigma}$
 and the iqr (inter quantile range) divided by standard deviation
 $\frac{\text{iqr}}{\sigma}$.
 
-\subsection{Discussion}
 
 \subsubsection{Gaussianity}
 
-The key idea behind the our simplified entropy coding
-design is to model the measurement values as being sampled from a quantized
+The key idea behind the our entropy coding
+design is to model the measurement values as
+being sampled from a quantized
 Gaussian distribution. Towards this, we measured the
 skew and kurtosis for the measurements for each record
 as shown in \cref{tbl:cs:codec:measure:stats}
@@ -360,8 +362,8 @@ We can estimate the improvement in compression overhead
 by use of the quantized Gaussian approximation.
 Let $\PP$ denote the empirical probability distribution
 of data and let $\QQ$ denote the corresponding
-quantized Gaussian distribution. In \cite{bamler2022constriction},
-empirical data shows that the overhead of using an approximation
+quantized Gaussian distribution. Bamler in \cite{bamler2022constriction}
+show empirically that the overhead of using an approximation
 distribution $\QQ$ in place of $\PP$ in ANS entropy coding
 is close to the KL divergence $\text{KL}(\PP || \QQ)$
 which is given by
@@ -401,40 +403,38 @@ may lead to lower compression.
 \begin{figure*}[htb]
     \centering % <-- added
 
-  % \subfloat[Record 100]{%
-  % \includegraphics[width=0.3\linewidth]{measurements/rec_100_hist_measurements_200_bins.png}}
-  %   \hfill
-  % \subfloat[Record 102]{%
-  % \includegraphics[width=0.3\linewidth]{measurements/rec_102_hist_measurements_200_bins.png}}
-  %   \hfill
-  % \subfloat[Record 115]{%
-  % \includegraphics[width=0.3\linewidth]{measurements/rec_115_hist_measurements_200_bins.png}}
-  %   \\
-  % \subfloat[Record 202]{%
-  % \includegraphics[width=0.3\linewidth]{measurements/rec_202_hist_measurements_200_bins.png}}
-  %   \hfill
-  % \subfloat[Record 208]{%
-  % \includegraphics[width=0.3\linewidth]{measurements/rec_208_hist_measurements_200_bins.png}}
-  %   \hfill
-  % \subfloat[Record 234]{%
-  % \includegraphics[width=0.3\linewidth]{measurements/rec_234_hist_measurements_200_bins.png}}
-  % \caption{Histograms of measurement values with the sparse binary sensing matrix
-  % with $m=256,n=512,d=4$ in 200 bins}
+  \subfloat[Record 100]{%
+  \includegraphics[width=0.3\linewidth]{images/rec_100_hist_measurements_200_bins.png}}
+    \hfill
+  \subfloat[Record 102]{%
+  \includegraphics[width=0.3\linewidth]{images/rec_102_hist_measurements_200_bins.png}}
+    \hfill
+  \subfloat[Record 115]{%
+  \includegraphics[width=0.3\linewidth]{images/rec_115_hist_measurements_200_bins.png}}
+    \\
+  \subfloat[Record 202]{%
+  \includegraphics[width=0.3\linewidth]{images/rec_202_hist_measurements_200_bins.png}}
+    \hfill
+  \subfloat[Record 208]{%
+  \includegraphics[width=0.3\linewidth]{images/rec_208_hist_measurements_200_bins.png}}
+    \hfill
+  \subfloat[Record 234]{%
+  \includegraphics[width=0.3\linewidth]{images/rec_234_hist_measurements_200_bins.png}}
+  \caption{Histograms of measurement values with the sparse binary sensing matrix
+  with $m=256,n=512,d=4$ in 200 bins}
 \label{fig:cs:codec:y:hist:200}
 \end{figure*}
 
 
-\begin{figure*}[htb]
+\begin{figure}[htb]
     \centering % <-- added
   \centering 
-  % \includegraphics[width=0.95\textwidth]
-  % {measurements/rec_234_empirical_vs_quantized_gaussian.png}
+  \includegraphics[width=0.95\linewidth]
+  {images/rec_234_empirical_vs_quantized_gaussian.png}
 \caption{Empirical and quantized Gaussian distributions for measurement values
 $\by$ in record 234}
 \label{fig:cs:codec:y:234:empirical:quantized}
-\end{figure*}
-
-\FloatBarrier
+\end{figure}
 
 \subsubsection{Clipping}
 
@@ -450,38 +450,35 @@ is less than $1.5$ times the standard deviation. In other
 words, the measurement values are fairly concentrated
 around its mean. This can be visually seen from the
 histograms in \Cref{fig:cs:codec:y:hist:200} also.
-We chose the range $[\mu_y - 3 \sigma_y, \mu_y + 3 \sigma_y]$
-as the clipping range after some experimentation and validated
-that this clipping doesn't result in any perceivable quality
-degradation.
 
 \subsubsection{Quantization}
 
 \Cref{fig:100:q:0-7} demonstrates the impact of the
 quantization step on the reconstruction quality
-for record 100. $6$ windows of $512$ samples
+for record 100 under non-adaptive quantization.
+$6$ windows of $512$ samples
 were used in this example. The first panel
 shows the original (digital) signal. Remaining
 panels show the reconstruction at different
-quantization parameters overlaid on top of the
-original signal.
+quantization parameters.
 The reconstruction visual quality is excellent
 up to $q=5$ (PRD below 7\%), good at $q=6$ (PRD at 9\%)
-and perhaps not clinically acceptable at $q=7$
+and clinically unacceptable at $q=7$
 (with PRD more than 15\%).
 One can see significant waveform distortions at $q=7$.
+Also note how the quality score keeps increasing till
+$q=4$ and starts decreasing after that with a massive
+drop at $q=7$.
 
 
 
-\begin{figure*}[!ht]
+\begin{figure}[!ht]
 \centering 
-% \includegraphics[width=0.95\textwidth]
-% {images/rec_100_q_0_7_d_4_m_256_n_512_b_32.png}
+\includegraphics[width=0.95\linewidth]
+{images/rec_100_q_cr_prd_qs.png}
 \caption{Reconstruction of a small segment of record 100
-for different values of $q=0,2,4,5,6,7$ with $m=256,n=512,d=4$.
+for different values of $q=0,2,4,5,6,7$ with $m=256,n=512,d=4$
+under non-adaptive quantization.
 Block size for the BSBL-BO decoder is $32$.}
 \label{fig:100:q:0-7}
-\end{figure*}
-
-
-\FloatBarrier
+\end{figure}
