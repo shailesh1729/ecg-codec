@@ -1,0 +1,31 @@
+%!TEX root = ../paper_ecg_cs_codec.tex
+\begin{tikzpicture}[
+% basic style
+cell/.style = {
+    align=center,
+    minimum width=2cm,
+    minimum height=1cm
+},
+% normal blocks
+block/.style= {cell, draw, shape=rectangle},
+]
+% Write your diagram code here
+\node[cell](bits){Compressed\\Bits};
+\node[block, right=of bits](ed){Entropy\\Decoding};
+\node[block, right=of ed](iq){Inverse\\Quantization};
+\node[block, right=of iq](win){Windowing};
+\node[block, below=of ed](sr){Reconstruction\\Algorithm};
+\node[block, right=of sr](fl){Flattening};
+\node[cell, right=of fl](dst){Decoded\\Samples};
+
+% paths
+\path[draw,->]
+(bits) edge (ed)
+(ed) edge (iq)
+(iq) edge (win)
+(sr) edge (fl)
+(fl) edge (dst);
+
+\draw[->] (win.south) -- +(0, -3mm) -| (sr.north);
+\end{tikzpicture}
+

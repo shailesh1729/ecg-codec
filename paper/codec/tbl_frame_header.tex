@@ -1,0 +1,19 @@
+%!TEX root = ../paper_ecg_cs_codec.tex
+\begin{table}[ht]
+\centering
+\caption{Frame header}
+\begin{tabular}{llr}
+\toprule
+Parameter & Description & Bits \\
+\midrule
+
+$\mu_y$ & Mean value & 16\\
+$\sigma_y$ & Standard deviation & 16 \\
+$q$ &  Frame quantization parameter & 3\\
+$r$ &  Frame range parameter & 4 \\
+$n_w$ & Windows in frame & 8 \\
+$n_c$ & Words of entropy coded data& 16 \\
+\bottomrule
+\end{tabular}
+\label{tbl:header:frame}
+\end{table}

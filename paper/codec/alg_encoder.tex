@@ -1,0 +1,42 @@
+%!TEX root = ../paper_ecg_cs_codec.tex
+\begin{algorithm}[H]
+\caption{Encoder algorithm}
+\label{alg:encoder}
+\footnotesize
+\SetAlgoLined
+Send stream header \;
+Build sensing matrix $\Phi$\;
+\ForEach {frame of ECG signal as $\bx$} {
+    $\bX \leftarrow \window(\bx)$ \;
+    $n_w \leftarrow$ number of windows in the frame \;
+    \tcp{Sense}
+    $\bY \leftarrow \Phi \bX$\;
+    $\by \leftarrow \flatten(\bY)$\;
+    \tcp{Adaptive quantization}
+    \For{$q=q_{\max}:q_{\min}:-1$}{
+        $\bar{\by} \leftarrow \frac{1}{2^q}{\by}$ \;
+        $\tilde{\by} \leftarrow 2^q \bar{\by}$\;
+        $\rho \leftarrow $\;
+        \If{$\nrmse(\by, \tilde{\by}) \leq \rho$}{
+            break \;
+        }
+    }
+    \tcp{Quantized Gaussian model parameters}
+    $\mu_y \leq \round(\text{mean}(\bar{\by}))$ \;
+    $\sigma_y \leq \ceiling(\text{std}(\bar{\by}))$ \;
+    $\sigma_y \leftarrow \max(\sigma_y, 1)$\;
+    \tcp{Adaptive range adjustment}
+    \For{$r=2:8$} {
+        $y_{\min} \leftarrow \mu_y  - r \sigma_y$ \;
+        $y_{\max} \leftarrow \mu_y  + r \sigma_y$ \;
+        $\hat{\by} \leftarrow \clip(\bar{\by}, y_{\min}, y_{\max})$\;
+        \If{$\nrmse(\by, \hat{\by}) \leq \gamma$}{
+            break \;
+        }
+    }
+    $\bc \leftarrow \text{ans\_code}(\hat{\by}, \mu_y, \sigma_y, y_{\min}, y_{\max})$ \;
+    $n_c \leftarrow$ number of words in $\bc$\;
+    Send frame header($\mu_y, \sigma_y, q, r, n_w, n_c$)\;
+    Send frame payload($\bc$)\;
+}
+\end{algorithm}

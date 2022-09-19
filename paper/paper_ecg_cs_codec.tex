@@ -1,0 +1,61 @@
+\documentclass[journal, a4paper]{IEEEtran} %onecolumn, draftcls
+\usepackage{skieeetrans}
+
+% TikZ libraries
+\usetikzlibrary{shapes,
+shapes.geometric, 
+arrows.meta,
+intersections, 
+positioning, 
+dsp, 
+chains,
+decorations.pathreplacing,
+scopes,
+fadings,
+calc,
+matrix,
+fit,
+quotes
+}
+
+\begin{document}
+\title{A Compressive Sensing Codec Architecture for ECG Signals
+with Adaptive Quantization and Stream Entropy Coding}
+
+
+\author{Shailesh~Kumar,
+        Surendra~Prasad,~\IEEEmembership{Senior Member,~IEEE,}
+        and~Brejesh~Lall,~\IEEEmembership{Member,~IEEE}% <-this % stops a space
+}
+
+% make the title area
+\maketitle
+\input{abstract}
+
+\IEEEpeerreviewmaketitle
+
+\input{sec_intro}
+\input{sec_data}
+\input{sec_cs_codec}
+% \input{sec_results}
+% \input{sec_conclusion}
+% \input{sec_tables}
+\appendix
+\input{sec_theory}
+
+
+
+% Can use something like this to put references on a page
+% by themselves when using endfloat and the captionsoff option.
+\ifCLASSOPTIONcaptionsoff
+  \newpage
+\fi
+
+
+\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+\bibliography{IEEEabrv,references}
+
+% that's all folks
+\end{document}
+

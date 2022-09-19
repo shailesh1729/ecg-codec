@@ -1,0 +1,132 @@
+%!TEX root = paper_ecg_cs_codec.tex
+\section{Introduction}
+\label{sec:intro}
+Noncommunicable diseases (NCDs) account for 72\%
+of all global deaths with cardiovascular diseases
+(CVDs) accounting for 44\% of all NCD mortality
+\cite{collins2019interact}.
+For patients with CVDs, wearable device based remote ECG
+monitoring plays a critical role in their disease
+management and care. 
+
+In wireless body area networks (WBAN)
+based telemonitoring networks\cite{cao2009enabling},
+the energy consumption on sensor nodes is
+a primary design constraint \cite{milenkovic2006wireless}.
+The wearable sensor nodes are often battery operated.
+It is necessary to reduce energy consumption as
+much as possible.
+
+However, long term ECG monitoring
+can generate a large amount of uncompressed data.
+For example, each half hour 2 lead recording in the
+MIT-BIH Arrhythmia database \cite{moody2001impact}
+requires 1.9MB of storage. As shown in \cite{mamaghanian2011compressed},
+in a real time telemonitoring sensor node, the wireless
+transmission of data consumes most of the energy.
+The real time compression of ECG data by a low
+complexity encoder has received significant attention
+in the past decade.
+
+\subsection{Related Work}
+
+ECG signal compression has been an active area
+of interest for several decades. Extensive surveys
+can be found in \cite{singh2015review,rajankar2019electrocardiogram}.
+Compressive sensing (CS) based techniques for ECG
+data compression have been reviewed in \cite{craven2014compressed,kumar2022review}.
+
+Transform domain techniques
+(e.g., Discrete Cosine Transform \cite{al1995dynamic},
+Discrete Cosine Transform \cite{batista2001compression,bendifallah2011improved},
+Discrete Wavelet Transform \cite{djohan1995ecg,lu2000wavelet,pooyan2004wavelet,kim2006wavelet}) are popular in ECG compression
+and achieve high compression ratios (CR) at clinically
+acceptable quality.
+However, they require computationally intensive sparsifying
+transforms on all data samples and are thus not suitable
+for WBAN sensor nodes \cite{craven2014compressed}.
+
+Compressive sensing \cite{donoho2006compressed,baraniuk2007compressive,
+candes2006compressive, candes2008introduction, candes2006near}
+uses a sub-Nyquist sampling method by acquiring a small number
+of incoherent measurements which are sufficient to reconstruct
+the signal if the signal is sufficiently sparse in some
+basis. However, much of the use of CS in ECG follows
+a digital CS paradigm \cite{mamaghanian2011compressed} where
+the ECG samples are acquired first by the ADC circuit on the
+device and then they are translated into a incoherent
+measurements via the multiplication of a digital sensing matrix.
+These measurements are then transmitted
+to remote telemonitoring servers. A suitable reconstruction
+algorithm is used on the server to recover the original
+ECG signal from the compressive measurements.
+Reconstruction algorithms for ECG signals include:
+greedy algorithms 
+\cite{polania2011compressed} (simultaneous orthogonal matching pursuit),
+optimization based algorithms \cite{zhang2014energy},
+\cite{mamaghanian2011compressed} (SPG-L1),
+Bayesian learning based algorithms
+\cite{zhang2012compressed,zhang2014spatiotemporal,zhang2013extension},
+deep learning based algorithms \cite{zhang2021csnet}.
+
+In order to keep the sensing matrix multiplication
+simple and efficient, sparse binary sensing matrices
+are a popular choice \cite{mamaghanian2011compressed,zhang2012compressed}.
+To the best of our knowledge, (digital) quantization and entropy coding of
+the compressive measurements of ECG data hasn't received
+much attention in the past.
+Mamaghanian et al.\cite{mamaghanian2011compressed} use a Huffman codebook
+which is deployed inside the sensor device. However, they don't
+provide much detail on how the codebook was designed or how should
+it be customized for variations in ECG signals.
+Simulation based studies often send the real valued compressive
+measurements to the decoder modules and don't consider the issue
+of number of bits required to encode each measurement
+\cite{zhang2012compressed}. 
+
+\subsection{Contributions}
+In this paper, we present an adaptive quantization and
+entropy coding scheme for the digital compressive measurements
+in the encoders running on the WBAN sensor nodes.
+The adaptive quantization scheme has been designed in a manner
+so that the quantization noise is kept within a specified
+threshold. Once the measurements are quantized and clipped,
+they are ready to be entropy coded. A quantized Gaussian
+distribution of the measurements is estimated directly from
+the data and the parameters for this distribution are used
+for the entropy coding of the measurements.  
+Asymmetric numeral systems (ANS) based
+entropy coding is then used for efficient entropy coding
+of the quantized and clipped measurements.
+The ECG signal is split into frames for encoding purposes.
+We have designed a bitstream format with a stream header
+to describe the encoding parameters and a frame header
+for each encoded frame containing frame wise quantization
+parameters. We have designed a decoder which accepts this
+encoded bitstream and reconstructs the ECG signal frame by
+frame in real time. 
+
+Our encoding scheme doesn't require a fixed codebook
+for entropy coding. The encoder has been
+designed in a manner so that all the operations can
+be implemented by integer arithmetic. We have
+tested our encoder on MIT-BIH Arrhythmia database
+and are able to demonstrate additional space savings
+beyond the savings by reduced number of measurements.
+Our implementation is available as part of
+reproducible research on GitHub \cite{kumar2022ecgcodec}.
+
+\subsection{Paper Organization}
+The rest of the paper is organized as follows.
+\Cref{sec:data} describes the ECG database
+used for the evaluation of the codec and the
+performance metrics.
+\Cref{sec:arch} describes the proposed codec architecture.
+% The analysis of the experimental results is covered in \cref{sec:results}.
+% \Cref{sec:conclusion} summarizes our contributions and
+% identifies future work.
+\Cref{appsec:cs} provides a short overview on
+compressive sensing.
+\Cref{appsec:ec} provides a short overview on
+entropy coding.
+

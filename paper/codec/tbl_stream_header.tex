@@ -1,0 +1,23 @@
+%!TEX root = ../paper_ecg_cs_codec.tex
+\begin{table}[ht]
+\centering
+\caption{Stream header}
+\begin{tabular}{llr}
+\toprule
+Parameter & Description & Bits \\
+\midrule 
+key & PRNG key for $\Phi$ & 64 \\
+$n$ & Window size & 12 \\
+$m$ & Number of measurements per window & 12 \\
+$d$ & Number of ones per column in sensing matrix & 6 \\
+$w$ & Number of windows per frame & 8 \\
+adaptive & Adaptive or fixed quantization flag & 1 \\
+if (adaptive ) &  \\
+\hspace{1cm} $\rho$ & $\nrmse$ limit for adaptive quantization & 8 \\
+else & \\
+\hspace{1cm} $q$ & Fixed quantization parameter & 4 \\
+$\gamma$ & $\nrmse$ limit for clipping & 8 \\
+\bottomrule
+\end{tabular}
+\label{tbl:header:stream}
+\end{table}

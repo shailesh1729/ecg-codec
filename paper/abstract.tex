@@ -1,0 +1,43 @@
+%!TEX root = paper_ecg_cs_codec.tex
+% As a general rule, do not put math, special symbols or citations
+% in the abstract or keywords.
+\begin{abstract}
+Remote monitoring of electrocardiogram (ECG) signals
+plays a critical role in the management of cardiovascular
+diseases. Current long term ECG monitoring systems
+generate a large amount of data that need to be
+sent across a wireless body area network.
+The wearable devices are resource limited.
+Hence a low resource consuming compression
+scheme is desirable.
+Compressive sensing (CS) is quite appealing
+as a low complexity method for compression of
+ECG data. This paper investigates the distribution
+of the compressive measurements and proposes
+a CS based codec architecture comprising
+simple quantization and
+asymmetric numeral systems (ANS) based
+entropy coding steps
+that can significantly boost the compression ratio
+without sacrificing reconstruction performance.
+The encoder has low computational complexity
+beyond the sensing operation
+and can be implemented entirely using integer arithmetic.
+The quantized Gaussian entropy model for the compressive measurements
+is estimated directly from the data and can be easily adapted
+to achieve better compression. Our decoder architecture
+is flexible in choosing any suitable reconstruction method.
+We have tested our encoder with bound optimization
+based block sparse Bayesian learning (BSBL-BO)
+reconstruction algorithm on MIT-BIH Arrhythmia database.
+We have validated that our encoder can achieve
+additional 20-30\% of space savings without any
+impact on reconstruction quality on top of the
+savings in terms of measurements. We have
+also clearly described the digitization process
+for the measurements which has often been ignored
+in the literature on CS based compression of ECG data. 
+As part of reproducible research we have open sourced
+our codec (implemented in Python with JAX based GPU
+acceleration for the decoder).
+\end{abstract}

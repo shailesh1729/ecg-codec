@@ -1,0 +1,139 @@
+%!TEX root = paper_ecg_cs_codec.tex
+\subsection{Compressive Sensing}
+\label{appsec:cs}
+Under the digital CS paradigm, we assume that the
+signals have passed through the analog to digital
+converter (ADC) and are represented using signed integers
+at a specific resolution.
+
+CS is an emerging signal compression paradigm that relies
+on the sparsity of signals (in an appropriate basis)
+to compress using incoherent measurements.
+The basic model can be expressed as:
+\begin{equation}
+\by = \Phi \bx + \be
+\end{equation}
+where $\bx \in \RR^n$ is a signal to compress
+(of length $n$). $\Phi \in \RR^{m \times n}$
+is a sensing matrix which compresses $\bx$
+via linear measurements. Each row of $\Phi$
+represents one linear measurement as a linear
+functional on $\bx$. $\by$ is a measurement
+vector consisting of $m$ distinct measurements
+done on $\bx$. By design $\Phi$ is a full
+rank matrix. Hence every set of $m$ columns of $\Phi$
+is linearly independent. $\be \in \RR^m$ is the
+error/noise introduced during the measurement process.
+In our digital CS paradigm, the noise is introduced
+by the quantization step in our encoder.
+In our case $\bx$ is a window of a raw ECG record
+from one channel/lead. 
+Often $\bx$ is not sparse by itself, but is sparse
+in some orthonormal basis $\Psi$ expressed as
+$\bx = \Phi \alpha$ and the representation $\alpha$
+is sparse. ECG signals exhibit sparsity in wavelet
+bases.
+
+Most natural signals have richer structures beyond
+sparsity. A common structure is natural signals
+is a block/group structure \cite{eldar2010block}. 
+We introduce the block/group structure on $\bx$ as
+\begin{equation}
+\bx = \begin{pmatrix}
+\bx_1 & \bx_2 & \dots & \bx_g
+\end{pmatrix}
+\end{equation}
+where each $\bx_i$ is a block of $b$ values.
+The signal $\bx$ consists of $g$ such blocks/groups.
+Under the block sparsity model, only a few $k \ll g$
+blocks are nonzero (active) in the signal $\bx$
+however, the locations of these blocks are unknown.
+We can rewrite the sensing equation as:
+\begin{equation}
+\by = \sum_{i=1}^g \Phi_i \bx_i + \be
+\end{equation}
+by splitting the sensing matrix into blocks of columns appropriately.
+
+\subsection{Block Sparse Bayesian Learning}
+Under the sparse Bayesian framework, each block
+is assumed to satisfy a parametrized multivariate
+Gaussian distribution:
+\begin{equation}
+\PP(\bx_i ; \gamma_i, \bB_i) = \NNN(\bzero, \gamma_i \bB_i), \Forall i=1,\dots,g.
+\end{equation}
+The covariance matrix $\bB_i$ captures the intra block correlations.
+We further assume that the blocks are mutually uncorrelated.
+The prior of $\bx$ can then be written as
+\begin{equation}
+\PP(\bx; \{ \gamma_i, \bB_i\}_i ) = \NNN(\bzero, \Sigma_0)
+\end{equation}
+where
+\begin{equation}
+\Sigma_0 = \text{diag}\{\gamma_1 \bB_1, \dots, \gamma_g \bB_g \}.
+\end{equation}
+We also model the correlation among the values
+within each active block as an AR-1 process.
+Under this assumption the matrices
+$\bB_i$ take the form of a Toeplitz matrix
+\begin{equation}
+\bB = \begin{bmatrix}
+1 & r & \dots & r^{b-1}\\
+r & 1 & \dots & r^{b-2}\\
+\vdots &  & \ddots & \vdots\\
+r^{b-1} & r^{b-2} & \dots & 1
+\end{bmatrix}
+\end{equation}
+where $r$ is the AR-1 model coefficient.
+This constraint significantly reduces the model parameters to be learned.
+
+Measurement error is modeled as independent zero mean Gaussian
+noise $\PP(\be; \lambda) \sim \NNN(\bzero, \lambda \bI)$.
+BSBL doesn't require us to provide the value of noise variance
+as input.
+It is able to estimate $\lambda$ within a algorithm.
+
+The estimate of $\bx$ under Bayesian learning framework
+is given by the posterior mean of $\bx$ given the measurements $\by$.
+
+
+
+\subsection{Entropy Coding}
+\label{appsec:ec}
+From the perspective of entropy coding, a \emph{symbol}
+is a unit of information to be transmitted. For us,
+each value in a measurement vector is a symbol.
+An \emph{alphabet} is the set of all symbols that
+can be transmitted. For us, it is the set of integral
+values that the entries in a measurement vector can take.
+A \emph{message} is a sequence of symbols to be transmitted.
+For us, it is the sequence of all measurement values.
+There are two primary types of coding schemes: symbol
+codes and stream codes. A symbol code (e.g., Huffman code)
+assigns a unique bit string to each symbol.
+A stream code maps a message (a sequence of symbols)
+to a (large) integer. Symbol codes approach optimal
+compression only when the Shannon information content
+of each symbol happens to be close to powers of $2$.
+In particular, Huffman coding is not optimal
+since it encodes each symbol using an integral
+number of bits. It is not capable of encoding symbols using
+fractional number of bits.
+
+In contrast, stream codes can achieve near optimal
+compression for any probability distribution.
+Arithmetic Coding (AC) \cite{rissanen1979arithmetic,witten1987arithmetic}
+encodes the entire message of symbols into a single (large) integer
+enabling fractional bits for different symbols in a message.
+A recent family of entropy coders called Asymmetric Numeral Systems (ANS)
+\cite{duda2013asymmetric}
+allows for faster implementation
+thanks to directly operating
+on a single natural number representing the current information.
+It combines the speed of Huffman coding with compression rate
+of arithmetic coding.
+The \emph{constriction} library \cite{bamler2022constriction} provides
+a nice way to model each symbol in a message as a sample from
+a given probability distribution and then encode it using ANS.
+
+% \subsection{Asymmetric Numeral Systems}
+

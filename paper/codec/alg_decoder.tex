@@ -1,0 +1,22 @@
+%!TEX root = ../paper_ecg_cs_codec.tex
+\begin{algorithm}[H]
+\caption{Decoder algorithm}
+\label{alg:decoder}
+\footnotesize
+\SetAlgoLined
+Read stream header \;
+Build sensing matrix $\Phi$\;
+\While{there is more data}{
+    $\mu_y, \sigma_y, q, r, n_w, n_c \leftarrow$ read frame header \;
+    $\bc \leftarrow$ read frame payload $(n_c)$\;
+    \tcp{Entropy model parameters}
+    $y_{\min} \leftarrow \mu_y  - r \sigma_y$ \;
+    $y_{\max} \leftarrow \mu_y  + r \sigma_y$ \;
+    $\hat{\by} \leftarrow \text{ans\_decode}(\bc, \mu_y, \sigma_y, y_{\min}, y_{\max})$ \;
+    \tcp{Inverse quantization}
+    $\tilde{\by} \leftarrow 2^q \hat{\by}$\;
+    $\tilde{\bY} \leftarrow \window(\tilde{\by})$ \;
+    $\tilde{\bX} \leftarrow \mathrm{reconstruct}(\tilde{\bY})$ \;
+    $\tilde{\bx} \leftarrow \flatten(\tilde{\bX})$ \;
+}
+\end{algorithm}
