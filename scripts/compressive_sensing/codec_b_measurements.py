@@ -50,7 +50,7 @@ def main(n, m, d, dry):
 
     q_nmse_limit = Decimal((0, (1,), -2))
     c_nmse_limit = Decimal((0, (1,), -2))
-    params = codec.EncoderParams(key=crn.KEYS[0], 
+    params = codec.EncoderParams(key=crn.KEY0,
         n=n, m=m, d=d, w=32, adaptive=True,
         q=0, q_nmse_limit=q_nmse_limit, c_nmse_limit=c_nmse_limit)
 
