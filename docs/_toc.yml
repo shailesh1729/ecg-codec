@@ -1,0 +1,17 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: index
+options:
+  numbered: True
+chapters:
+- file: install
+- file: usage
+- file: codec_b/index
+  sections:
+  - file: codec_b/architecture
+  - file: codec_b/implementation
+  - file: codec_b/experiments
+- file: bib
+- file: genindex
