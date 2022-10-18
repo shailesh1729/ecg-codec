@@ -1,4 +1,4 @@
-# ECG Codec
+# Our ECG Codec
 
 ```{tableofcontents}
 ```

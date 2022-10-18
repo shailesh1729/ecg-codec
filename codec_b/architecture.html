@@ -1,0 +1,1935 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>4.1. Architecture &#8212; ECG Codec</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex": {"macros": {"AA": "\\mathbb{A}", "BB": "\\mathbb{B}", "CC": "\\mathbb{C}", "DD": "\\mathbb{D}", "EE": "\\mathbb{E}", "FF": "\\mathbb{F}", "GG": "\\mathbb{G}", "HH": "\\mathbb{H}", "II": "\\mathbb{I}", "JJ": "\\mathbb{J}", "KK": "\\mathbb{K}", "LL": "\\mathbb{L}", "MM": "\\mathbb{M}", "NN": "\\mathbb{N}", "Nat": "\\mathbb{N}", "PP": "\\mathbb{P}", "QQ": "\\mathbb{Q}", "RR": "\\mathbb{R}", "RRMN": "\\mathbb{R}^{M \\times N}", "SS": "\\mathbb{S}", "TT": "\\mathbb{T}", "UU": "\\mathbb{U}", "VV": "\\mathbb{V}", "WW": "\\mathbb{W}", "XX": "\\mathbb{X}", "YY": "\\mathbb{Y}", "ZZ": "\\mathbb{Z}", "ZERO": "\\mathbf{O}", "ERL": "\\overline{\\mathbb{R}}", "RERL": "(-\\infty, \\infty]", "LERL": "[-\\infty, \\infty)", "AAA": "\\mathcal{A}", "BBB": "\\mathcal{B}", "CCC": "\\mathcal{C}", "DDD": "\\mathcal{D}", "EEE": "\\mathcal{E}", "FFF": "\\mathcal{F}", "GGG": "\\mathcal{G}", "HHH": "\\mathcal{H}", "III": "\\mathcal{I}", "JJJ": "\\mathcal{J}", "KKK": "\\mathcal{K}", "LLL": "\\mathcal{L}", "MMM": "\\mathcal{M}", "NNN": "\\mathcal{N}", "OOO": "\\mathcal{O}", "PPP": "\\mathcal{P}", "QQQ": "\\mathcal{Q}", "RRR": "\\mathcal{R}", "SSS": "\\mathcal{S}", "TTT": "\\mathcal{T}", "UUU": "\\mathcal{U}", "VVV": "\\mathcal{V}", "WWW": "\\mathcal{W}", "XXX": "\\mathcal{X}", "YYY": "\\mathcal{Y}", "ZZZ": "\\mathcal{Z}", "Tau": "\\mathbf{\\mathcal{T}}", "Chi": "\\mathbf{\\mathcal{X}}", "Eta": "\\mathbf{\\mathcal{H}}", "Re": "\\operatorname{Re}", "Im": "\\operatorname{Im}", "bigO": "\\mathcal{O}", "smallO": "\\mathcal{o}", "NullSpace": "\\mathcal{N}", "ColSpace": "\\mathcal{C}", "RowSpace": "\\mathcal{R}", "Power": "\\mathop{\\mathcal{P}}", "LinTSpace": "\\mathcal{L}", "Range": "\\mathrm{R}", "Image": "\\mathrm{im}", "Kernel": "\\mathrm{ker}", "Span": "\\mathrm{span}", "Nullity": "\\mathrm{nullity}", "Dim": "\\mathrm{dim}", "Rank": "\\mathrm{rank}", "Trace": "\\mathrm{tr}", "Diag": "\\mathrm{diag}", "diag": "\\mathrm{diag}", "sgn": "\\mathrm{sgn}", "dom": "\\mathrm{dom}\\,", "range": "\\mathrm{range}\\,", "image": "\\mathrm{im}\\,", "nullspace": "\\mathrm{null}\\,", "epi": "\\mathrm{epi}\\,", "hypo": "\\mathrm{hypo}\\,", "sublevel": "\\mathrm{sublevel}", "superlevel": "\\mathrm{superlevel}", "contour": "\\mathrm{contour}", "supp": "\\mathrm{supp}", "dist": "\\mathrm{dist}", "simf": "\\mathrm{sim}", "opt": "\\mathrm{opt}", "succ": "\\mathrm{succ}", "snr": "\\mathrm{SNR}", "RSNR": "\\mbox{R-SNR}", "prd": "\\mathrm{PRD}", "bits": "\\mathrm{bits}", "bps": "\\mathrm{bps}", "bpm": "\\mathrm{bpm}", "compr": "\\mathrm{CR}", "measurer": "\\mathrm{MR}", "pss": "\\mathrm{PSS}", "pms": "\\mathrm{PMS}", "nmse": "\\mathrm{NMSE}", "nrmse": "\\mathrm{N\u00a0RMSE}", "window": "\\mathrm{window}", "flatten": "\\mathrm{flatten}", "clip": "\\mathrm{clip}", "round": "\\mathrm{round}", "ceiling": "\\mathrm{ceiling}", "Sym": "\\mathrm{Sym}", "id": "\\mathrm{id}", "precision": "\\mathrm{precision}", "recall": "\\mathrm{recall}", "ML": "\\mathbf{ML}", "MLE": "\\mathbf{MLE}", "mah": "\\mathbf{mah}", "chord": "\\mathbf{chord}", "geo": "\\mathbf{geo}", "nn": "\\mathbf{nn}", "fn": "\\mathbf{fn}", "ave": "\\mathbf{ave}", "stat": "\\mathbf{stat}", "mean": "\\mathbf{mean}", "median": "\\mathbf{median}", "mode": "\\mathbf{mode}", "rowsupp": "\\mathop{\\mathrm{rowsupp}}", "abs": "\\mathop{\\mathrm{abs}}", "erf": "\\mathop{\\mathrm{erf}}", "erfc": "\\mathop{\\mathrm{erfc}}", "Sub": "\\mathop{\\mathrm{Sub}}", "SSub": "\\mathop{\\mathrm{SSub}}", "Var": "\\mathop{\\mathrm{Var}}", "Cov": "\\mathop{\\mathrm{Cov}}", "AffineHull": "\\mathop{\\mathrm{aff}}", "ConvexHull": "\\mathop{\\mathrm{conv}}", "ConicHull": "\\mathop{\\mathrm{cone}}", "argmin": "\\mathrm{arg}\\,\\mathrm{min}", "argmax": "\\mathrm{arg}\\,\\mathrm{max}", "EmptySet": "\\varnothing", "card": "\\mathrm{card}\\,", "Forall": "\\; \\forall \\;", "ST": "\\: | \\:", "Gaussian": "\\mathcal{N}", "spark": "\\mathop{\\mathrm{spark}}", "ERC": "\\mathop{\\mathrm{ERC}}", "Maxcor": "\\mathop{\\mathrm{maxcor}}", "dag": "\\dagger", "Bracket": "\\left [ \\; \\right ]", "infimal": "\\;\\square\\;", "OneVec": "\\mathbf{1}", "ZeroVec": "\\mathbf{0}", "OneMat": "\\mathbb{1}", "Interior": ["\\mathring{#1}", 1], "Closure": ["\\overline{#1}", 1], "interior": "\\mathrm{int}\\,", "closure": "\\mathrm{cl}\\,", "boundary": "\\mathrm{bd}\\,", "frontier": "\\mathrm{fr}\\,", "diam": "\\mathrm{diam}\\,", "relint": "\\mathrm{ri}\\,", "relbd": "\\mathrm{relbd}\\,", "extreme": "\\mathrm{ext}\\,", "span": "\\mathrm{span}\\,", "affine": "\\mathrm{aff}\\,", "cone": "\\mathrm{cone}\\,", "convex": "\\mathrm{conv}\\,", "graph": "\\mathrm{gra}\\,", "kernel": "\\mathrm{ker}\\,", "dim": "\\mathrm{dim}\\,", "codim": "\\mathrm{codim}\\,", "nullity": "\\mathrm{nullity}\\,", "rank": "\\mathrm{rank}\\,", "prox": "\\mathrm{prox}", "best": "\\mathrm{best}", "ainterior": "\\mathrm{int}", "aclosure": "\\mathrm{cl}", "aboundary": "\\mathrm{bd}", "afrontier": "\\mathrm{fr}", "aextreme": "\\mathrm{ext}", "st": "\\mathrm{ST}", "ht": "\\mathrm{HT}", "bzero": "\\mathbf{0}", "bone": "\\mathbf{1}", "ba": "\\mathbf{a}", "bb": "\\mathbf{b}", "bc": "\\mathbf{c}", "bd": "\\mathbf{d}", "be": "\\mathbf{e}", "bf": "\\mathbf{f}", "bg": "\\mathbf{g}", "bh": "\\mathbf{h}", "bi": "\\mathbf{i}", "bj": "\\mathbf{j}", "bk": "\\mathbf{k}", "bl": "\\mathbf{l}", "bm": "\\mathbf{m}", "bn": "\\mathbf{n}", "bo": "\\mathbf{o}", "bp": "\\mathbf{p}", "bq": "\\mathbf{q}", "br": "\\mathbf{r}", "bs": "\\mathbf{s}", "bt": "\\mathbf{t}", "bu": "\\mathbf{u}", "bv": "\\mathbf{v}", "bw": "\\mathbf{w}", "bx": "\\mathbf{x}", "by": "\\mathbf{y}", "bz": "\\mathbf{z}", "bA": "\\mathbf{A}", "bB": "\\mathbf{B}", "bC": "\\mathbf{C}", "bD": "\\mathbf{D}", "bE": "\\mathbf{E}", "bF": "\\mathbf{F}", "bG": "\\mathbf{G}", "bH": "\\mathbf{H}", "bI": "\\mathbf{I}", "bJ": "\\mathbf{J}", "bK": "\\mathbf{K}", "bL": "\\mathbf{L}", "bM": "\\mathbf{M}", "bN": "\\mathbf{N}", "bO": "\\mathbf{O}", "bP": "\\mathbf{P}", "bQ": "\\mathbf{Q}", "bR": "\\mathbf{R}", "bS": "\\mathbf{S}", "bT": "\\mathbf{T}", "bU": "\\mathbf{U}", "bV": "\\mathbf{V}", "bW": "\\mathbf{W}", "bX": "\\mathbf{X}", "bY": "\\mathbf{Y}", "bZ": "\\mathbf{Z}", "bAAA": "\\mathbf{\\mathcal{A}}", "bBBB": "\\mathbf{\\mathcal{B}}", "bCCC": "\\mathbf{\\mathcal{C}}", "bDDD": "\\mathbf{\\mathcal{D}}", "bEEE": "\\mathbf{\\mathcal{E}}", "bFFF": "\\mathbf{\\mathcal{F}}", "bGGG": "\\mathbf{\\mathcal{G}}", "bHHH": "\\mathbf{\\mathcal{H}}", "bIII": "\\mathbf{\\mathcal{I}}", "bJJJ": "\\mathbf{\\mathcal{J}}", "bKKK": "\\mathbf{\\mathcal{K}}", "bLLL": "\\mathbf{\\mathcal{L}}", "bMMM": "\\mathbf{\\mathcal{M}}", "bNNN": "\\mathbf{\\mathcal{N}}", "bOOO": "\\mathbf{\\mathcal{O}}", "bPPP": "\\mathbf{\\mathcal{P}}", "bQQQ": "\\mathbf{\\mathcal{Q}}", "bRRR": "\\mathbf{\\mathcal{R}}", "bSSS": "\\mathbf{\\mathcal{S}}", "bTTT": "\\mathbf{\\mathcal{T}}", "bUUU": "\\mathbf{\\mathcal{U}}", "bVVV": "\\mathbf{\\mathcal{V}}", "bWWW": "\\mathbf{\\mathcal{W}}", "bXXX": "\\mathbf{\\mathcal{X}}", "bYYY": "\\mathbf{\\mathcal{Y}}", "bZZZ": "\\mathbf{\\mathcal{Z}}", "blambda": "\\pmb{\\lambda}"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4.2. Implementation" href="implementation.html" />
+    <link rel="prev" title="4. Codec B" href="index.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">ECG Codec</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../install.html">
+   1. Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage.html">
+   2. Usage
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../compression/index.html">
+   3. ECG Data Compression Review
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../compression/metrics.html">
+     3.1. Performance Metrics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../compression/datasets.html">
+     3.2. Datasets
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="index.html">
+   4. Codec B
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     4.1. Architecture
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="implementation.html">
+     4.2. Implementation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="experiments.html">
+     4.3. Experiments
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../bib.html">
+   5. Bibliography
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../genindex.html">
+   6. Index
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/shailesh1729/ecg-codec"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/shailesh1729/ecg-codec/issues/new?title=Issue%20on%20page%20%2Fcodec_b/architecture.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/shailesh1729/ecg-codec/edit/main/docs/codec_b/architecture.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/codec_b/architecture.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#block-diagram">
+   4.1.1. Block Diagram
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#bitstream-format">
+   4.1.2. Bitstream Format
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stream-header">
+     4.1.2.1. Stream Header
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#frame-header">
+     4.1.2.2. Frame Header
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#encoder">
+   4.1.3. Encoder
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#windowing">
+     4.1.3.1. Windowing
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#compressive-sensing">
+     4.1.3.2. Compressive Sensing
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#flattening">
+     4.1.3.3. Flattening
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#quantization">
+     4.1.3.4. Quantization
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entropy-model">
+     4.1.3.5. Entropy Model
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#adaptive-clipping">
+     4.1.3.6. Adaptive Clipping
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entropy-coding">
+     4.1.3.7. Entropy Coding
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#integer-arithmetic">
+     4.1.3.8. Integer Arithmetic
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#decoder">
+   4.1.4. Decoder
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entropy-decoding">
+     4.1.4.1. Entropy Decoding
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#inverse-quantization">
+     4.1.4.2. Inverse Quantization
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#reconstruction">
+     4.1.4.3. Reconstruction
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#alternate-reconstruction-algorithms">
+     4.1.4.4. Alternate Reconstruction Algorithms
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#discussion">
+   4.1.5. Discussion
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#measurement-statistics">
+     4.1.5.1. Measurement statistics
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#gaussianity">
+     4.1.5.2. Gaussianity
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#clipping">
+     4.1.5.3. Clipping
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id8">
+     4.1.5.4. Quantization
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Architecture</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#block-diagram">
+   4.1.1. Block Diagram
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#bitstream-format">
+   4.1.2. Bitstream Format
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stream-header">
+     4.1.2.1. Stream Header
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#frame-header">
+     4.1.2.2. Frame Header
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#encoder">
+   4.1.3. Encoder
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#windowing">
+     4.1.3.1. Windowing
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#compressive-sensing">
+     4.1.3.2. Compressive Sensing
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#flattening">
+     4.1.3.3. Flattening
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#quantization">
+     4.1.3.4. Quantization
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entropy-model">
+     4.1.3.5. Entropy Model
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#adaptive-clipping">
+     4.1.3.6. Adaptive Clipping
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entropy-coding">
+     4.1.3.7. Entropy Coding
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#integer-arithmetic">
+     4.1.3.8. Integer Arithmetic
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#decoder">
+   4.1.4. Decoder
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entropy-decoding">
+     4.1.4.1. Entropy Decoding
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#inverse-quantization">
+     4.1.4.2. Inverse Quantization
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#reconstruction">
+     4.1.4.3. Reconstruction
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#alternate-reconstruction-algorithms">
+     4.1.4.4. Alternate Reconstruction Algorithms
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#discussion">
+   4.1.5. Discussion
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#measurement-statistics">
+     4.1.5.1. Measurement statistics
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#gaussianity">
+     4.1.5.2. Gaussianity
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#clipping">
+     4.1.5.3. Clipping
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id8">
+     4.1.5.4. Quantization
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="architecture">
+<h1><span class="section-number">4.1. </span>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">#</a></h1>
+<p>The ECG signal is split into windows
+of <span class="math notranslate nohighlight">\(n\)</span> samples each. The windows of
+ECG signal are further grouped into
+frames of <span class="math notranslate nohighlight">\(w\)</span> windows each. The
+last frame may have less than <span class="math notranslate nohighlight">\(w\)</span>
+windows.
+The encoder compresses the ECG signal
+frame by frame.
+The encoder converts the
+ECG signal into a bitstream and the
+decoder reconstructs the ECG signal
+from the bitstream.</p>
+<section id="block-diagram">
+<h2><span class="section-number">4.1.1. </span>Block Diagram<a class="headerlink" href="#block-diagram" title="Permalink to this headline">#</a></h2>
+<figure class="align-center" id="fig-cs-encoder">
+<img alt="../_images/cs_encoder.png" src="../_images/cs_encoder.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.1 </span><span class="caption-text">Digital Compressive Sensing Encoder</span><a class="headerlink" href="#fig-cs-encoder" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="fig-cs-decoder">
+<img alt="../_images/cs_decoder.png" src="../_images/cs_decoder.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.2 </span><span class="caption-text">Digital Compressive Sensing Decoder</span><a class="headerlink" href="#fig-cs-decoder" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>The encoding algorithm is presented in
+<a class="reference internal" href="#alg:encoder">Algorithm 4.1</a>.
+The decoding algorithm is presented in
+<a class="reference internal" href="#alg:decoder">Algorithm 4.2</a>.</p>
+<p>Following <span id="id1">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">3</a>]</span>,
+we construct a sparse binary sensing matrix <span class="math notranslate nohighlight">\(\Phi\)</span> of shape
+<span class="math notranslate nohighlight">\(m \times n\)</span>.
+Each column of <span class="math notranslate nohighlight">\(\Phi\)</span> consists of exactly <span class="math notranslate nohighlight">\(d\)</span> ones and
+<span class="math notranslate nohighlight">\(m-d\)</span> zeros, where the position of ones has been randomly
+selected in each column. Identical algorithm is used
+to generate the sensing matrix using the stream header
+parameters in both the encoder and the decoder.
+The randomization is seeded with the parameter <span class="math notranslate nohighlight">\(\mathrm{key}\)</span>
+sent in the stream header.</p>
+</section>
+<section id="bitstream-format">
+<h2><span class="section-number">4.1.2. </span>Bitstream Format<a class="headerlink" href="#bitstream-format" title="Permalink to this headline">#</a></h2>
+<p>The encoder first sends
+the encoder parameters in the form
+of a stream header <a class="reference internal" href="#tbl-header-stream"><span class="std std-numref">Table 4.1</span></a>.
+Then for each frame of ECG signal,
+it sends a frame header <a class="reference internal" href="#tbl-header-frame"><span class="std std-numref">Table 4.2</span></a>
+followed by a frame payload consisting of the
+entropy coded measurements for the frame.</p>
+<section id="stream-header">
+<h3><span class="section-number">4.1.2.1. </span>Stream Header<a class="headerlink" href="#stream-header" title="Permalink to this headline">#</a></h3>
+<p>The stream header <a class="reference internal" href="#tbl-header-stream"><span class="std std-numref">Table 4.1</span></a>
+consists of all necessary information
+required to initialize the decoder.
+In particular, it contains the pseudo-random
+generator key that can be used to reproduce
+the sparse binary sensing matrix used in the
+encoder by the decoder,
+the number of samples per window (<span class="math notranslate nohighlight">\(n\)</span>),
+the number of measurements per window (<span class="math notranslate nohighlight">\(m\)</span>),
+the number of ones per column in the sensing matrix
+(<span class="math notranslate nohighlight">\(d\)</span>),
+and the maximum number of windows in each frame
+of ECG signal (<span class="math notranslate nohighlight">\(w\)</span>).
+It contains a flag indicating whether adaptive
+or fixed quantization will be used.
+It contains the limits on the normalized
+root mean square error for
+the adaptive quantization (<span class="math notranslate nohighlight">\(\rho\)</span>)
+and adaptive clipping (<span class="math notranslate nohighlight">\(\gamma\)</span>) steps.
+If fixed quantization is used, then it contains
+the fixed quantization parameter value (<span class="math notranslate nohighlight">\(q\)</span>).
+Both <span class="math notranslate nohighlight">\(\rho\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> in the stream header
+are encoded using a simple decimal format <span class="math notranslate nohighlight">\(a 1e^{-b}\)</span> where <span class="math notranslate nohighlight">\(a\)</span>
+and <span class="math notranslate nohighlight">\(b\)</span> are encoded as 4-bit integers.</p>
+<table class="colwidths-given table" id="tbl-header-stream">
+<caption><span class="caption-number">Table 4.1 </span><span class="caption-text">Stream header</span><a class="headerlink" href="#tbl-header-stream" title="Permalink to this table">#</a></caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 60%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Bits</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>key</p></td>
+<td><p>PRNG key for <span class="math notranslate nohighlight">\(\Phi\)</span></p></td>
+<td><p>64</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(n\)</span></p></td>
+<td><p>Window size</p></td>
+<td><p>12</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(m\)</span></p></td>
+<td><p>Number of measurements per window</p></td>
+<td><p>12</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(d\)</span></p></td>
+<td><p>Number of ones per column in sensing matrix</p></td>
+<td><p>6</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(w\)</span></p></td>
+<td><p>Number of windows per frame</p></td>
+<td><p>8</p></td>
+</tr>
+<tr class="row-odd"><td><p>adaptive</p></td>
+<td><p>Adaptive or fixed quantization flag</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>if (adaptive )</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>     <span class="math notranslate nohighlight">\(\rho\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\nrmse\)</span> limit for adaptive quantization</p></td>
+<td><p>8</p></td>
+</tr>
+<tr class="row-even"><td><p>else</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>     <span class="math notranslate nohighlight">\(q\)</span></p></td>
+<td><p>Fixed quantization parameter</p></td>
+<td><p>4</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\gamma\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\nrmse\)</span> limit for clipping</p></td>
+<td><p>8</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="frame-header">
+<h3><span class="section-number">4.1.2.2. </span>Frame Header<a class="headerlink" href="#frame-header" title="Permalink to this headline">#</a></h3>
+<p>The frame header precedes the encoded data
+for each frame. It captures the encoding
+parameters that vary from frame to frame.</p>
+<table class="colwidths-given table" id="tbl-header-frame">
+<caption><span class="caption-number">Table 4.2 </span><span class="caption-text">Frame header</span><a class="headerlink" href="#tbl-header-frame" title="Permalink to this table">#</a></caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 60%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Bits</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(\mu_y\)</span></p></td>
+<td><p>Mean value</p></td>
+<td><p>16</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(\sigma_y\)</span></p></td>
+<td><p>Standard deviation</p></td>
+<td><p>16</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(q\)</span></p></td>
+<td><p>Frame quantization parameter</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(r\)</span></p></td>
+<td><p>Frame range parameter</p></td>
+<td><p>4</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(n_w\)</span></p></td>
+<td><p>Windows in frame</p></td>
+<td><p>8</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(n_c\)</span></p></td>
+<td><p>Words of entropy coded data</p></td>
+<td><p>16</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="encoder">
+<h2><span class="section-number">4.1.3. </span>Encoder<a class="headerlink" href="#encoder" title="Permalink to this headline">#</a></h2>
+<div class="proof algorithm admonition" id="alg:encoder">
+<p class="admonition-title"><span class="caption-number">Algorithm 4.1 </span> (Encoder algorithm)</p>
+<section class="algorithm-content" id="proof-content">
+<ol class="simple">
+<li><p>Send stream header.</p></li>
+<li><p>Build sensing matrix <span class="math notranslate nohighlight">\(\Phi\)</span>.</p></li>
+<li><p>For each frame of ECG signal as <span class="math notranslate nohighlight">\(\bx\)</span></p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(\bX \leftarrow \window(\bx)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(n_w \leftarrow\)</span> number of windows in the frame</p></li>
+<li><p>Compressive sensing:  <span class="math notranslate nohighlight">\(\bY \leftarrow \Phi \bX\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\by \leftarrow \flatten(\bY)\)</span>.</p></li>
+<li><p>Adaptive quantization. For <span class="math notranslate nohighlight">\(q=q_{\max} \dots q_{\min}\)</span> (descending)</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(\bar{\by} \leftarrow \left \lfloor \frac{1}{2^q}{\by} \right \rfloor\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\tilde{\by} \leftarrow 2^q \bar{\by}\)</span></p></li>
+<li><p>If <span class="math notranslate nohighlight">\(\nrmse(\by, \tilde{\by}) \leq \rho\)</span> then stop.</p></li>
+</ol>
+</li>
+<li><p>Quantized Gaussian model parameters</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mu_y \leftarrow \lceil \text{mean}(\bar{\by}) \rceil\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\sigma_y \leftarrow \lceil (\text{std}(\bar{\by}) \rceil\)</span>.</p></li>
+</ol>
+</li>
+<li><p>Adaptive range adjustment. For <span class="math notranslate nohighlight">\(r=2:8\)</span></p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(y_{\min} \leftarrow \mu_y  - r \sigma_y\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(y_{\max} \leftarrow \mu_y  + r \sigma_y\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\hat{\by} \leftarrow \clip(\bar{\by}, y_{\min}, y_{\max})\)</span>.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(\nrmse(\by, \hat{\by}) \leq \gamma\)</span> then break.</p></li>
+</ol>
+</li>
+<li><p><span class="math notranslate nohighlight">\(\bc \leftarrow \text{ans_code}(\hat{\by}, \mu_y, \sigma_y, y_{\min}, y_{\max})\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(n_c \leftarrow\)</span> number of words in <span class="math notranslate nohighlight">\(\bc\)</span>.</p></li>
+<li><p>Send frame header(<span class="math notranslate nohighlight">\(\mu_y, \sigma_y, q, r, n_w, n_c\)</span>).</p></li>
+<li><p>Send frame payload(<span class="math notranslate nohighlight">\(\bc\)</span>).</p></li>
+</ol>
+</li>
+</ol>
+</section>
+</div><p>Here we describe the encoding process for each frame.
+<a class="reference internal" href="#fig-cs-encoder"><span class="std std-numref">Fig. 4.1</span></a> shows a block diagram of the frame encoding process.
+The input to the encoder is a frame of digital ECG samples
+at a given sampling rate <span class="math notranslate nohighlight">\(f_s\)</span>. In the MIT-BIH database,
+the samples are digitally encoded in 11 bits per sample (unsigned).
+Let the frame of ECG signal be denoted by <span class="math notranslate nohighlight">\(\bx\)</span>.
+The frame is split into non-overlapping windows of <span class="math notranslate nohighlight">\(n\)</span>
+samples each. We shall denote each window of <span class="math notranslate nohighlight">\(n\)</span> samples
+by vectors <span class="math notranslate nohighlight">\(\bx_i\)</span>.</p>
+<section id="windowing">
+<h3><span class="section-number">4.1.3.1. </span>Windowing<a class="headerlink" href="#windowing" title="Permalink to this headline">#</a></h3>
+<p>A frame of ECG consists of multiple
+such windows (up to a maximum of <span class="math notranslate nohighlight">\(w\)</span> windows per
+frame as per the encoder configuration).
+Let the windows by denoted by <span class="math notranslate nohighlight">\(\bx_1, \bx_2, \dots\)</span>.
+Let there be <span class="math notranslate nohighlight">\(w\)</span> such windows.
+We can put them together to form the (signed) signal matrix
+\footnote{
+PhysioNet provides the baseline values for each channel
+in their ECG records.
+Since the digital samples are unsigned, we have subtracted
+them by the baseline value (<span class="math notranslate nohighlight">\(1024\)</span> for 11-bit encoding).
+11 bits mean that unsigned values range from
+<span class="math notranslate nohighlight">\(0\)</span> to <span class="math notranslate nohighlight">\(2047\)</span>. The baseline for zero amplitude is
+digitally represented as <span class="math notranslate nohighlight">\(1024\)</span>.
+After baseline adjustment, the range of values becomes
+<span class="math notranslate nohighlight">\([-1024,1023]\)</span>.
+}:</p>
+<div class="math notranslate nohighlight">
+\[
+\bX = \begin{bmatrix}
+\bx_1 &amp; \bx_2 &amp; \dots &amp; \bx_w
+\end{bmatrix}.
+\]</div>
+</section>
+<section id="compressive-sensing">
+<h3><span class="section-number">4.1.3.2. </span>Compressive Sensing<a class="headerlink" href="#compressive-sensing" title="Permalink to this headline">#</a></h3>
+<p>The digital compressive sensing
+is represented as</p>
+<div class="math notranslate nohighlight">
+\[
+\by_i = \Phi \bx_i
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\by_i\)</span> is the measurement vector for the <span class="math notranslate nohighlight">\(i\)</span>-th
+window. Combining the measurement vectors for each window,
+the measurement matrix for the entire record is given by</p>
+<div class="math notranslate nohighlight">
+\[
+\bY = \Phi \bX.
+\]</div>
+<p>Note that by design, the sensing operation can be implemented
+using just lookup and integer addition. The ones
+in each row of <span class="math notranslate nohighlight">\(\Phi\)</span> identify the samples within the window
+to be picked up and summed. Consequently, <span class="math notranslate nohighlight">\(\bY\)</span> consists of
+only signed integer values.</p>
+</section>
+<section id="flattening">
+<h3><span class="section-number">4.1.3.3. </span>Flattening<a class="headerlink" href="#flattening" title="Permalink to this headline">#</a></h3>
+<p>Beyond this point, the window structure of signal is not
+relevant for quantization and entropy coding purposes in our design.
+Hence, we flatten it (column by column) into a vector
+<span class="math notranslate nohighlight">\(\by\)</span> of <span class="math notranslate nohighlight">\(m w\)</span> measurements.</p>
+<div class="math notranslate nohighlight">
+\[
+\by = \text{flatten}(\bY).
+\]</div>
+</section>
+<section id="quantization">
+<h3><span class="section-number">4.1.3.4. </span>Quantization<a class="headerlink" href="#quantization" title="Permalink to this headline">#</a></h3>
+<p>Next, we perform a simple quantization of measurement values.
+If fixed quantization has been specified in the stream header,
+then for each entry <span class="math notranslate nohighlight">\(y\)</span> in <span class="math notranslate nohighlight">\(\by\)</span>, we compute</p>
+<div class="math notranslate nohighlight">
+\[
+\bar{y} = y / 2^q.
+\]</div>
+<p>For the whole measurement vector, we can write this as</p>
+<div class="math notranslate nohighlight">
+\[
+\bar{\by} = \frac{1}{2^q} \by.
+\]</div>
+<p>This can be easily implemented in a computer as a signed
+right shift by <span class="math notranslate nohighlight">\(q\)</span> bits (for integer values).
+This reduces the range of values in <span class="math notranslate nohighlight">\(\by\)</span> by a factor of <span class="math notranslate nohighlight">\(2^q\)</span>.</p>
+<p>If adaptive quantization has been specified, then we vary
+the quantization parameter <span class="math notranslate nohighlight">\(q\)</span> from a value <span class="math notranslate nohighlight">\(q_{\max}=6\)</span>
+down to a value <span class="math notranslate nohighlight">\(q_{\min}=0\)</span>. For each value of <span class="math notranslate nohighlight">\(q\)</span>,
+we compute <span class="math notranslate nohighlight">\(\bar{\by} = \frac{1}{2^q} \by\)</span>. We then
+compute <span class="math notranslate nohighlight">\(\tilde{\by} = 2^q \bar{\by}\)</span>. We stop
+if <span class="math notranslate nohighlight">\(\nrmse(\by, \tilde{\by})\)</span> reaches a limit specified by
+the parameter <span class="math notranslate nohighlight">\(\rho\)</span> in the stream header.</p>
+</section>
+<section id="entropy-model">
+<h3><span class="section-number">4.1.3.5. </span>Entropy Model<a class="headerlink" href="#entropy-model" title="Permalink to this headline">#</a></h3>
+<p>Before we explain the clipping step, we shall describe
+our entropy model.
+We model the measurements as samples from a quantized Gaussian
+distribution which can only take integral values.
+First, we estimate the mean <span class="math notranslate nohighlight">\(\mu_y\)</span> and standard deviation <span class="math notranslate nohighlight">\(\sigma_y\)</span>
+of measurement values in <span class="math notranslate nohighlight">\(\bar{\by}\)</span>.
+We shall need to transmit <span class="math notranslate nohighlight">\(\mu_y\)</span> and <span class="math notranslate nohighlight">\(\sigma_y\)</span> in the frame header.
+We round the values of <span class="math notranslate nohighlight">\(\mu_y\)</span> and <span class="math notranslate nohighlight">\(\sigma_y\)</span> to the nearest integer
+so that it can be transmitted efficiently as integers.</p>
+<p>Entropy coding works with a finite alphabet.
+Accordingly, the quantized Gaussian model
+requires specification of the minimum
+and maximum values that our quantized
+measurements can take. The range of values
+in <span class="math notranslate nohighlight">\(\bar{\by}\)</span> must be clipped to this range.</p>
+</section>
+<section id="adaptive-clipping">
+<h3><span class="section-number">4.1.3.6. </span>Adaptive Clipping<a class="headerlink" href="#adaptive-clipping" title="Permalink to this headline">#</a></h3>
+<p>We clip the values in <span class="math notranslate nohighlight">\(\bar{\by}\)</span> to the range
+<span class="math notranslate nohighlight">\([\mu_y - r \sigma_y, \mu_y + r \sigma_y]\)</span>
+where <span class="math notranslate nohighlight">\(r\)</span> is the range parameter estimate from the data.
+This is denoted as</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\by} = \text{clip}(\bar{\by}, \mu_y - r \sigma_y, \mu_y + r \sigma_y).
+\]</div>
+<p>Similar to adaptive quantization, we vary <span class="math notranslate nohighlight">\(r\)</span> from <span class="math notranslate nohighlight">\(2\)</span> to <span class="math notranslate nohighlight">\(8\)</span>
+till we have captured sufficient variation in <span class="math notranslate nohighlight">\(\bar{\by}\)</span>
+and <span class="math notranslate nohighlight">\(\nrmse(\by, \hat{\by}) \leq \gamma\)</span>.</p>
+</section>
+<section id="entropy-coding">
+<h3><span class="section-number">4.1.3.7. </span>Entropy Coding<a class="headerlink" href="#entropy-coding" title="Permalink to this headline">#</a></h3>
+<p>We then model the measurement values in <span class="math notranslate nohighlight">\(\hat{\by}\)</span>
+as a quantized Gaussian distributed random variable
+with mean <span class="math notranslate nohighlight">\(\mu_y\)</span>, standard deviation <span class="math notranslate nohighlight">\(\sigma_y\)</span>,
+minimum value <span class="math notranslate nohighlight">\(\mu_y - r \sigma_y\)</span> and maximum value <span class="math notranslate nohighlight">\(\mu_y + r \sigma_y\)</span>.
+We use the ANS entropy coder to encode <span class="math notranslate nohighlight">\(\hat{\by}\)</span> into an array
+<span class="math notranslate nohighlight">\(\bc\)</span> of 32-bit integers (called words).
+This becomes the payload of the frame to be sent to the decoder.
+The total number of compressed bits in the frame payload
+is the length of the array <span class="math notranslate nohighlight">\(n_c\)</span> times 32.
+Note that we have encoded and transmitted <span class="math notranslate nohighlight">\(\hat{\by}\)</span>
+and not the unclipped <span class="math notranslate nohighlight">\(\bar{\by}\)</span>. ANS entropy coding
+is a lossless encoding scheme. Hence, <span class="math notranslate nohighlight">\(\hat{\by}\)</span>
+will be reproduced faithfully in the decoder if there
+are no bit errors involved in the transmission
+\footnote{We assume that appropriate channel coding
+mechanism has been used.}.</p>
+</section>
+<section id="integer-arithmetic">
+<h3><span class="section-number">4.1.3.8. </span>Integer Arithmetic<a class="headerlink" href="#integer-arithmetic" title="Permalink to this headline">#</a></h3>
+<p>The input to digital compressive sensing is a stream of integers.
+The sensing process with sparse binary sensing matrix can be implemented
+using integer sums and lookup.
+It is possible to implement the computation of
+approximate mean and standard deviation
+using integer arithmetic.
+We can use the normalized mean square error
+based thresholds for adaptive quantization and clipping steps.
+ANS entropy coding is fully implemented using integer arithmetic.
+Thus, the proposed encoder can be fully implemented using integer arithmetic.</p>
+</section>
+</section>
+<section id="decoder">
+<h2><span class="section-number">4.1.4. </span>Decoder<a class="headerlink" href="#decoder" title="Permalink to this headline">#</a></h2>
+<p>The decoder initializes itself by reading the stream
+header and creating the sensing matrix to be used
+for the decoding of compressive measurements
+frame by frame.</p>
+<div class="proof algorithm admonition" id="alg:decoder">
+<p class="admonition-title"><span class="caption-number">Algorithm 4.2 </span> (Decoder algorithm)</p>
+<section class="algorithm-content" id="proof-content">
+<ol class="simple">
+<li><p>Read stream header.</p></li>
+<li><p>Build sensing matrix <span class="math notranslate nohighlight">\(\Phi\)</span>.</p></li>
+<li><p>While there is more data</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mu_y, \sigma_y, q, r, n_w, n_c \leftarrow\)</span> read frame header.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\bc \leftarrow\)</span> read frame payload <span class="math notranslate nohighlight">\((n_c)\)</span>.</p></li>
+<li><p>Compute entropy model parameters</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(y_{\min} \leftarrow \mu_y  - r \sigma_y\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(y_{\max} \leftarrow \mu_y  + r \sigma_y\)</span>.</p></li>
+</ol>
+</li>
+<li><p><span class="math notranslate nohighlight">\(\hat{\by} \leftarrow \text{ans_decode}(\bc, \mu_y, \sigma_y, y_{\min}, y_{\max})\)</span>.</p></li>
+<li><p>Inverse quantization:</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(\tilde{\by} \leftarrow 2^q \hat{\by}\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\tilde{\bY} \leftarrow \window(\tilde{\by})\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\tilde{\bX} \leftarrow \mathrm{reconstruct}(\tilde{\bY})\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\tilde{\bx} \leftarrow \flatten(\tilde{\bX})\)</span>.</p></li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+</section>
+</div><p>Here we describe the decoding process for each frame.
+<a class="reference internal" href="#fig-cs-decoder"><span class="std std-numref">Fig. 4.2</span></a> shows a block diagram for the
+decoding process.
+Decoding of a frame starts by reading the frame header
+which provides the frame encoding parameters:
+<span class="math notranslate nohighlight">\(\mu_y, \sigma_y, q, r, n_w, n_c\)</span>.</p>
+<section id="entropy-decoding">
+<h3><span class="section-number">4.1.4.1. </span>Entropy Decoding<a class="headerlink" href="#entropy-decoding" title="Permalink to this headline">#</a></h3>
+<p>The frame header is used for building the quantized
+Gaussian distribution model for the decoding of the
+entropy coded measurements from the frame payload.
+The minimum and maximum values for the model are
+computed as:</p>
+<div class="math notranslate nohighlight">
+\[
+y_{\min}, y_{\max} = \mu_y  - r \sigma_y, \mu_y  + r \sigma_y.
+\]</div>
+<p><span class="math notranslate nohighlight">\(n_c\)</span> tells us the number of words (<span class="math notranslate nohighlight">\(4 n_c\)</span> bytes) to be
+read from the bitstream for the frame payload.
+The ANS decoder is used to extract the encoded measurement
+values <span class="math notranslate nohighlight">\(\hat{\by}\)</span> from the frame payload.</p>
+</section>
+<section id="inverse-quantization">
+<h3><span class="section-number">4.1.4.2. </span>Inverse Quantization<a class="headerlink" href="#inverse-quantization" title="Permalink to this headline">#</a></h3>
+<p>We then perform the inverse quantization as</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{\by} = 2^q \hat{\by}.
+\]</div>
+<p>Next, we split the measurements into measurement windows of size <span class="math notranslate nohighlight">\(m\)</span>
+corresponding to the signal windows of size <span class="math notranslate nohighlight">\(n\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{\bY} = \mathrm{window}(\tilde{\by}).
+\]</div>
+<p>We are now ready for the reconstruction of the ECG signal for each window.</p>
+</section>
+<section id="reconstruction">
+<h3><span class="section-number">4.1.4.3. </span>Reconstruction<a class="headerlink" href="#reconstruction" title="Permalink to this headline">#</a></h3>
+<p>The architecture is flexible in terms of choice of the
+reconstruction algorithm.</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{\bX} = \mathrm{reconstruct}(\tilde{\bY}).
+\]</div>
+<p>Each column (window) in <span class="math notranslate nohighlight">\(\tilde{\bY}\)</span> is decoded independently.
+In our experiments, we built
+a BSBL-BO (Block Sparse Bayesian Learning-Bound Optimization)
+decoder <span id="id2">[<a class="reference internal" href="../bib.html#id38" title="Zhilin Zhang, Tzyy-Ping Jung, Scott Makeig, and Bhaskar D Rao. Compressed sensing for energy-efficient wireless telemonitoring of noninvasive fetal ecg via block sparse bayesian learning. IEEE Transactions on Biomedical Engineering, 60(2):300–309, 2012.">5</a>, <a class="reference internal" href="../bib.html#id39" title="Zhilin Zhang and Bhaskar D Rao. Extension of sbl algorithms for the recovery of block sparse signals with intra-block correlation. IEEE Transactions on Signal Processing, 61(8):2009–2015, 2013.">6</a>, <a class="reference internal" href="../bib.html#id42" title="Zhimin Zhang, Shoushui Wei, Dingwen Wei, Liping Li, Feng Liu, and Chengyu Liu. Comparison of four recovery algorithms used in compressed sensing for ecg signal processing. In 2016 Computing in Cardiology Conference (CinC), 401–404. IEEE, 2016.">7</a>]</span>.
+Our implementation of BSBL is available as part of CR-Sparse library
+<span id="id3">[<a class="reference internal" href="../bib.html#id20" title="Shailesh Kumar. Cr-sparse: hardware accelerated functional algorithms for sparse signal processing in python using jax. Journal of Open Source Software, 6(68):3917, 2021.">2</a>]</span>.
+As Zhang et al. suggest in <span id="id4">[<a class="reference internal" href="../bib.html#id38" title="Zhilin Zhang, Tzyy-Ping Jung, Scott Makeig, and Bhaskar D Rao. Compressed sensing for energy-efficient wireless telemonitoring of noninvasive fetal ecg via block sparse bayesian learning. IEEE Transactions on Biomedical Engineering, 60(2):300–309, 2012.">5</a>]</span>,
+block sizes are user defined and are identical and
+no pruning of blocks is applied. Our implementation has been
+done under these assumptions and is built using JAX so that it can
+be run on GPU hardware easily to speed up decoding.
+The only configurable parameter for this decoder is the block size
+which we shall denote by <span class="math notranslate nohighlight">\(b\)</span> in the following.
+Once the samples have been decoded,
+we flatten (column by column) them to generate
+the sequence of decoded ECG samples to form the ECG record.</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{\bx} = \mathrm{flatten}(\tilde{\bX}).
+\]</div>
+</section>
+<section id="alternate-reconstruction-algorithms">
+<h3><span class="section-number">4.1.4.4. </span>Alternate Reconstruction Algorithms<a class="headerlink" href="#alternate-reconstruction-algorithms" title="Permalink to this headline">#</a></h3>
+<p>It is entirely possible to use a deep learning based
+reconstruction network like CS-NET <span id="id5">[<a class="reference internal" href="../bib.html#id43" title="Hongpo Zhang, Zhongren Dong, Zhen Wang, Lili Guo, and Zongmin Wang. Csnet: a deep learning approach for ecg compressed sensing. Biomedical Signal Processing and Control, 70:103065, 2021.">4</a>]</span>
+in the decoder. We will need to train the network with
+<span class="math notranslate nohighlight">\(\tilde{\by}\)</span> as inputs and <span class="math notranslate nohighlight">\(\bx\)</span> as expected output.
+However, we haven’t pursued this direction yet as our
+focus was to study the quantization and entropy coding
+steps in this work. One concern with deep learning
+based architectures is that the decoder network
+needs to be trained separately for each encoder
+configuration and each database. The ability
+to dynamically change the encoder/decoder
+configuration parameters is severely restricted
+in deep learning based architectures.
+This limitation doesn’t exist with BSBL type
+algorithms.</p>
+</section>
+</section>
+<section id="discussion">
+<h2><span class="section-number">4.1.5. </span>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">#</a></h2>
+<section id="measurement-statistics">
+<h3><span class="section-number">4.1.5.1. </span>Measurement statistics<a class="headerlink" href="#measurement-statistics" title="Permalink to this headline">#</a></h3>
+<p>Several aspects of our encoder architecture are based on the
+statistics of the measurements <span class="math notranslate nohighlight">\(\by\)</span>. We collected the summary
+statistics including mean <span class="math notranslate nohighlight">\(\mu\)</span>, standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span>,
+range of values in <span class="math notranslate nohighlight">\(\by\)</span>, skew and kurtosis
+for the measurement values for each
+of the ECG records in the MIT-BIH database. These values
+have been reported for one particular encoder configuration
+in <a class="reference internal" href="#tbl-cs-codec-measure-stats"><span class="std std-numref">Table 4.3</span></a>.
+In addition, we also compute the range divided by standard deviation
+<span class="math notranslate nohighlight">\(\frac{\text{rng}}{\sigma}\)</span>
+and the iqr (inter quantile range) divided by standard deviation
+<span class="math notranslate nohighlight">\(\frac{\text{iqr}}{\sigma}\)</span>.</p>
+<table class="colwidths-auto table" id="tbl-cs-codec-measure-stats">
+<caption><span class="caption-number">Table 4.3 </span><span class="caption-text">Measurement statistics at <span class="math notranslate nohighlight">\(m=256,n=512,d=4\)</span></span><a class="headerlink" href="#tbl-cs-codec-measure-stats" title="Permalink to this table">#</a></caption>
+<thead>
+<tr class="row-odd"><th class="text-align:right head"><p>rec</p></th>
+<th class="text-align:right head"><p><span class="math notranslate nohighlight">\(\mu_y\)</span></p></th>
+<th class="text-align:right head"><p><span class="math notranslate nohighlight">\(\sigma_y\)</span></p></th>
+<th class="text-align:right head"><p>iqr</p></th>
+<th class="text-align:right head"><p>rng</p></th>
+<th class="text-align:right head"><p>skew</p></th>
+<th class="text-align:right head"><p>kurtosis</p></th>
+<th class="text-align:right head"><p>kld</p></th>
+<th class="text-align:right head"><p><span class="math notranslate nohighlight">\(\frac{\text{rng}}{\sigma}\)</span></p></th>
+<th class="text-align:right head"><p><span class="math notranslate nohighlight">\(\frac{\text{iqr}}{\sigma}\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-align:right"><p>100</p></td>
+<td class="text-align:right"><p>-490</p></td>
+<td class="text-align:right"><p>224</p></td>
+<td class="text-align:right"><p>293</p></td>
+<td class="text-align:right"><p>2562</p></td>
+<td class="text-align:right"><p>-0.46</p></td>
+<td class="text-align:right"><p>3.71</p></td>
+<td class="text-align:right"><p>0.05</p></td>
+<td class="text-align:right"><p>11.41</p></td>
+<td class="text-align:right"><p>1.31</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>101</p></td>
+<td class="text-align:right"><p>-455</p></td>
+<td class="text-align:right"><p>287</p></td>
+<td class="text-align:right"><p>323</p></td>
+<td class="text-align:right"><p>9647</p></td>
+<td class="text-align:right"><p>-0.39</p></td>
+<td class="text-align:right"><p>15.4</p></td>
+<td class="text-align:right"><p>0.13</p></td>
+<td class="text-align:right"><p>33.61</p></td>
+<td class="text-align:right"><p>1.13</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>102</p></td>
+<td class="text-align:right"><p>-393</p></td>
+<td class="text-align:right"><p>197</p></td>
+<td class="text-align:right"><p>257</p></td>
+<td class="text-align:right"><p>2035</p></td>
+<td class="text-align:right"><p>-0.55</p></td>
+<td class="text-align:right"><p>3.68</p></td>
+<td class="text-align:right"><p>0.05</p></td>
+<td class="text-align:right"><p>10.33</p></td>
+<td class="text-align:right"><p>1.31</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>103</p></td>
+<td class="text-align:right"><p>-370</p></td>
+<td class="text-align:right"><p>286</p></td>
+<td class="text-align:right"><p>302</p></td>
+<td class="text-align:right"><p>8824</p></td>
+<td class="text-align:right"><p>-0.78</p></td>
+<td class="text-align:right"><p>15.91</p></td>
+<td class="text-align:right"><p>0.16</p></td>
+<td class="text-align:right"><p>30.86</p></td>
+<td class="text-align:right"><p>1.06</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>104</p></td>
+<td class="text-align:right"><p>-360</p></td>
+<td class="text-align:right"><p>231</p></td>
+<td class="text-align:right"><p>284</p></td>
+<td class="text-align:right"><p>4204</p></td>
+<td class="text-align:right"><p>-0.61</p></td>
+<td class="text-align:right"><p>5.04</p></td>
+<td class="text-align:right"><p>0.07</p></td>
+<td class="text-align:right"><p>18.16</p></td>
+<td class="text-align:right"><p>1.23</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>105</p></td>
+<td class="text-align:right"><p>-360</p></td>
+<td class="text-align:right"><p>347</p></td>
+<td class="text-align:right"><p>326</p></td>
+<td class="text-align:right"><p>13704</p></td>
+<td class="text-align:right"><p>-0.38</p></td>
+<td class="text-align:right"><p>22.52</p></td>
+<td class="text-align:right"><p>0.24</p></td>
+<td class="text-align:right"><p>39.52</p></td>
+<td class="text-align:right"><p>0.94</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>106</p></td>
+<td class="text-align:right"><p>-285</p></td>
+<td class="text-align:right"><p>271</p></td>
+<td class="text-align:right"><p>314</p></td>
+<td class="text-align:right"><p>4135</p></td>
+<td class="text-align:right"><p>-0.09</p></td>
+<td class="text-align:right"><p>4.43</p></td>
+<td class="text-align:right"><p>0.05</p></td>
+<td class="text-align:right"><p>15.28</p></td>
+<td class="text-align:right"><p>1.16</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>107</p></td>
+<td class="text-align:right"><p>-372</p></td>
+<td class="text-align:right"><p>625</p></td>
+<td class="text-align:right"><p>747</p></td>
+<td class="text-align:right"><p>9639</p></td>
+<td class="text-align:right"><p>-0.46</p></td>
+<td class="text-align:right"><p>4.65</p></td>
+<td class="text-align:right"><p>0.06</p></td>
+<td class="text-align:right"><p>15.43</p></td>
+<td class="text-align:right"><p>1.2</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>108</p></td>
+<td class="text-align:right"><p>-366</p></td>
+<td class="text-align:right"><p>422</p></td>
+<td class="text-align:right"><p>336</p></td>
+<td class="text-align:right"><p>12986</p></td>
+<td class="text-align:right"><p>-0.16</p></td>
+<td class="text-align:right"><p>22.13</p></td>
+<td class="text-align:right"><p>0.36</p></td>
+<td class="text-align:right"><p>30.75</p></td>
+<td class="text-align:right"><p>0.8</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>109</p></td>
+<td class="text-align:right"><p>-368</p></td>
+<td class="text-align:right"><p>335</p></td>
+<td class="text-align:right"><p>389</p></td>
+<td class="text-align:right"><p>7487</p></td>
+<td class="text-align:right"><p>0.19</p></td>
+<td class="text-align:right"><p>7.33</p></td>
+<td class="text-align:right"><p>0.06</p></td>
+<td class="text-align:right"><p>22.32</p></td>
+<td class="text-align:right"><p>1.16</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>111</p></td>
+<td class="text-align:right"><p>-262</p></td>
+<td class="text-align:right"><p>308</p></td>
+<td class="text-align:right"><p>306</p></td>
+<td class="text-align:right"><p>11998</p></td>
+<td class="text-align:right"><p>-0.91</p></td>
+<td class="text-align:right"><p>23.07</p></td>
+<td class="text-align:right"><p>0.2</p></td>
+<td class="text-align:right"><p>38.99</p></td>
+<td class="text-align:right"><p>0.99</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>112</p></td>
+<td class="text-align:right"><p>-1316</p></td>
+<td class="text-align:right"><p>539</p></td>
+<td class="text-align:right"><p>724</p></td>
+<td class="text-align:right"><p>7839</p></td>
+<td class="text-align:right"><p>-0.64</p></td>
+<td class="text-align:right"><p>4.14</p></td>
+<td class="text-align:right"><p>0.09</p></td>
+<td class="text-align:right"><p>14.55</p></td>
+<td class="text-align:right"><p>1.34</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>113</p></td>
+<td class="text-align:right"><p>-248</p></td>
+<td class="text-align:right"><p>337</p></td>
+<td class="text-align:right"><p>379</p></td>
+<td class="text-align:right"><p>6121</p></td>
+<td class="text-align:right"><p>-0.05</p></td>
+<td class="text-align:right"><p>5.19</p></td>
+<td class="text-align:right"><p>0.06</p></td>
+<td class="text-align:right"><p>18.18</p></td>
+<td class="text-align:right"><p>1.13</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>114</p></td>
+<td class="text-align:right"><p>-249</p></td>
+<td class="text-align:right"><p>219</p></td>
+<td class="text-align:right"><p>235</p></td>
+<td class="text-align:right"><p>8756</p></td>
+<td class="text-align:right"><p>1.15</p></td>
+<td class="text-align:right"><p>30.41</p></td>
+<td class="text-align:right"><p>0.14</p></td>
+<td class="text-align:right"><p>39.91</p></td>
+<td class="text-align:right"><p>1.07</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>115</p></td>
+<td class="text-align:right"><p>-781</p></td>
+<td class="text-align:right"><p>461</p></td>
+<td class="text-align:right"><p>559</p></td>
+<td class="text-align:right"><p>9715</p></td>
+<td class="text-align:right"><p>-0.82</p></td>
+<td class="text-align:right"><p>6.74</p></td>
+<td class="text-align:right"><p>0.09</p></td>
+<td class="text-align:right"><p>21.07</p></td>
+<td class="text-align:right"><p>1.21</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>116</p></td>
+<td class="text-align:right"><p>-1498</p></td>
+<td class="text-align:right"><p>875</p></td>
+<td class="text-align:right"><p>930</p></td>
+<td class="text-align:right"><p>35083</p></td>
+<td class="text-align:right"><p>-0.29</p></td>
+<td class="text-align:right"><p>22.7</p></td>
+<td class="text-align:right"><p>0.22</p></td>
+<td class="text-align:right"><p>40.1</p></td>
+<td class="text-align:right"><p>1.06</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>117</p></td>
+<td class="text-align:right"><p>-1363</p></td>
+<td class="text-align:right"><p>560</p></td>
+<td class="text-align:right"><p>748</p></td>
+<td class="text-align:right"><p>9179</p></td>
+<td class="text-align:right"><p>-0.7</p></td>
+<td class="text-align:right"><p>4.38</p></td>
+<td class="text-align:right"><p>0.1</p></td>
+<td class="text-align:right"><p>16.39</p></td>
+<td class="text-align:right"><p>1.34</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>118</p></td>
+<td class="text-align:right"><p>-1373</p></td>
+<td class="text-align:right"><p>614</p></td>
+<td class="text-align:right"><p>809</p></td>
+<td class="text-align:right"><p>10935</p></td>
+<td class="text-align:right"><p>-0.55</p></td>
+<td class="text-align:right"><p>4.37</p></td>
+<td class="text-align:right"><p>0.1</p></td>
+<td class="text-align:right"><p>17.81</p></td>
+<td class="text-align:right"><p>1.32</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>119</p></td>
+<td class="text-align:right"><p>-1378</p></td>
+<td class="text-align:right"><p>629</p></td>
+<td class="text-align:right"><p>825</p></td>
+<td class="text-align:right"><p>8363</p></td>
+<td class="text-align:right"><p>-0.57</p></td>
+<td class="text-align:right"><p>3.8</p></td>
+<td class="text-align:right"><p>0.07</p></td>
+<td class="text-align:right"><p>13.3</p></td>
+<td class="text-align:right"><p>1.31</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>121</p></td>
+<td class="text-align:right"><p>-1296</p></td>
+<td class="text-align:right"><p>635</p></td>
+<td class="text-align:right"><p>763</p></td>
+<td class="text-align:right"><p>17012</p></td>
+<td class="text-align:right"><p>-1.37</p></td>
+<td class="text-align:right"><p>13.12</p></td>
+<td class="text-align:right"><p>0.16</p></td>
+<td class="text-align:right"><p>26.78</p></td>
+<td class="text-align:right"><p>1.2</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>122</p></td>
+<td class="text-align:right"><p>-1350</p></td>
+<td class="text-align:right"><p>555</p></td>
+<td class="text-align:right"><p>747</p></td>
+<td class="text-align:right"><p>7870</p></td>
+<td class="text-align:right"><p>-0.55</p></td>
+<td class="text-align:right"><p>3.73</p></td>
+<td class="text-align:right"><p>0.08</p></td>
+<td class="text-align:right"><p>14.18</p></td>
+<td class="text-align:right"><p>1.35</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>123</p></td>
+<td class="text-align:right"><p>-1274</p></td>
+<td class="text-align:right"><p>514</p></td>
+<td class="text-align:right"><p>699</p></td>
+<td class="text-align:right"><p>6603</p></td>
+<td class="text-align:right"><p>-0.57</p></td>
+<td class="text-align:right"><p>3.83</p></td>
+<td class="text-align:right"><p>0.08</p></td>
+<td class="text-align:right"><p>12.84</p></td>
+<td class="text-align:right"><p>1.36</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>124</p></td>
+<td class="text-align:right"><p>-1293</p></td>
+<td class="text-align:right"><p>679</p></td>
+<td class="text-align:right"><p>829</p></td>
+<td class="text-align:right"><p>11886</p></td>
+<td class="text-align:right"><p>-0.6</p></td>
+<td class="text-align:right"><p>5.42</p></td>
+<td class="text-align:right"><p>0.1</p></td>
+<td class="text-align:right"><p>17.51</p></td>
+<td class="text-align:right"><p>1.22</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>200</p></td>
+<td class="text-align:right"><p>-169</p></td>
+<td class="text-align:right"><p>262</p></td>
+<td class="text-align:right"><p>288</p></td>
+<td class="text-align:right"><p>6285</p></td>
+<td class="text-align:right"><p>-0.26</p></td>
+<td class="text-align:right"><p>7.71</p></td>
+<td class="text-align:right"><p>0.08</p></td>
+<td class="text-align:right"><p>24.01</p></td>
+<td class="text-align:right"><p>1.1</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>201</p></td>
+<td class="text-align:right"><p>-256</p></td>
+<td class="text-align:right"><p>189</p></td>
+<td class="text-align:right"><p>196</p></td>
+<td class="text-align:right"><p>9986</p></td>
+<td class="text-align:right"><p>0.72</p></td>
+<td class="text-align:right"><p>55.1</p></td>
+<td class="text-align:right"><p>0.16</p></td>
+<td class="text-align:right"><p>52.71</p></td>
+<td class="text-align:right"><p>1.03</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>202</p></td>
+<td class="text-align:right"><p>-271</p></td>
+<td class="text-align:right"><p>262</p></td>
+<td class="text-align:right"><p>274</p></td>
+<td class="text-align:right"><p>11421</p></td>
+<td class="text-align:right"><p>-0.98</p></td>
+<td class="text-align:right"><p>32.98</p></td>
+<td class="text-align:right"><p>0.16</p></td>
+<td class="text-align:right"><p>43.58</p></td>
+<td class="text-align:right"><p>1.05</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>203</p></td>
+<td class="text-align:right"><p>-271</p></td>
+<td class="text-align:right"><p>472</p></td>
+<td class="text-align:right"><p>455</p></td>
+<td class="text-align:right"><p>13371</p></td>
+<td class="text-align:right"><p>-0.14</p></td>
+<td class="text-align:right"><p>15.11</p></td>
+<td class="text-align:right"><p>0.2</p></td>
+<td class="text-align:right"><p>28.35</p></td>
+<td class="text-align:right"><p>0.96</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>205</p></td>
+<td class="text-align:right"><p>-489</p></td>
+<td class="text-align:right"><p>234</p></td>
+<td class="text-align:right"><p>301</p></td>
+<td class="text-align:right"><p>3257</p></td>
+<td class="text-align:right"><p>-0.57</p></td>
+<td class="text-align:right"><p>4.1</p></td>
+<td class="text-align:right"><p>0.06</p></td>
+<td class="text-align:right"><p>13.94</p></td>
+<td class="text-align:right"><p>1.29</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>207</p></td>
+<td class="text-align:right"><p>-274</p></td>
+<td class="text-align:right"><p>339</p></td>
+<td class="text-align:right"><p>344</p></td>
+<td class="text-align:right"><p>11400</p></td>
+<td class="text-align:right"><p>-1.19</p></td>
+<td class="text-align:right"><p>18.15</p></td>
+<td class="text-align:right"><p>0.22</p></td>
+<td class="text-align:right"><p>33.62</p></td>
+<td class="text-align:right"><p>1.01</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>208</p></td>
+<td class="text-align:right"><p>-265</p></td>
+<td class="text-align:right"><p>427</p></td>
+<td class="text-align:right"><p>410</p></td>
+<td class="text-align:right"><p>12449</p></td>
+<td class="text-align:right"><p>0.38</p></td>
+<td class="text-align:right"><p>16.51</p></td>
+<td class="text-align:right"><p>0.18</p></td>
+<td class="text-align:right"><p>29.13</p></td>
+<td class="text-align:right"><p>0.96</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>209</p></td>
+<td class="text-align:right"><p>-264</p></td>
+<td class="text-align:right"><p>250</p></td>
+<td class="text-align:right"><p>292</p></td>
+<td class="text-align:right"><p>4731</p></td>
+<td class="text-align:right"><p>-0.55</p></td>
+<td class="text-align:right"><p>4.89</p></td>
+<td class="text-align:right"><p>0.06</p></td>
+<td class="text-align:right"><p>18.95</p></td>
+<td class="text-align:right"><p>1.17</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>210</p></td>
+<td class="text-align:right"><p>-251</p></td>
+<td class="text-align:right"><p>228</p></td>
+<td class="text-align:right"><p>249</p></td>
+<td class="text-align:right"><p>7909</p></td>
+<td class="text-align:right"><p>0.48</p></td>
+<td class="text-align:right"><p>17.22</p></td>
+<td class="text-align:right"><p>0.09</p></td>
+<td class="text-align:right"><p>34.65</p></td>
+<td class="text-align:right"><p>1.09</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>212</p></td>
+<td class="text-align:right"><p>-250</p></td>
+<td class="text-align:right"><p>297</p></td>
+<td class="text-align:right"><p>336</p></td>
+<td class="text-align:right"><p>7232</p></td>
+<td class="text-align:right"><p>-0.53</p></td>
+<td class="text-align:right"><p>7.26</p></td>
+<td class="text-align:right"><p>0.09</p></td>
+<td class="text-align:right"><p>24.36</p></td>
+<td class="text-align:right"><p>1.13</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>213</p></td>
+<td class="text-align:right"><p>-353</p></td>
+<td class="text-align:right"><p>523</p></td>
+<td class="text-align:right"><p>635</p></td>
+<td class="text-align:right"><p>6528</p></td>
+<td class="text-align:right"><p>-0.18</p></td>
+<td class="text-align:right"><p>4.03</p></td>
+<td class="text-align:right"><p>0.04</p></td>
+<td class="text-align:right"><p>12.48</p></td>
+<td class="text-align:right"><p>1.21</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>214</p></td>
+<td class="text-align:right"><p>-258</p></td>
+<td class="text-align:right"><p>315</p></td>
+<td class="text-align:right"><p>369</p></td>
+<td class="text-align:right"><p>4248</p></td>
+<td class="text-align:right"><p>0.16</p></td>
+<td class="text-align:right"><p>4.12</p></td>
+<td class="text-align:right"><p>0.04</p></td>
+<td class="text-align:right"><p>13.47</p></td>
+<td class="text-align:right"><p>1.17</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>215</p></td>
+<td class="text-align:right"><p>-243</p></td>
+<td class="text-align:right"><p>209</p></td>
+<td class="text-align:right"><p>256</p></td>
+<td class="text-align:right"><p>3544</p></td>
+<td class="text-align:right"><p>-0.27</p></td>
+<td class="text-align:right"><p>4.2</p></td>
+<td class="text-align:right"><p>0.04</p></td>
+<td class="text-align:right"><p>16.98</p></td>
+<td class="text-align:right"><p>1.23</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>217</p></td>
+<td class="text-align:right"><p>-264</p></td>
+<td class="text-align:right"><p>459</p></td>
+<td class="text-align:right"><p>528</p></td>
+<td class="text-align:right"><p>11928</p></td>
+<td class="text-align:right"><p>-0.3</p></td>
+<td class="text-align:right"><p>8.5</p></td>
+<td class="text-align:right"><p>0.09</p></td>
+<td class="text-align:right"><p>26</p></td>
+<td class="text-align:right"><p>1.15</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>219</p></td>
+<td class="text-align:right"><p>-939</p></td>
+<td class="text-align:right"><p>688</p></td>
+<td class="text-align:right"><p>811</p></td>
+<td class="text-align:right"><p>10727</p></td>
+<td class="text-align:right"><p>-0.43</p></td>
+<td class="text-align:right"><p>4.63</p></td>
+<td class="text-align:right"><p>0.07</p></td>
+<td class="text-align:right"><p>15.6</p></td>
+<td class="text-align:right"><p>1.18</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>220</p></td>
+<td class="text-align:right"><p>-865</p></td>
+<td class="text-align:right"><p>378</p></td>
+<td class="text-align:right"><p>503</p></td>
+<td class="text-align:right"><p>4731</p></td>
+<td class="text-align:right"><p>-0.48</p></td>
+<td class="text-align:right"><p>3.66</p></td>
+<td class="text-align:right"><p>0.06</p></td>
+<td class="text-align:right"><p>12.5</p></td>
+<td class="text-align:right"><p>1.33</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>221</p></td>
+<td class="text-align:right"><p>-262</p></td>
+<td class="text-align:right"><p>228</p></td>
+<td class="text-align:right"><p>270</p></td>
+<td class="text-align:right"><p>3000</p></td>
+<td class="text-align:right"><p>-0.13</p></td>
+<td class="text-align:right"><p>4.1</p></td>
+<td class="text-align:right"><p>0.04</p></td>
+<td class="text-align:right"><p>13.16</p></td>
+<td class="text-align:right"><p>1.18</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>222</p></td>
+<td class="text-align:right"><p>-250</p></td>
+<td class="text-align:right"><p>212</p></td>
+<td class="text-align:right"><p>252</p></td>
+<td class="text-align:right"><p>4327</p></td>
+<td class="text-align:right"><p>-0.78</p></td>
+<td class="text-align:right"><p>5.71</p></td>
+<td class="text-align:right"><p>0.08</p></td>
+<td class="text-align:right"><p>20.41</p></td>
+<td class="text-align:right"><p>1.19</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>223</p></td>
+<td class="text-align:right"><p>-818</p></td>
+<td class="text-align:right"><p>419</p></td>
+<td class="text-align:right"><p>529</p></td>
+<td class="text-align:right"><p>7449</p></td>
+<td class="text-align:right"><p>-0.58</p></td>
+<td class="text-align:right"><p>4.95</p></td>
+<td class="text-align:right"><p>0.07</p></td>
+<td class="text-align:right"><p>17.77</p></td>
+<td class="text-align:right"><p>1.26</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>228</p></td>
+<td class="text-align:right"><p>-222</p></td>
+<td class="text-align:right"><p>357</p></td>
+<td class="text-align:right"><p>294</p></td>
+<td class="text-align:right"><p>11962</p></td>
+<td class="text-align:right"><p>-0.97</p></td>
+<td class="text-align:right"><p>23.96</p></td>
+<td class="text-align:right"><p>0.35</p></td>
+<td class="text-align:right"><p>33.52</p></td>
+<td class="text-align:right"><p>0.82</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>230</p></td>
+<td class="text-align:right"><p>-272</p></td>
+<td class="text-align:right"><p>285</p></td>
+<td class="text-align:right"><p>308</p></td>
+<td class="text-align:right"><p>7044</p></td>
+<td class="text-align:right"><p>-0.4</p></td>
+<td class="text-align:right"><p>8.63</p></td>
+<td class="text-align:right"><p>0.1</p></td>
+<td class="text-align:right"><p>24.69</p></td>
+<td class="text-align:right"><p>1.08</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>231</p></td>
+<td class="text-align:right"><p>-253</p></td>
+<td class="text-align:right"><p>229</p></td>
+<td class="text-align:right"><p>278</p></td>
+<td class="text-align:right"><p>3250</p></td>
+<td class="text-align:right"><p>-0.34</p></td>
+<td class="text-align:right"><p>4.21</p></td>
+<td class="text-align:right"><p>0.04</p></td>
+<td class="text-align:right"><p>14.2</p></td>
+<td class="text-align:right"><p>1.21</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>232</p></td>
+<td class="text-align:right"><p>-242</p></td>
+<td class="text-align:right"><p>192</p></td>
+<td class="text-align:right"><p>243</p></td>
+<td class="text-align:right"><p>2951</p></td>
+<td class="text-align:right"><p>-0.42</p></td>
+<td class="text-align:right"><p>3.98</p></td>
+<td class="text-align:right"><p>0.04</p></td>
+<td class="text-align:right"><p>15.38</p></td>
+<td class="text-align:right"><p>1.27</p></td>
+</tr>
+<tr class="row-even"><td class="text-align:right"><p>233</p></td>
+<td class="text-align:right"><p>-246</p></td>
+<td class="text-align:right"><p>427</p></td>
+<td class="text-align:right"><p>480</p></td>
+<td class="text-align:right"><p>9636</p></td>
+<td class="text-align:right"><p>-0.13</p></td>
+<td class="text-align:right"><p>6.47</p></td>
+<td class="text-align:right"><p>0.08</p></td>
+<td class="text-align:right"><p>22.56</p></td>
+<td class="text-align:right"><p>1.12</p></td>
+</tr>
+<tr class="row-odd"><td class="text-align:right"><p>234</p></td>
+<td class="text-align:right"><p>-257</p></td>
+<td class="text-align:right"><p>345</p></td>
+<td class="text-align:right"><p>316</p></td>
+<td class="text-align:right"><p>12002</p></td>
+<td class="text-align:right"><p>-0.66</p></td>
+<td class="text-align:right"><p>19.78</p></td>
+<td class="text-align:right"><p>0.25</p></td>
+<td class="text-align:right"><p>34.78</p></td>
+<td class="text-align:right"><p>0.92</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gaussianity">
+<h3><span class="section-number">4.1.5.2. </span>Gaussianity<a class="headerlink" href="#gaussianity" title="Permalink to this headline">#</a></h3>
+<p>The key idea behind the our entropy coding
+design is to model the measurement values as
+being sampled from a quantized
+Gaussian distribution. Towards this, we measured the
+skew and kurtosis for the measurements for each record
+as shown in <a class="reference internal" href="#tbl-cs-codec-measure-stats"><span class="std std-numref">Table 4.3</span></a>
+for the sensing matrix configuration of <span class="math notranslate nohighlight">\(m=256,n=512,d=4\)</span>.
+For a Gaussian distributed variable,
+the skew should be close to <span class="math notranslate nohighlight">\(0\)</span> while kurtosis should be close to <span class="math notranslate nohighlight">\(3\)</span>.
+While the skew is not very high, Kurtosis does vary widely.
+<a class="reference internal" href="#fig-cs-codec-y-hist-100"><span class="std std-numref">Fig. 4.3</span></a>-<a class="reference internal" href="#fig-cs-codec-y-hist-234"><span class="std std-numref">Fig. 4.8</span></a>
+show the histograms of measurement
+values for 6 different records. Although the measurements are not
+Gaussian distributed, it is not a bad approximation.
+The quantized Gaussian approximation works well in the entropy
+coding. It is easy to estimate from the data.</p>
+<p>The best compression can be achieved by using the empirical
+probabilities of different values in <span class="math notranslate nohighlight">\(\by\)</span> in entropy coding.
+However, doing so would require us to transmit the empirical
+probabilities as side information. This may be expensive.
+We can estimate the improvement in compression overhead
+by use of the quantized Gaussian approximation.
+Let <span class="math notranslate nohighlight">\(\PP\)</span> denote the empirical probability distribution
+of data and let <span class="math notranslate nohighlight">\(\QQ\)</span> denote the corresponding
+quantized Gaussian distribution. Bamler in <span id="id6">[<a class="reference internal" href="../bib.html#id3" title="Robert Bamler. Understanding entropy coding with asymmetric numeral systems (ans): a statistician's perspective. arXiv preprint arXiv:2201.01741, 2022.">1</a>]</span>
+show empirically that the overhead of using an approximation
+distribution <span class="math notranslate nohighlight">\(\QQ\)</span> in place of <span class="math notranslate nohighlight">\(\PP\)</span> in ANS entropy coding
+is close to the KL divergence <span class="math notranslate nohighlight">\(\text{KL}(\PP || \QQ)\)</span>
+which is given by</p>
+<div class="math notranslate nohighlight">
+\[
+\text{KL}(\PP || \QQ) = \sum_y \PP(y) \log_2\left (\frac{\PP(y)}{\QQ(y)} \right).
+\]</div>
+<p>We computed the empirical distribution for <span class="math notranslate nohighlight">\(\by\)</span> for each
+record and measured its KL divergence with the corresponding
+quantized Gaussian distribution.
+It is tabulated in the \emph{kld} column in <a class="reference internal" href="#tbl-cs-codec-measure-stats"><span class="std std-numref">Table 4.3</span></a>.
+It varies around <span class="math notranslate nohighlight">\(0.11 \pm 0.07\)</span> bits
+across the 48 records.
+Thus, the overhead of using a quantized
+Gaussian distribution in place of the empirical probabilities
+can be estimated to be <span class="math notranslate nohighlight">\(4-18\%\)</span>.
+One can see that the divergence tends to increase as the
+kurtosis increases. We determined the Pearson correlation
+coefficient between kurtosis and kld to be <span class="math notranslate nohighlight">\(0.67\)</span>.</p>
+<p><a class="reference internal" href="#fig-cs-codec-y-234-empirical-quantized"><span class="std std-numref">Fig. 4.9</span></a> shows an example
+where the empirical distribution is significantly different
+from the corresponding quantized Gaussian distribution
+due to the presence of a large
+number of <span class="math notranslate nohighlight">\(0\)</span> values in <span class="math notranslate nohighlight">\(\by\)</span>. Note that this is different
+from the histogram in
+<a class="reference internal" href="#fig-cs-codec-y-hist-234"><span class="std std-numref">Fig. 4.8</span></a> where
+the <span class="math notranslate nohighlight">\(\by\)</span> values have been binned into 200 bins.</p>
+<p>Also,
+<a class="reference internal" href="#fig-cs-codec-y-hist-100"><span class="std std-numref">Fig. 4.3</span></a>-<a class="reference internal" href="#fig-cs-codec-y-hist-234"><span class="std std-numref">Fig. 4.8</span></a>
+suggest that the empirical
+distributions vary widely from one record to another in the
+database. Hence using a single fixed empirical distribution
+(e.g. the Huffman code book preloaded into the device in
+<span id="id7">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">3</a>]</span>)
+may lead to lower compression.</p>
+<figure class="align-center" id="fig-cs-codec-y-hist-100">
+<img alt="../_images/rec_100_hist_measurements_200_bins.png" src="../_images/rec_100_hist_measurements_200_bins.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.3 </span><span class="caption-text">Histograms of measurement values for record 100</span><a class="headerlink" href="#fig-cs-codec-y-hist-100" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="fig-cs-codec-y-hist-102">
+<img alt="../_images/rec_102_hist_measurements_200_bins.png" src="../_images/rec_102_hist_measurements_200_bins.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.4 </span><span class="caption-text">Histograms of measurement values for record 102</span><a class="headerlink" href="#fig-cs-codec-y-hist-102" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="fig-cs-codec-y-hist-115">
+<img alt="../_images/rec_115_hist_measurements_200_bins.png" src="../_images/rec_115_hist_measurements_200_bins.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.5 </span><span class="caption-text">Histograms of measurement values for record 115</span><a class="headerlink" href="#fig-cs-codec-y-hist-115" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="fig-cs-codec-y-hist-202">
+<img alt="../_images/rec_202_hist_measurements_200_bins.png" src="../_images/rec_202_hist_measurements_200_bins.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.6 </span><span class="caption-text">Histograms of measurement values for record 202</span><a class="headerlink" href="#fig-cs-codec-y-hist-202" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="fig-cs-codec-y-hist-208">
+<img alt="../_images/rec_208_hist_measurements_200_bins.png" src="../_images/rec_208_hist_measurements_200_bins.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.7 </span><span class="caption-text">Histograms of measurement values for record 208</span><a class="headerlink" href="#fig-cs-codec-y-hist-208" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="fig-cs-codec-y-hist-234">
+<img alt="../_images/rec_234_hist_measurements_200_bins.png" src="../_images/rec_234_hist_measurements_200_bins.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.8 </span><span class="caption-text">Histograms of measurement values for record 234</span><a class="headerlink" href="#fig-cs-codec-y-hist-234" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="fig-cs-codec-y-234-empirical-quantized">
+<img alt="../_images/rec_234_empirical_vs_quantized_gaussian.png" src="../_images/rec_234_empirical_vs_quantized_gaussian.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.9 </span><span class="caption-text">Empirical and quantized Gaussian distributions for measurement values
+<span class="math notranslate nohighlight">\(\by\)</span> in record 234</span><a class="headerlink" href="#fig-cs-codec-y-234-empirical-quantized" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="clipping">
+<h3><span class="section-number">4.1.5.3. </span>Clipping<a class="headerlink" href="#clipping" title="Permalink to this headline">#</a></h3>
+<p>An entropy coder can handle with a finite set of symbols
+only. Hence, the range of input values [measurements
+coded as integers] must be restricted to a finite range.
+This is the reason one has to choose a distribution
+with finite support (like quantized Gaussian).
+From <a class="reference internal" href="#tbl-cs-codec-measure-stats"><span class="std std-numref">Table 4.3</span></a> one can see that
+while the complete range of measurement values can be
+up to 40-50x larger than the standard deviation, the iqr
+is less than <span class="math notranslate nohighlight">\(1.5\)</span> times the standard deviation. In other
+words, the measurement values are fairly concentrated
+around its mean. This can be visually seen from the
+histograms in
+<a class="reference internal" href="#fig-cs-codec-y-hist-100"><span class="std std-numref">Fig. 4.3</span></a>-<a class="reference internal" href="#fig-cs-codec-y-hist-234"><span class="std std-numref">Fig. 4.8</span></a>
+also.</p>
+</section>
+<section id="id8">
+<h3><span class="section-number">4.1.5.4. </span>Quantization<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h3>
+<p><a class="reference internal" href="#fig-100-q-0-7"><span class="std std-numref">Fig. 4.10</span></a> demonstrates the impact of the
+quantization step on the reconstruction quality
+for record 100 under non-adaptive quantization.
+<span class="math notranslate nohighlight">\(6\)</span> windows of <span class="math notranslate nohighlight">\(512\)</span> samples
+were used in this example. The first panel
+shows the original (digital) signal. Remaining
+panels show the reconstruction at different
+quantization parameters.
+The reconstruction visual quality is excellent
+up to <span class="math notranslate nohighlight">\(q=5\)</span> (PRD below 7%), good at <span class="math notranslate nohighlight">\(q=6\)</span> (PRD at 9%)
+and clinically unacceptable at <span class="math notranslate nohighlight">\(q=7\)</span>
+(with PRD more than 15%).
+One can see significant waveform distortions at <span class="math notranslate nohighlight">\(q=7\)</span>.
+Also note how the quality score keeps increasing till
+<span class="math notranslate nohighlight">\(q=4\)</span> and starts decreasing after that with a massive
+drop at <span class="math notranslate nohighlight">\(q=7\)</span>.</p>
+<figure class="align-center" id="fig-100-q-0-7">
+<img alt="../_images/rec_100_q_cr_prd_qs.png" src="../_images/rec_100_q_cr_prd_qs.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 4.10 </span><span class="caption-text">Reconstruction of a small segment of record 100
+for different values of <span class="math notranslate nohighlight">\(q=0,2,4,5,6,7\)</span> with <span class="math notranslate nohighlight">\(m=256,n=512,d=4\)</span>
+under non-adaptive quantization.
+Block size for the BSBL-BO decoder is <span class="math notranslate nohighlight">\(32\)</span>.</span><a class="headerlink" href="#fig-100-q-0-7" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./codec_b"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="index.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title"><span class="section-number">4. </span>Codec B</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="implementation.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">4.2. </span>Implementation</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Shailesh Kumar<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

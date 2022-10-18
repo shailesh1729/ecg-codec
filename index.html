@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>ECG Codec &#8212; ECG Codec</title>
+    <title>Our ECG Codec &#8212; ECG Codec</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -53,7 +53,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="install.html" />
+    <link rel="next" title="1. Installation" href="install.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -103,12 +103,71 @@ const thebe_selector_output = ".output, .cell_output"
         <ul class="nav bd-sidenav">
  <li class="toctree-l1">
   <a class="reference internal" href="install.html">
-   Installation
+   1. Installation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="usage.html">
-   Usage
+   2. Usage
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="compression/index.html">
+   3. ECG Data Compression Review
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="compression/metrics.html">
+     3.1. Performance Metrics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="compression/datasets.html">
+     3.2. Datasets
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="codec_b/index.html">
+   4. Codec B
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="codec_b/architecture.html">
+     4.1. Architecture
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="codec_b/implementation.html">
+     4.2. Implementation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="codec_b/experiments.html">
+     4.3. Experiments
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="bib.html">
+   5. Bibliography
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="genindex.html">
+   6. Index
   </a>
  </li>
 </ul>
@@ -295,7 +354,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>ECG Codec</h1>
+                <h1>Our ECG Codec</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -307,12 +366,25 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="ecg-codec">
-<h1>ECG Codec<a class="headerlink" href="#ecg-codec" title="Permalink to this headline">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="our-ecg-codec">
+<h1>Our ECG Codec<a class="headerlink" href="#our-ecg-codec" title="Permalink to this headline">#</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compression/index.html">3. ECG Data Compression Review</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="compression/metrics.html">3.1. Performance Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compression/datasets.html">3.2. Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="codec_b/index.html">4. Codec B</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="codec_b/architecture.html">4.1. Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codec_b/implementation.html">4.2. Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="codec_b/experiments.html">4.3. Experiments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bib.html">5. Bibliography</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genindex.html">6. Index</a></li>
 </ul>
 </div>
 </section>
@@ -347,7 +419,7 @@ title="Print to PDF"
     <a class='right-next' id="next-link" href="install.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Installation</p>
+        <p class="prev-next-title"><span class="section-number">1. </span>Installation</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
