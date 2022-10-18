@@ -131,6 +131,8 @@ docs/gallery/
 
 # airspeed velocity benchmark results
 .asv/*
+
+# experimental work area
 experiments/*
 scripts/**/*.csv
 
@@ -143,3 +145,7 @@ scripts/**/*.csv
 *.out
 *.pdf
 *.gz
+
+
+# hugo stuff
+hugo/*

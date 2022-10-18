@@ -26,7 +26,11 @@ with Adaptive Quantization and Stream Entropy Coding}
 \author{Shailesh~Kumar,
         Surendra~Prasad,~\IEEEmembership{Senior Member,~IEEE,}
         and~Brejesh~Lall,~\IEEEmembership{Member,~IEEE}% <-this % stops a space
-}
+\thanks{S. Kumar, S. Prasad and B. Lall are with 
+Bharti School Of Telecommunication Technology And Management, Indian Institute of Technology, Delhi,
+India. e-mail: (bsz188670@dbst.iitd.ac.in)}% <-this % stops a space
+\thanks{
+}}
 
 % make the title area
 \maketitle
@@ -41,8 +45,17 @@ with Adaptive Quantization and Stream Entropy Coding}
 \input{sec_conclusion}
 \input{stats/measurements}
 \input{stats/compression}
-\appendix
+
+\begin{appendices}
+\crefalias{section}{appsec}
 \input{sec_theory}
+\end{appendices}
+
+% use section* for acknowledgement
+\section*{Acknowledgment}
+Shailesh Kumar would like to thank his employer Interra Systems Inc.
+for allowing him to pursue his research interests along with his regular job.
+
 
 
 
