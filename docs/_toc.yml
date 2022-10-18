@@ -8,6 +8,10 @@ options:
 chapters:
 - file: install
 - file: usage
+- file: compression/index
+  sections:
+  - file: compression/metrics
+  - file: compression/datasets
 - file: codec_b/index
   sections:
   - file: codec_b/architecture
