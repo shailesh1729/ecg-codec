@@ -181,7 +181,7 @@ sphinx:
           # Success 
           "succ": "\\mathrm{succ}"
           # SNR 
-          "SNR": "\\mathrm{SNR}"
+          "snr": "\\mathrm{SNR}"
           # Reconstruction or Recovery SNR 
           "RSNR": "\\mbox{R-SNR}"
           # Percent Root Mean Square Difference
