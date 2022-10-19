@@ -1,3 +1,4 @@
+(sec:install)=
 # Installation
 
 Requirements:
@@ -5,8 +6,8 @@ Requirements:
 - Git client
 - Python 3.8+
 
-The project is hosted on GitHub at
-https://github.com/shailesh1729/ecg-codec.
+The project is hosted on GitHub
+[here](https://github.com/shailesh1729/ecg-codec).
 
 
 

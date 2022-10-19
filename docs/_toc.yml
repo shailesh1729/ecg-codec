@@ -10,6 +10,8 @@ chapters:
 - file: usage
 - file: compression/index
   sections:
+  - file: compression/history
+  - file: compression/cs
   - file: compression/metrics
   - file: compression/datasets
 - file: codec_b/index

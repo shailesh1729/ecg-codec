@@ -1,19 +1,31 @@
+(sec:codec:b:architecture)=
 # Architecture
 
-The ECG signal is split into windows
-of $n$ samples each. The windows of
-ECG signal are further grouped into
-frames of $w$ windows each. The
-last frame may have less than $w$
-windows.
-The encoder compresses the ECG signal
-frame by frame.
-The encoder converts the
-ECG signal into a bitstream and the
-decoder reconstructs the ECG signal
-from the bitstream.
+
+## Problem Statement
+
+We consider the problem of efficient transmission of
+compressive measurements of ECG signals over the wireless body
+area networks under the digital compressive sensing paradigm.
+Let $\bx$ be an ECG signal and $\by$ be the corresponding
+stream of compressive measurements. Our goal is to
+transform $\by$ into a bitstream $\bs$ with as few bits
+as possible without losing the signal reconstruction quality.
+
+We consider whether a digital quantization of the compressive
+measurements affects the reconstruction quality.
+Further, we study the empirical distribution of compressive
+measurements to explore efficient ways of entropy coding
+of the quantized measurements.
+
+A primary constraint in our design is that the encoder
+should avoid any floating point arithmetic so that it
+can be implemented efficiently in low power devices.
+
 
 ## Block Diagram
+
+
 
 ```{figure} images/cs_encoder.png
 ---
@@ -30,6 +42,22 @@ name: fig:cs:decoder
 ---
 Digital Compressive Sensing Decoder
 ```
+
+## Frames and Windows
+
+The ECG signal is split into windows
+of $n$ samples each. The windows of
+ECG signal are further grouped into
+frames of $w$ windows each. The
+last frame may have less than $w$
+windows.
+The encoder compresses the ECG signal
+frame by frame.
+The encoder converts the
+ECG signal into a bitstream and the
+decoder reconstructs the ECG signal
+from the bitstream.
+
 
 The encoding algorithm is presented in
 {prf:ref}`alg:encoder`.
