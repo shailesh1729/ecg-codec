@@ -20,12 +20,13 @@ of the quantized measurements.
 
 A primary constraint in our design is that the encoder
 should avoid any floating point arithmetic so that it
-can be implemented efficiently in low power devices.
+can be implemented efficiently in low-power devices.
 
 
 ## Block Diagram
 
-
+{numref}`fig:cs:encoder` presents the high-level block
+diagram of the proposed encoder.
 
 ```{figure} images/cs_encoder.png
 ---
@@ -35,6 +36,26 @@ name: fig:cs:encoder
 Digital Compressive Sensing Encoder
 ```
 
+The ECG signal is split into windows
+of $n$ samples each. The windows of
+the ECG signal are further grouped into
+frames of $w$ windows each.
+The last frame may have less than $w$ windows.
+The encoder compresses the ECG signal frame by frame.
+The encoder converts the ECG signal into a bitstream and the
+decoder reconstructs the ECG signal from the bitstream.
+
+A window of the signal is the level at which the compressive
+sensing is done. A frame (a sequence of windows) is the
+level at which the adaptive quantization is applied and
+compressed signal statistics are estimated.
+
+The encoding algorithm is further detailed in
+{prf:ref}`alg:encoder`.
+
+{numref}`fig:cs:decoder` is a high-level block
+diagram of the proposed decoder.
+
 ```{figure} images/cs_decoder.png
 ---
 align: center
@@ -42,55 +63,31 @@ name: fig:cs:decoder
 ---
 Digital Compressive Sensing Decoder
 ```
-
-## Frames and Windows
-
-The ECG signal is split into windows
-of $n$ samples each. The windows of
-ECG signal are further grouped into
-frames of $w$ windows each. The
-last frame may have less than $w$
-windows.
-The encoder compresses the ECG signal
-frame by frame.
-The encoder converts the
-ECG signal into a bitstream and the
-decoder reconstructs the ECG signal
-from the bitstream.
-
-
-The encoding algorithm is presented in
-{prf:ref}`alg:encoder`.
-The decoding algorithm is presented in
+The decoding algorithm is further detailed in
 {prf:ref}`alg:decoder`.
 
-
-Following {cite}`mamaghanian2011compressed`,
-we construct a sparse binary sensing matrix $\Phi$ of shape
-$m \times n$.
-Each column of $\Phi$ consists of exactly $d$ ones and
-$m-d$ zeros, where the position of ones has been randomly
-selected in each column. Identical algorithm is used
-to generate the sensing matrix using the stream header
-parameters in both the encoder and the decoder.
-The randomization is seeded with the parameter $\mathrm{key}$
-sent in the stream header.
 
 ## Bitstream Format
 
 The encoder first sends
 the encoder parameters in the form
-of a stream header {numref}`tbl:header:stream`.
-Then for each frame of ECG signal,
-it sends a frame header {numref}`tbl:header:frame`
+of a stream header ({numref}`tbl:header:stream`).
+Then for each frame of the ECG signal,
+it sends a frame header ({numref}`tbl:header:frame`)
 followed by a frame payload consisting of the
-entropy coded measurements for the frame.
+entropy-coded measurements for the frame.
 
+```{prf:algorithm} Bitstream format
+1. Send stream header.
+1. While there are more ECG data frames:
+   1. Send frame header.
+   1. Send encoded frame data.
+```
 
 ### Stream Header
 
 The stream header {numref}`tbl:header:stream`
-consists of all necessary information
+consists of all the necessary information
 required to initialize the decoder.
 In particular, it contains the pseudo-random
 generator key that can be used to reproduce
@@ -111,7 +108,7 @@ and adaptive clipping ($\gamma$) steps.
 If fixed quantization is used, then it contains
 the fixed quantization parameter value ($q$).
 Both $\rho$ and $\gamma$ in the stream header
-are encoded using a simple decimal format $a 1e^{-b}$ where $a$
+are encoded using a simple decimal format $a 10^{-b}$ where $a$
 and $b$ are encoded as 4-bit integers.
 
 
@@ -211,7 +208,7 @@ parameters that vary from frame to frame.
     1. Quantized Gaussian model parameters
        1. $\mu_y \leftarrow \lceil \text{mean}(\bar{\by}) \rceil$.
        1. $\sigma_y \leftarrow \lceil (\text{std}(\bar{\by}) \rceil$.
-    1. Adaptive range adjustment. For $r=2:8$
+    1. Adaptive range adjustment. For $r=2 \dots 8$
        1. $y_{\min} \leftarrow \mu_y  - r \sigma_y$.
        1. $y_{\max} \leftarrow \mu_y  + r \sigma_y$.
        1. $\hat{\by} \leftarrow \clip(\bar{\by}, y_{\min}, y_{\max})$.
@@ -227,7 +224,7 @@ Here we describe the encoding process for each frame.
 The input to the encoder is a frame of digital ECG samples
 at a given sampling rate $f_s$. In the MIT-BIH database,
 the samples are digitally encoded in 11 bits per sample (unsigned).
-Let the frame of ECG signal be denoted by $\bx$.
+Let the frame of the ECG signal be denoted by $\bx$.
 The frame is split into non-overlapping windows of $n$
 samples each. We shall denote each window of $n$ samples
 by vectors $\bx_i$. 
@@ -238,8 +235,14 @@ such windows (up to a maximum of $w$ windows per
 frame as per the encoder configuration).
 Let the windows by denoted by $\bx_1, \bx_2, \dots$.
 Let there be $w$ such windows.
-We can put them together to form the (signed) signal matrix
-\footnote{
+We can put them together to form the (signed) signal matrix:
+
+$$
+\bX = \begin{bmatrix}
+\bx_1 & \bx_2 & \dots & \bx_w
+\end{bmatrix}.
+$$
+
 PhysioNet provides the baseline values for each channel
 in their ECG records.
 Since the digital samples are unsigned, we have subtracted
@@ -249,16 +252,22 @@ $0$ to $2047$. The baseline for zero amplitude is
 digitally represented as $1024$.
 After baseline adjustment, the range of values becomes
 $[-1024,1023]$.
-}:
-
-$$
-\bX = \begin{bmatrix}
-\bx_1 & \bx_2 & \dots & \bx_w
-\end{bmatrix}.
-$$
 
 ### Compressive Sensing
-The digital compressive sensing
+
+Following {cite}`mamaghanian2011compressed`,
+we construct a sparse binary sensing matrix $\Phi$ of shape
+$m \times n$.
+Each column of $\Phi$ consists of exactly $d$ ones and
+$m-d$ zeros, where the position of ones has been randomly
+selected in each column. An identical algorithm is used
+to generate the sensing matrix using the stream header
+parameters in both the encoder and the decoder.
+The randomization is seeded with the parameter $\mathrm{key}$
+sent in the stream header.
+
+
+The digital compressive sensing operation
 is represented as
 
 $$
@@ -266,7 +275,7 @@ $$
 $$
 where $\by_i$ is the measurement vector for the $i$-th
 window. Combining the measurement vectors for each window,
-the measurement matrix for the entire record is given by
+the measurement matrix for the entire frame is given by
 
 $$
 \bY = \Phi \bX.
@@ -278,7 +287,7 @@ to be picked up and summed. Consequently, $\bY$ consists of
 only signed integer values.
 
 ### Flattening
-Beyond this point, the window structure of signal is not
+Beyond this point, the window structure of the signal is not
 relevant for quantization and entropy coding purposes in our design.
 Hence, we flatten it (column by column) into a vector
 $\by$ of $m w$ measurements.
@@ -293,12 +302,12 @@ If fixed quantization has been specified in the stream header,
 then for each entry $y$ in $\by$, we compute
 
 $$
-\bar{y} = y / 2^q.
+\bar{y} = \lfloor y / 2^q \rfloor.
 $$
 For the whole measurement vector, we can write this as
 
 $$
-\bar{\by} = \frac{1}{2^q} \by.
+\bar{\by} = \left \lfloor \frac{1}{2^q} \by \right \rfloor.
 $$
 This can be easily implemented in a computer as a signed
 right shift by $q$ bits (for integer values).
@@ -307,7 +316,7 @@ This reduces the range of values in $\by$ by a factor of $2^q$.
 If adaptive quantization has been specified, then we vary
 the quantization parameter $q$ from a value $q_{\max}=6$
 down to a value $q_{\min}=0$. For each value of $q$,
-we compute $\bar{\by} = \frac{1}{2^q} \by$. We then
+we compute $\bar{\by} = \lfloor \frac{1}{2^q} \by \rfloor$. We then
 compute $\tilde{\by} = 2^q \bar{\by}$. We stop
 if $\nrmse(\by, \tilde{\by})$ reaches a limit specified by
 the parameter $\rho$ in the stream header.
@@ -321,16 +330,26 @@ First, we estimate the mean $\mu_y$ and standard deviation $\sigma_y$
 of measurement values in $\bar{\by}$.
 We shall need to transmit $\mu_y$ and $\sigma_y$ in the frame header.
 We round the values of $\mu_y$ and $\sigma_y$ to the nearest integer
-so that it can be transmitted efficiently as integers.
+so that they can be transmitted efficiently as integers.
 
 Entropy coding works with a finite alphabet.
 Accordingly, the quantized Gaussian model
-requires specification of the minimum
+requires the specification of the minimum
 and maximum values that our quantized
 measurements can take. The range of values
 in $\bar{\by}$ must be clipped to this range.
 
 ### Adaptive Clipping
+The clipping function for scalar values is defined as follows:
+
+$$
+\clip (x, a, b) \triangleq \begin{cases}
+a & & x \leq a \\
+b & & x \geq b \\
+x & & \text{otherwise}.
+\end{cases}
+$$
+
 We clip the values in $\bar{\by}$ to the range
 $[\mu_y - r \sigma_y, \mu_y + r \sigma_y]$
 where $r$ is the range parameter estimate from the data.
@@ -342,6 +361,7 @@ $$
 Similar to adaptive quantization, we vary $r$ from $2$ to $8$
 till we have captured sufficient variation in $\bar{\by}$
 and $\nrmse(\by, \hat{\by}) \leq \gamma$.
+
 
 ### Entropy Coding
 We then model the measurement values in $\hat{\by}$
@@ -358,18 +378,19 @@ and not the unclipped $\bar{\by}$. ANS entropy coding
 is a lossless encoding scheme. Hence, $\hat{\by}$
 will be reproduced faithfully in the decoder if there
 are no bit errors involved in the transmission
-\footnote{We assume that appropriate channel coding
-mechanism has been used.}.
+We assume that an appropriate channel coding
+mechanism has been used.
 
 ### Integer Arithmetic
-The input to digital compressive sensing is a stream of integers.
-The sensing process with sparse binary sensing matrix can be implemented
+The input to digital compressive sensing is a stream of
+integer-valued ECG samples.
+The sensing process with the sparse binary sensing matrix can be implemented
 using integer sums and lookup.
 It is possible to implement the computation of
 approximate mean and standard deviation
 using integer arithmetic.
-We can use the normalized mean square error
-based thresholds for adaptive quantization and clipping steps.
+We can use the normalized mean square error-based thresholds
+for adaptive quantization and clipping steps.
 ANS entropy coding is fully implemented using integer arithmetic.
 Thus, the proposed encoder can be fully implemented using integer arithmetic.
 
@@ -410,7 +431,7 @@ $\mu_y, \sigma_y, q, r, n_w, n_c$.
 ### Entropy Decoding
 The frame header is used for building the quantized
 Gaussian distribution model for the decoding of the
-entropy coded measurements from the frame payload.
+entropy-coded measurements from the frame payload.
 The minimum and maximum values for the model are
 computed as:
 
@@ -435,7 +456,7 @@ $$
 $$
 We are now ready for the reconstruction of the ECG signal for each window.
 ### Reconstruction
-The architecture is flexible in terms of choice of the
+The architecture is flexible in terms of the choice of the
 reconstruction algorithm.
 
 $$
@@ -448,7 +469,7 @@ decoder {cite}`zhang2013extension,zhang2012compressed,zhang2016comparison`.
 Our implementation of BSBL is available as part of CR-Sparse library
 {cite}`kumar2021cr`.
 As Zhang et al. suggest in {cite}`zhang2012compressed`,
-block sizes are user defined and are identical and
+block sizes are user-defined, they are identical for all blocks, and
 no pruning of blocks is applied. Our implementation has been
 done under these assumptions and is built using JAX so that it can
 be run on GPU hardware easily to speed up decoding.
@@ -463,20 +484,20 @@ $$
 $$
 
 ### Alternate Reconstruction Algorithms
-It is entirely possible to use a deep learning based
+It is entirely possible to use a deep learning-based
 reconstruction network like CS-NET {cite}`zhang2021csnet`
 in the decoder. We will need to train the network with
 $\tilde{\by}$ as inputs and $\bx$ as expected output.
 However, we haven't pursued this direction yet as our
 focus was to study the quantization and entropy coding
-steps in this work. One concern with deep learning
-based architectures is that the decoder network
+steps in this work. One concern with
+deep learning-based architectures is that the decoder network
 needs to be trained separately for each encoder
 configuration and each database. The ability
 to dynamically change the encoder/decoder
 configuration parameters is severely restricted
-in deep learning based architectures.
-This limitation doesn't exist with BSBL type
+in deep learning-based architectures.
+This limitation doesn't exist with BSBL
 algorithms.
 
 ## Discussion
@@ -555,7 +576,7 @@ $\frac{\text{iqr}}{\sigma}$.
 
 ### Gaussianity
 
-The key idea behind the our entropy coding
+The key idea behind our entropy coding
 design is to model the measurement values as
 being sampled from a quantized
 Gaussian distribution. Towards this, we measured the
@@ -569,7 +590,7 @@ While the skew is not very high, Kurtosis does vary widely.
 show the histograms of measurement
 values for 6 different records. Although the measurements are not
 Gaussian distributed, it is not a bad approximation.
-The quantized Gaussian approximation works well in the entropy
+The quantized Gaussian approximation works well in entropy
 coding. It is easy to estimate from the data.
 
 The best compression can be achieved by using the empirical
@@ -577,7 +598,7 @@ probabilities of different values in $\by$ in entropy coding.
 However, doing so would require us to transmit the empirical
 probabilities as side information. This may be expensive.
 We can estimate the improvement in compression overhead
-by use of the quantized Gaussian approximation.
+by the use of the quantized Gaussian approximation.
 Let $\PP$ denote the empirical probability distribution
 of data and let $\QQ$ denote the corresponding
 quantized Gaussian distribution. Bamler in {cite}`bamler2022constriction`
@@ -592,7 +613,7 @@ $$
 We computed the empirical distribution for $\by$ for each
 record and measured its KL divergence with the corresponding
 quantized Gaussian distribution.
-It is tabulated in the \emph{kld} column in {numref}`tbl:cs:codec:measure:stats`.
+It is tabulated in the *kld* column in {numref}`tbl:cs:codec:measure:stats`.
 It varies around $0.11 \pm 0.07$ bits
 across the 48 records.
 Thus, the overhead of using a quantized
@@ -616,7 +637,7 @@ Also,
 suggest that the empirical
 distributions vary widely from one record to another in the
 database. Hence using a single fixed empirical distribution
-(e.g. the Huffman code book preloaded into the device in
+(e.g. the Huffman code-book preloaded into the device in
 {cite}`mamaghanian2011compressed`)
 may lead to lower compression.
 
@@ -681,7 +702,7 @@ $\by$ in record 234
 
 ### Clipping
 
-An entropy coder can handle with a finite set of symbols
+An entropy coder can handle a finite set of symbols
 only. Hence, the range of input values [measurements
 coded as integers] must be restricted to a finite range.
 This is the reason one has to choose a distribution
@@ -691,7 +712,7 @@ while the complete range of measurement values can be
 up to 40-50x larger than the standard deviation, the iqr
 is less than $1.5$ times the standard deviation. In other
 words, the measurement values are fairly concentrated
-around its mean. This can be visually seen from the
+around the mean value. This can be visually seen from the
 histograms in
 {numref}`fig:cs:codec:y:hist:100`-{numref}`fig:cs:codec:y:hist:234`
 also.
@@ -703,7 +724,7 @@ quantization step on the reconstruction quality
 for record 100 under non-adaptive quantization.
 $6$ windows of $512$ samples
 were used in this example. The first panel
-shows the original (digital) signal. Remaining
+shows the original (digital) signal. The remaining
 panels show the reconstruction at different
 quantization parameters.
 The reconstruction visual quality is excellent
@@ -711,7 +732,7 @@ up to $q=5$ (PRD below 7\%), good at $q=6$ (PRD at 9\%)
 and clinically unacceptable at $q=7$
 (with PRD more than 15\%).
 One can see significant waveform distortions at $q=7$.
-Also note how the quality score keeps increasing till
+Also, note how the quality score keeps increasing till
 $q=4$ and starts decreasing after that with a massive
 drop at $q=7$.
 
