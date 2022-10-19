@@ -1,0 +1,664 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>3.1. History &#8212; ECG Codec</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex": {"macros": {"AA": "\\mathbb{A}", "BB": "\\mathbb{B}", "CC": "\\mathbb{C}", "DD": "\\mathbb{D}", "EE": "\\mathbb{E}", "FF": "\\mathbb{F}", "GG": "\\mathbb{G}", "HH": "\\mathbb{H}", "II": "\\mathbb{I}", "JJ": "\\mathbb{J}", "KK": "\\mathbb{K}", "LL": "\\mathbb{L}", "MM": "\\mathbb{M}", "NN": "\\mathbb{N}", "Nat": "\\mathbb{N}", "PP": "\\mathbb{P}", "QQ": "\\mathbb{Q}", "RR": "\\mathbb{R}", "RRMN": "\\mathbb{R}^{M \\times N}", "SS": "\\mathbb{S}", "TT": "\\mathbb{T}", "UU": "\\mathbb{U}", "VV": "\\mathbb{V}", "WW": "\\mathbb{W}", "XX": "\\mathbb{X}", "YY": "\\mathbb{Y}", "ZZ": "\\mathbb{Z}", "ZERO": "\\mathbf{O}", "ERL": "\\overline{\\mathbb{R}}", "RERL": "(-\\infty, \\infty]", "LERL": "[-\\infty, \\infty)", "AAA": "\\mathcal{A}", "BBB": "\\mathcal{B}", "CCC": "\\mathcal{C}", "DDD": "\\mathcal{D}", "EEE": "\\mathcal{E}", "FFF": "\\mathcal{F}", "GGG": "\\mathcal{G}", "HHH": "\\mathcal{H}", "III": "\\mathcal{I}", "JJJ": "\\mathcal{J}", "KKK": "\\mathcal{K}", "LLL": "\\mathcal{L}", "MMM": "\\mathcal{M}", "NNN": "\\mathcal{N}", "OOO": "\\mathcal{O}", "PPP": "\\mathcal{P}", "QQQ": "\\mathcal{Q}", "RRR": "\\mathcal{R}", "SSS": "\\mathcal{S}", "TTT": "\\mathcal{T}", "UUU": "\\mathcal{U}", "VVV": "\\mathcal{V}", "WWW": "\\mathcal{W}", "XXX": "\\mathcal{X}", "YYY": "\\mathcal{Y}", "ZZZ": "\\mathcal{Z}", "Tau": "\\mathbf{\\mathcal{T}}", "Chi": "\\mathbf{\\mathcal{X}}", "Eta": "\\mathbf{\\mathcal{H}}", "Re": "\\operatorname{Re}", "Im": "\\operatorname{Im}", "bigO": "\\mathcal{O}", "smallO": "\\mathcal{o}", "NullSpace": "\\mathcal{N}", "ColSpace": "\\mathcal{C}", "RowSpace": "\\mathcal{R}", "Power": "\\mathop{\\mathcal{P}}", "LinTSpace": "\\mathcal{L}", "Range": "\\mathrm{R}", "Image": "\\mathrm{im}", "Kernel": "\\mathrm{ker}", "Span": "\\mathrm{span}", "Nullity": "\\mathrm{nullity}", "Dim": "\\mathrm{dim}", "Rank": "\\mathrm{rank}", "Trace": "\\mathrm{tr}", "Diag": "\\mathrm{diag}", "diag": "\\mathrm{diag}", "sgn": "\\mathrm{sgn}", "dom": "\\mathrm{dom}\\,", "range": "\\mathrm{range}\\,", "image": "\\mathrm{im}\\,", "nullspace": "\\mathrm{null}\\,", "epi": "\\mathrm{epi}\\,", "hypo": "\\mathrm{hypo}\\,", "sublevel": "\\mathrm{sublevel}", "superlevel": "\\mathrm{superlevel}", "contour": "\\mathrm{contour}", "supp": "\\mathrm{supp}", "dist": "\\mathrm{dist}", "simf": "\\mathrm{sim}", "opt": "\\mathrm{opt}", "succ": "\\mathrm{succ}", "snr": "\\mathrm{SNR}", "RSNR": "\\mbox{R-SNR}", "prd": "\\mathrm{PRD}", "bits": "\\mathrm{bits}", "bps": "\\mathrm{bps}", "bpm": "\\mathrm{bpm}", "compr": "\\mathrm{CR}", "measurer": "\\mathrm{MR}", "pss": "\\mathrm{PSS}", "pms": "\\mathrm{PMS}", "nmse": "\\mathrm{NMSE}", "nrmse": "\\mathrm{N\u00a0RMSE}", "window": "\\mathrm{window}", "flatten": "\\mathrm{flatten}", "clip": "\\mathrm{clip}", "round": "\\mathrm{round}", "ceiling": "\\mathrm{ceiling}", "Sym": "\\mathrm{Sym}", "id": "\\mathrm{id}", "precision": "\\mathrm{precision}", "recall": "\\mathrm{recall}", "ML": "\\mathbf{ML}", "MLE": "\\mathbf{MLE}", "mah": "\\mathbf{mah}", "chord": "\\mathbf{chord}", "geo": "\\mathbf{geo}", "nn": "\\mathbf{nn}", "fn": "\\mathbf{fn}", "ave": "\\mathbf{ave}", "stat": "\\mathbf{stat}", "mean": "\\mathbf{mean}", "median": "\\mathbf{median}", "mode": "\\mathbf{mode}", "rowsupp": "\\mathop{\\mathrm{rowsupp}}", "abs": "\\mathop{\\mathrm{abs}}", "erf": "\\mathop{\\mathrm{erf}}", "erfc": "\\mathop{\\mathrm{erfc}}", "Sub": "\\mathop{\\mathrm{Sub}}", "SSub": "\\mathop{\\mathrm{SSub}}", "Var": "\\mathop{\\mathrm{Var}}", "Cov": "\\mathop{\\mathrm{Cov}}", "AffineHull": "\\mathop{\\mathrm{aff}}", "ConvexHull": "\\mathop{\\mathrm{conv}}", "ConicHull": "\\mathop{\\mathrm{cone}}", "argmin": "\\mathrm{arg}\\,\\mathrm{min}", "argmax": "\\mathrm{arg}\\,\\mathrm{max}", "EmptySet": "\\varnothing", "card": "\\mathrm{card}\\,", "Forall": "\\; \\forall \\;", "ST": "\\: | \\:", "Gaussian": "\\mathcal{N}", "spark": "\\mathop{\\mathrm{spark}}", "ERC": "\\mathop{\\mathrm{ERC}}", "Maxcor": "\\mathop{\\mathrm{maxcor}}", "dag": "\\dagger", "Bracket": "\\left [ \\; \\right ]", "infimal": "\\;\\square\\;", "OneVec": "\\mathbf{1}", "ZeroVec": "\\mathbf{0}", "OneMat": "\\mathbb{1}", "Interior": ["\\mathring{#1}", 1], "Closure": ["\\overline{#1}", 1], "interior": "\\mathrm{int}\\,", "closure": "\\mathrm{cl}\\,", "boundary": "\\mathrm{bd}\\,", "frontier": "\\mathrm{fr}\\,", "diam": "\\mathrm{diam}\\,", "relint": "\\mathrm{ri}\\,", "relbd": "\\mathrm{relbd}\\,", "extreme": "\\mathrm{ext}\\,", "span": "\\mathrm{span}\\,", "affine": "\\mathrm{aff}\\,", "cone": "\\mathrm{cone}\\,", "convex": "\\mathrm{conv}\\,", "graph": "\\mathrm{gra}\\,", "kernel": "\\mathrm{ker}\\,", "dim": "\\mathrm{dim}\\,", "codim": "\\mathrm{codim}\\,", "nullity": "\\mathrm{nullity}\\,", "rank": "\\mathrm{rank}\\,", "prox": "\\mathrm{prox}", "best": "\\mathrm{best}", "ainterior": "\\mathrm{int}", "aclosure": "\\mathrm{cl}", "aboundary": "\\mathrm{bd}", "afrontier": "\\mathrm{fr}", "aextreme": "\\mathrm{ext}", "st": "\\mathrm{ST}", "ht": "\\mathrm{HT}", "bzero": "\\mathbf{0}", "bone": "\\mathbf{1}", "ba": "\\mathbf{a}", "bb": "\\mathbf{b}", "bc": "\\mathbf{c}", "bd": "\\mathbf{d}", "be": "\\mathbf{e}", "bf": "\\mathbf{f}", "bg": "\\mathbf{g}", "bh": "\\mathbf{h}", "bi": "\\mathbf{i}", "bj": "\\mathbf{j}", "bk": "\\mathbf{k}", "bl": "\\mathbf{l}", "bm": "\\mathbf{m}", "bn": "\\mathbf{n}", "bo": "\\mathbf{o}", "bp": "\\mathbf{p}", "bq": "\\mathbf{q}", "br": "\\mathbf{r}", "bs": "\\mathbf{s}", "bt": "\\mathbf{t}", "bu": "\\mathbf{u}", "bv": "\\mathbf{v}", "bw": "\\mathbf{w}", "bx": "\\mathbf{x}", "by": "\\mathbf{y}", "bz": "\\mathbf{z}", "bA": "\\mathbf{A}", "bB": "\\mathbf{B}", "bC": "\\mathbf{C}", "bD": "\\mathbf{D}", "bE": "\\mathbf{E}", "bF": "\\mathbf{F}", "bG": "\\mathbf{G}", "bH": "\\mathbf{H}", "bI": "\\mathbf{I}", "bJ": "\\mathbf{J}", "bK": "\\mathbf{K}", "bL": "\\mathbf{L}", "bM": "\\mathbf{M}", "bN": "\\mathbf{N}", "bO": "\\mathbf{O}", "bP": "\\mathbf{P}", "bQ": "\\mathbf{Q}", "bR": "\\mathbf{R}", "bS": "\\mathbf{S}", "bT": "\\mathbf{T}", "bU": "\\mathbf{U}", "bV": "\\mathbf{V}", "bW": "\\mathbf{W}", "bX": "\\mathbf{X}", "bY": "\\mathbf{Y}", "bZ": "\\mathbf{Z}", "bAAA": "\\mathbf{\\mathcal{A}}", "bBBB": "\\mathbf{\\mathcal{B}}", "bCCC": "\\mathbf{\\mathcal{C}}", "bDDD": "\\mathbf{\\mathcal{D}}", "bEEE": "\\mathbf{\\mathcal{E}}", "bFFF": "\\mathbf{\\mathcal{F}}", "bGGG": "\\mathbf{\\mathcal{G}}", "bHHH": "\\mathbf{\\mathcal{H}}", "bIII": "\\mathbf{\\mathcal{I}}", "bJJJ": "\\mathbf{\\mathcal{J}}", "bKKK": "\\mathbf{\\mathcal{K}}", "bLLL": "\\mathbf{\\mathcal{L}}", "bMMM": "\\mathbf{\\mathcal{M}}", "bNNN": "\\mathbf{\\mathcal{N}}", "bOOO": "\\mathbf{\\mathcal{O}}", "bPPP": "\\mathbf{\\mathcal{P}}", "bQQQ": "\\mathbf{\\mathcal{Q}}", "bRRR": "\\mathbf{\\mathcal{R}}", "bSSS": "\\mathbf{\\mathcal{S}}", "bTTT": "\\mathbf{\\mathcal{T}}", "bUUU": "\\mathbf{\\mathcal{U}}", "bVVV": "\\mathbf{\\mathcal{V}}", "bWWW": "\\mathbf{\\mathcal{W}}", "bXXX": "\\mathbf{\\mathcal{X}}", "bYYY": "\\mathbf{\\mathcal{Y}}", "bZZZ": "\\mathbf{\\mathcal{Z}}", "blambda": "\\pmb{\\lambda}"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.2. Compressive Sensing" href="cs.html" />
+    <link rel="prev" title="3. ECG Data Compression Review" href="index.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">ECG Codec</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../install.html">
+   1. Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage.html">
+   2. Usage
+  </a>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="index.html">
+   3. ECG Data Compression Review
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     3.1. History
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="cs.html">
+     3.2. Compressive Sensing
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="metrics.html">
+     3.3. Performance Metrics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="datasets.html">
+     3.4. Datasets
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../codec_b/index.html">
+   4. Codec B
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../codec_b/architecture.html">
+     4.1. Architecture
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../codec_b/implementation.html">
+     4.2. Implementation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../codec_b/experiments.html">
+     4.3. Experiments
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../bib.html">
+   5. Bibliography
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../genindex.html">
+   6. Index
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/shailesh1729/ecg-codec"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/shailesh1729/ecg-codec/issues/new?title=Issue%20on%20page%20%2Fcompression/history.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/shailesh1729/ecg-codec/edit/main/docs/compression/history.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/compression/history.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#transform-domain-techniques">
+   3.1.1. Transform Domain Techniques
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#compressive-sensing-approaches">
+   3.1.2. Compressive Sensing Approaches
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entropy-coding">
+     3.1.2.1. Entropy Coding
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>History</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#transform-domain-techniques">
+   3.1.1. Transform Domain Techniques
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#compressive-sensing-approaches">
+   3.1.2. Compressive Sensing Approaches
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#entropy-coding">
+     3.1.2.1. Entropy Coding
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="history">
+<span id="sec-history"></span><h1><span class="section-number">3.1. </span>History<a class="headerlink" href="#history" title="Permalink to this headline">#</a></h1>
+<p>This section provides a historical review of some
+of the popular compression techniques for ECG data
+compression. This review is by no means complete.
+The focus is on compressive sensing-based techniques
+where the encoders are simple and most of the
+complexity lies in the decoding.</p>
+<p>In wireless body area networks (WBAN)
+based telemonitoring networks<span id="id1">[<a class="reference internal" href="../bib.html#id10" title="Huasong Cao, Victor Leung, Cupid Chow, and Henry Chan. Enabling technologies for wireless body area networks: a survey and outlook. IEEE Communications Magazine, 47(12):84–93, 2009.">9</a>]</span>,
+the energy consumption on sensor nodes is
+a primary design constraint <span id="id2">[<a class="reference internal" href="../bib.html#id28" title="Aleksandar Milenković, Chris Otto, and Emil Jovanov. Wireless sensor networks for personal health monitoring: issues and an implementation. Computer communications, 29(13-14):2521–2533, 2006.">24</a>]</span>.
+The wearable sensor nodes are often battery-operated.
+It is necessary to reduce energy consumption as
+much as possible.</p>
+<p>However, long-term ECG monitoring
+can generate a large amount of uncompressed data.
+For example, each half-hour 2 lead recording in the
+MIT-BIH Arrhythmia database <span id="id3">[<a class="reference internal" href="../bib.html#id29" title="George B Moody and Roger G Mark. The impact of the mit-bih arrhythmia database. IEEE Engineering in Medicine and Biology Magazine, 20(3):45–50, 2001.">25</a>]</span>
+requires 1.9MB of storage. As shown in <span id="id4">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">22</a>]</span>,
+in a real-time telemonitoring sensor node, the wireless
+transmission of data consumes most of the energy.
+The real-time compression of ECG data by a low-complexity
+encoder has received significant attention
+in the past decade.</p>
+<p>ECG signal compression has been an active area
+of interest for several decades. Extensive surveys
+can be found in <span id="id5">[<a class="reference internal" href="../bib.html#id34" title="Supriya O Rajankar and Sanjay N Talbar. An electrocardiogram signal compression techniques: a comprehensive review. Analog Integrated Circuits and Signal Processing, 98(1):59–74, 2019.">30</a>, <a class="reference internal" href="../bib.html#id36" title="Butta Singh, Amandeep Kaur, and Jugraj Singh. A review of ecg data compression techniques. International journal of computer applications, 2015.">31</a>]</span>.
+Compressive sensing (CS) based techniques for ECG
+data compression have been reviewed in <span id="id6">[<a class="reference internal" href="../bib.html#id13" title="Darren Craven, Brian McGinley, Liam Kilmartin, Martin Glavin, and Edward Jones. Compressed sensing for bioelectric signals: a review. IEEE journal of biomedical and health informatics, 19(2):529–540, 2014.">11</a>, <a class="reference internal" href="../bib.html#id21" title="Subramanyam Shashi Kumar and Prakash Ramachandran. Review on compressive sensing algorithms for ecg signal for iot based deep learning framework. Applied Sciences, 12(16):8368, 2022.">19</a>]</span>.</p>
+<section id="transform-domain-techniques">
+<h2><span class="section-number">3.1.1. </span>Transform Domain Techniques<a class="headerlink" href="#transform-domain-techniques" title="Permalink to this headline">#</a></h2>
+<p>Transform domain techniques
+(e.g., Discrete Cosine Transform <span id="id7">[<a class="reference internal" href="../bib.html#id2" title="HAM Al-Nashash. A dynamic fourier series for the compression of ecg using fft and adaptive coefficient estimation. Medical engineering &amp; physics, 17(3):197–203, 1995.">1</a>]</span>,
+Discrete Cosine Transform <span id="id8">[<a class="reference internal" href="../bib.html#id5" title="Leonardo Vidal Batista, Elmar Uwe Kurt Melcher, and Luis Carlos Carvalho. Compression of ecg signals by optimized quantization of discrete cosine transform coefficients. Medical engineering &amp; physics, 23(2):127–134, 2001.">4</a>, <a class="reference internal" href="../bib.html#id6" title="A Bendifallah, R Benzid, and M Boulemden. Improved ecg compression method using discrete cosine transform. Electronics letters, 47(2):1, 2011.">5</a>]</span>,
+Discrete Wavelet Transform <span id="id9">[<a class="reference internal" href="../bib.html#id14" title="Adrianus Djohan, Truong Q Nguyen, and Willis J Tompkins. Ecg compression using discrete symmetric wavelet transform. In Proceedings of 17th International Conference of the Engineering in Medicine and Biology Society, volume 1, 167–168. IEEE, 1995.">12</a>, <a class="reference internal" href="../bib.html#id19" title="Byung S Kim, Sun Kook Yoo, and Moon-Hyoung Lee. Wavelet-based low-delay ecg compression algorithm for continuous ecg transmission. IEEE Transactions on Information Technology in Biomedicine, 10(1):77–83, 2006.">17</a>, <a class="reference internal" href="../bib.html#id24" title="Zhitao Lu, Dong Youn Kim, and William A Pearlman. Wavelet compression of ecg signals by the set partitioning in hierarchical trees algorithm. IEEE transactions on Biomedical Engineering, 47(7):849–856, 2000.">20</a>, <a class="reference internal" href="../bib.html#id33" title="Mohammad Pooyan, Ali Taheri, Morteza Moazami-Goudarzi, and Iman Saboori. Wavelet compression of ecg signals using spiht algorithm. International Journal of signal processing, 1(3):4, 2004.">29</a>]</span>) are popular in ECG compression
+and achieve high compression ratios (CR) at clinically
+acceptable quality.
+However, they require computationally intensive sparsifying
+transforms on all data samples and are thus not suitable
+for WBAN sensor nodes <span id="id10">[<a class="reference internal" href="../bib.html#id13" title="Darren Craven, Brian McGinley, Liam Kilmartin, Martin Glavin, and Edward Jones. Compressed sensing for bioelectric signals: a review. IEEE journal of biomedical and health informatics, 19(2):529–540, 2014.">11</a>]</span>.</p>
+</section>
+<section id="compressive-sensing-approaches">
+<h2><span class="section-number">3.1.2. </span>Compressive Sensing Approaches<a class="headerlink" href="#compressive-sensing-approaches" title="Permalink to this headline">#</a></h2>
+<p>Compressive sensing <span id="id11">[<a class="reference internal" href="../bib.html#id4" title="Richard G Baraniuk. Compressive sensing [lecture notes]. Signal Processing Magazine, IEEE, 24(4):118–121, 2007.">3</a>, <a class="reference internal" href="../bib.html#id8" title="Emmanuel J Candes and Terence Tao. Near-optimal signal recovery from random projections: universal encoding strategies? Information Theory, IEEE Transactions on, 52(12):5406–5425, 2006.">6</a>, <a class="reference internal" href="../bib.html#id7" title="Emmanuel J Candès. Compressive sampling. In Proceedings of the International Congress of Mathematicians: Madrid, August 22-30, 2006: invited lectures, 1433–1452. 2006.">7</a>, <a class="reference internal" href="../bib.html#id9" title="Emmanuel J Candès and Michael B Wakin. An introduction to compressive sampling. Signal Processing Magazine, IEEE, 25(2):21–30, 2008.">8</a>, <a class="reference internal" href="../bib.html#id15" title="David L Donoho. Compressed sensing. Information Theory, IEEE Transactions on, 52(4):1289–1306, 2006.">13</a>]</span>
+uses a sub-Nyquist sampling method by acquiring a small number
+of incoherent measurements which are sufficient to reconstruct
+the signal if the signal is sufficiently sparse in some
+basis. For a sparse signal <span class="math notranslate nohighlight">\(\bx \in \RR^n\)</span>, one would make
+<span class="math notranslate nohighlight">\(m\)</span> linear measurements where <span class="math notranslate nohighlight">\(m \ll n\)</span> which can be
+mathematically represented by a sensing operation</p>
+<div class="math notranslate nohighlight">
+\[
+\by = \Phi \bx
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Phi \in \RR^{m \times n}\)</span> is a matrix
+representation of the sensing process and <span class="math notranslate nohighlight">\(\by \in \RR^m\)</span>
+the set of <span class="math notranslate nohighlight">\(m\)</span> measurements collected for <span class="math notranslate nohighlight">\(\bx\)</span>.
+A suitable reconstruction algorithm can recover <span class="math notranslate nohighlight">\(\bx\)</span>
+from <span class="math notranslate nohighlight">\(\by\)</span>.</p>
+<p>Ideally, the sensing process should be implemented at the
+hardware level in the analog-to-digital conversion (ADC) process.
+However, much of the use of CS in ECG follows
+a digital CS paradigm <span id="id12">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">22</a>]</span> where
+the ECG samples are acquired first by the ADC circuit on the
+device and then they are translated into incoherent
+measurements via the multiplication of a digital sensing matrix.
+These measurements are then transmitted
+to remote telemonitoring servers. A suitable reconstruction
+algorithm is used on the server to recover the original
+ECG signal from the compressive measurements.
+Reconstruction algorithms for ECG signals include:
+greedy algorithms
+<span id="id13">[<a class="reference internal" href="../bib.html#id31" title="Luisa F Polania, Rafael E Carrillo, Manuel Blanco-Velasco, and Kenneth E Barner. Compressed sensing based method for ecg compression. In 2011 IEEE international conference on acoustics, speech and signal processing (ICASSP), 761–764. IEEE, 2011.">27</a>]</span> (simultaneous orthogonal matching pursuit),
+optimization-based algorithms <span id="id14">[<a class="reference internal" href="../bib.html#id40" title="Jun Zhang, Zhenghui Gu, Zhu Liang Yu, and Yuanqing Li. Energy-efficient ecg compression on wireless biosensors via minimal coherence sensing and weighted l1 minimization reconstruction. IEEE Journal of Biomedical and Health Informatics, 19(2):520–528, 2014.">33</a>]</span>,
+<span id="id15">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">22</a>]</span> (SPG-L1),
+Bayesian learning based algorithms
+<span id="id16">[<a class="reference internal" href="../bib.html#id41" title="Zhilin Zhang, Tzyy-Ping Jung, Scott Makeig, Zhouyue Pi, and Bhaskar D Rao. Spatiotemporal sparse bayesian learning with applications to compressed sensing of multichannel physiological signals. IEEE transactions on neural systems and rehabilitation engineering, 22(6):1186–1197, 2014.">34</a>, <a class="reference internal" href="../bib.html#id38" title="Zhilin Zhang, Tzyy-Ping Jung, Scott Makeig, and Bhaskar D Rao. Compressed sensing for energy-efficient wireless telemonitoring of noninvasive fetal ecg via block sparse bayesian learning. IEEE Transactions on Biomedical Engineering, 60(2):300–309, 2012.">35</a>, <a class="reference internal" href="../bib.html#id39" title="Zhilin Zhang and Bhaskar D Rao. Extension of sbl algorithms for the recovery of block sparse signals with intra-block correlation. IEEE Transactions on Signal Processing, 61(8):2009–2015, 2013.">36</a>]</span>,
+deep learning based algorithms <span id="id17">[<a class="reference internal" href="../bib.html#id43" title="Hongpo Zhang, Zhongren Dong, Zhen Wang, Lili Guo, and Zongmin Wang. Csnet: a deep learning approach for ecg compressed sensing. Biomedical Signal Processing and Control, 70:103065, 2021.">32</a>]</span>.</p>
+<p>To keep the sensing matrix multiplication
+simple and efficient, sparse binary sensing matrices
+are a popular choice <span id="id18">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">22</a>, <a class="reference internal" href="../bib.html#id38" title="Zhilin Zhang, Tzyy-Ping Jung, Scott Makeig, and Bhaskar D Rao. Compressed sensing for energy-efficient wireless telemonitoring of noninvasive fetal ecg via block sparse bayesian learning. IEEE Transactions on Biomedical Engineering, 60(2):300–309, 2012.">35</a>]</span>.</p>
+<section id="entropy-coding">
+<h3><span class="section-number">3.1.2.1. </span>Entropy Coding<a class="headerlink" href="#entropy-coding" title="Permalink to this headline">#</a></h3>
+<p>The literature on the use of CS for ECG compression is mostly
+focused on the design of the specific <em>sensing matrix</em>,
+<em>sparsifying dictionary</em>, or <em>reconstruction algorithm</em>
+for the high-quality reconstruction of the ECG signal from the
+compressive measurements.
+To the best of our knowledge, (digital) quantization and entropy coding of
+the compressive measurements of ECG data hasn’t received
+much attention in the past.</p>
+<p>Mamaghanian et al.<span id="id19">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">22</a>]</span> use a Huffman codebook
+which is deployed inside the sensor device. They don’t
+use any quantization of the measurements.
+However, they don’t
+provide much detail on how the codebook was designed or how should
+it be adapted for variations in ECG signals.
+They clearly define the compression ratio in terms
+of a ratio between the uncompressed bits <span class="math notranslate nohighlight">\(\bits_u\)</span>
+and the compressed bits <span class="math notranslate nohighlight">\(\bits_c\)</span>. They define it
+as <span class="math notranslate nohighlight">\(\frac{\bits_u - \bits_c}{\bits_u} \times 100\)</span>.
+This is often known in the literature as
+<em>percentage space savings</em>.</p>
+<p>Simulation-based studies often send the real-valued compressive
+measurements to the decoder modules and don’t consider the issue
+of the number of bits required to encode each measurement.
+Zhang et al. <span id="id20">[<a class="reference internal" href="../bib.html#id38" title="Zhilin Zhang, Tzyy-Ping Jung, Scott Makeig, and Bhaskar D Rao. Compressed sensing for energy-efficient wireless telemonitoring of noninvasive fetal ecg via block sparse bayesian learning. IEEE Transactions on Biomedical Engineering, 60(2):300–309, 2012.">35</a>]</span> and
+Zhang et al. <span id="id21">[<a class="reference internal" href="../bib.html#id43" title="Hongpo Zhang, Zhongren Dong, Zhen Wang, Lili Guo, and Zongmin Wang. Csnet: a deep learning approach for ecg compressed sensing. Biomedical Signal Processing and Control, 70:103065, 2021.">32</a>]</span> define
+<span class="math notranslate nohighlight">\(\frac{n - m}{n} \times 100\)</span> as compression ratio.
+Mangia et al. <span id="id22">[<a class="reference internal" href="../bib.html#id27" title="Mauro Mangia, Luciano Prono, Alex Marchioni, Fabio Pareschi, Riccardo Rovatti, and Gianluca Setti. Deep neural oracles for short-window optimized compressed sensing of biosignals. IEEE transactions on biomedical circuits and systems, 14(3):545–557, 2020.">23</a>]</span> define <span class="math notranslate nohighlight">\(\frac{n}{m}\)</span>
+as the compression ratio.
+Polania et al. <span id="id23">[<a class="reference internal" href="../bib.html#id32" title="Luisa F Polanía and Rafael I Plaza. Compressed sensing ecg using restricted boltzmann machines. Biomedical Signal Processing and Control, 45:237–245, 2018.">28</a>]</span> define
+<span class="math notranslate nohighlight">\(\frac{m}{n}\)</span> as compression ratio.
+Picariello et al. <span id="id24">[<a class="reference internal" href="../bib.html#id30" title="Francesco Picariello, Grazia Iadarola, Eulalia Balestrieri, Ioan Tudosa, and Luca De Vito. A novel compressive sampling method for ecg wearable measurement systems. Measurement, 167:108259, 2021.">26</a>]</span> use
+a non-random sensing matrix.
+They infer a circulant binary sensing matrix
+directly from the ECG signal being compressed.
+The sensing matrix is adapted as and when
+there is a significant change in the signal
+statistics.
+They represent both the ECG samples and
+compressive measurements with the same number of
+bits per sample/measurement. However,
+in their case, there is the additional
+overhead of sending the sensing matrix updates.
+Their compression ratio is slightly lower than
+<span class="math notranslate nohighlight">\(\frac{n}{m}\)</span> where they call <span class="math notranslate nohighlight">\(\frac{n}{m}\)</span> as
+the <em>under-sampling ratio</em>.</p>
+<p>Huffman codes have frequently been used in ECG data
+compression for non-CS methods.
+Luo et al. in <span id="id25">[<a class="reference internal" href="../bib.html#id25" title="Kan Luo, Jianqing Li, and Jianfeng Wu. A dynamic compression scheme for energy-efficient real-time wireless electrocardiogram biosensors. IEEE Transactions on Instrumentation and Measurement, 63(9):2160–2169, 2014.">21</a>]</span> proposed a dynamic
+compression scheme for ECG signals which consisted
+of a digital integrate and fire sampler followed
+by an entropy coder. They used Huffman codes for
+entropy coding of the timestamps associated with
+the impulse train.
+Chouakri et al. in <span id="id26">[<a class="reference internal" href="../bib.html#id11" title="Sid Ahmed Chouakri, O Djaafri, and Abdelmalik Taleb-Ahmed. Wavelet transform and huffman coding based electrocardiogram compression algorithm: application to telecardiology. In Journal of Physics: Conference Series, volume 454, 012086. IOP Publishing, 2013.">10</a>]</span> compute
+the DWT of ECG signal by Db6 wavelet, select coefficients
+using higher order statistics thresholding, then perform
+linear prediction coding and Huffman coding of the selected
+coefficients.</p>
+<p>Asymmetric Numeral Systems (ANS) (<span id="id27">[<a class="reference internal" href="../bib.html#id16" title="Jarek Duda. Asymmetric numeral systems: entropy coding combining speed of huffman coding with compression rate of arithmetic coding. arXiv preprint arXiv:1311.2540, 2013.">14</a>]</span>)
+based entropy coding schemes have seen much success
+in recent years for lossless data compression.
+The <em>zstd</em> library by Facebook Inc. <span id="id28">[<a class="reference internal" href="../bib.html#id45" title="Collet, Yann. Z standard. 2022. URL: https://facebook.github.io/zstd.">39</a>]</span>
+and <em>LZFSE</em> by Apple Inc. are popular lossless
+data compression formats based on ANS.
+To the best of our knowledge, ANS-type stream codes
+have not been considered in the past for the entropy
+coding of compressive measurements.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./compression"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="index.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title"><span class="section-number">3. </span>ECG Data Compression Review</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="cs.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">3.2. </span>Compressive Sensing</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Shailesh Kumar<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

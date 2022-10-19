@@ -125,13 +125,23 @@ const thebe_selector_output = ".output, .cell_output"
   </label>
   <ul>
    <li class="toctree-l2">
+    <a class="reference internal" href="../compression/history.html">
+     3.1. History
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../compression/cs.html">
+     3.2. Compressive Sensing
+    </a>
+   </li>
+   <li class="toctree-l2">
     <a class="reference internal" href="../compression/metrics.html">
-     3.1. Performance Metrics
+     3.3. Performance Metrics
     </a>
    </li>
    <li class="toctree-l2">
     <a class="reference internal" href="../compression/datasets.html">
-     3.2. Datasets
+     3.4. Datasets
     </a>
    </li>
   </ul>
@@ -368,124 +378,129 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#problem-statement">
+   4.1.1. Problem Statement
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#block-diagram">
-   4.1.1. Block Diagram
+   4.1.2. Block Diagram
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#bitstream-format">
-   4.1.2. Bitstream Format
+   4.1.3. Bitstream Format
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#stream-header">
-     4.1.2.1. Stream Header
+     4.1.3.1. Stream Header
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#frame-header">
-     4.1.2.2. Frame Header
+     4.1.3.2. Frame Header
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#encoder">
-   4.1.3. Encoder
+   4.1.4. Encoder
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#windowing">
-     4.1.3.1. Windowing
+     4.1.4.1. Windowing
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#compressive-sensing">
-     4.1.3.2. Compressive Sensing
+     4.1.4.2. Compressive Sensing
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#flattening">
-     4.1.3.3. Flattening
+     4.1.4.3. Flattening
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#quantization">
-     4.1.3.4. Quantization
+     4.1.4.4. Quantization
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#entropy-model">
-     4.1.3.5. Entropy Model
+     4.1.4.5. Entropy Model
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#adaptive-clipping">
-     4.1.3.6. Adaptive Clipping
+     4.1.4.6. Adaptive Clipping
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#entropy-coding">
-     4.1.3.7. Entropy Coding
+     4.1.4.7. Entropy Coding
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#integer-arithmetic">
-     4.1.3.8. Integer Arithmetic
+     4.1.4.8. Integer Arithmetic
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#decoder">
-   4.1.4. Decoder
+   4.1.5. Decoder
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#entropy-decoding">
-     4.1.4.1. Entropy Decoding
+     4.1.5.1. Entropy Decoding
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#inverse-quantization">
-     4.1.4.2. Inverse Quantization
+     4.1.5.2. Inverse Quantization
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#reconstruction">
-     4.1.4.3. Reconstruction
+     4.1.5.3. Reconstruction
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#alternate-reconstruction-algorithms">
-     4.1.4.4. Alternate Reconstruction Algorithms
+     4.1.5.4. Alternate Reconstruction Algorithms
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#discussion">
-   4.1.5. Discussion
+   4.1.6. Discussion
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#measurement-statistics">
-     4.1.5.1. Measurement statistics
+     4.1.6.1. Measurement statistics
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#gaussianity">
-     4.1.5.2. Gaussianity
+     4.1.6.2. Gaussianity
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#clipping">
-     4.1.5.3. Clipping
+     4.1.6.3. Clipping
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id8">
-     4.1.5.4. Quantization
+     4.1.6.4. Quantization
     </a>
    </li>
   </ul>
@@ -510,124 +525,129 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#problem-statement">
+   4.1.1. Problem Statement
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#block-diagram">
-   4.1.1. Block Diagram
+   4.1.2. Block Diagram
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#bitstream-format">
-   4.1.2. Bitstream Format
+   4.1.3. Bitstream Format
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#stream-header">
-     4.1.2.1. Stream Header
+     4.1.3.1. Stream Header
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#frame-header">
-     4.1.2.2. Frame Header
+     4.1.3.2. Frame Header
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#encoder">
-   4.1.3. Encoder
+   4.1.4. Encoder
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#windowing">
-     4.1.3.1. Windowing
+     4.1.4.1. Windowing
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#compressive-sensing">
-     4.1.3.2. Compressive Sensing
+     4.1.4.2. Compressive Sensing
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#flattening">
-     4.1.3.3. Flattening
+     4.1.4.3. Flattening
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#quantization">
-     4.1.3.4. Quantization
+     4.1.4.4. Quantization
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#entropy-model">
-     4.1.3.5. Entropy Model
+     4.1.4.5. Entropy Model
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#adaptive-clipping">
-     4.1.3.6. Adaptive Clipping
+     4.1.4.6. Adaptive Clipping
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#entropy-coding">
-     4.1.3.7. Entropy Coding
+     4.1.4.7. Entropy Coding
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#integer-arithmetic">
-     4.1.3.8. Integer Arithmetic
+     4.1.4.8. Integer Arithmetic
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#decoder">
-   4.1.4. Decoder
+   4.1.5. Decoder
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#entropy-decoding">
-     4.1.4.1. Entropy Decoding
+     4.1.5.1. Entropy Decoding
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#inverse-quantization">
-     4.1.4.2. Inverse Quantization
+     4.1.5.2. Inverse Quantization
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#reconstruction">
-     4.1.4.3. Reconstruction
+     4.1.5.3. Reconstruction
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#alternate-reconstruction-algorithms">
-     4.1.4.4. Alternate Reconstruction Algorithms
+     4.1.5.4. Alternate Reconstruction Algorithms
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#discussion">
-   4.1.5. Discussion
+   4.1.6. Discussion
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#measurement-statistics">
-     4.1.5.1. Measurement statistics
+     4.1.6.1. Measurement statistics
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#gaussianity">
-     4.1.5.2. Gaussianity
+     4.1.6.2. Gaussianity
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#clipping">
-     4.1.5.3. Clipping
+     4.1.6.3. Clipping
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id8">
-     4.1.5.4. Quantization
+     4.1.6.4. Quantization
     </a>
    </li>
   </ul>
@@ -643,61 +663,86 @@ title="Print to PDF"
               <div>
                 
   <section class="tex2jax_ignore mathjax_ignore" id="architecture">
-<h1><span class="section-number">4.1. </span>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">#</a></h1>
-<p>The ECG signal is split into windows
-of <span class="math notranslate nohighlight">\(n\)</span> samples each. The windows of
-ECG signal are further grouped into
-frames of <span class="math notranslate nohighlight">\(w\)</span> windows each. The
-last frame may have less than <span class="math notranslate nohighlight">\(w\)</span>
-windows.
-The encoder compresses the ECG signal
-frame by frame.
-The encoder converts the
-ECG signal into a bitstream and the
-decoder reconstructs the ECG signal
-from the bitstream.</p>
+<span id="sec-codec-b-architecture"></span><h1><span class="section-number">4.1. </span>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">#</a></h1>
+<section id="problem-statement">
+<h2><span class="section-number">4.1.1. </span>Problem Statement<a class="headerlink" href="#problem-statement" title="Permalink to this headline">#</a></h2>
+<p>We consider the problem of efficient transmission of
+compressive measurements of ECG signals over the wireless body
+area networks under the digital compressive sensing paradigm.
+Let <span class="math notranslate nohighlight">\(\bx\)</span> be an ECG signal and <span class="math notranslate nohighlight">\(\by\)</span> be the corresponding
+stream of compressive measurements. Our goal is to
+transform <span class="math notranslate nohighlight">\(\by\)</span> into a bitstream <span class="math notranslate nohighlight">\(\bs\)</span> with as few bits
+as possible without losing the signal reconstruction quality.</p>
+<p>We consider whether a digital quantization of the compressive
+measurements affects the reconstruction quality.
+Further, we study the empirical distribution of compressive
+measurements to explore efficient ways of entropy coding
+of the quantized measurements.</p>
+<p>A primary constraint in our design is that the encoder
+should avoid any floating point arithmetic so that it
+can be implemented efficiently in low-power devices.</p>
+</section>
 <section id="block-diagram">
-<h2><span class="section-number">4.1.1. </span>Block Diagram<a class="headerlink" href="#block-diagram" title="Permalink to this headline">#</a></h2>
+<h2><span class="section-number">4.1.2. </span>Block Diagram<a class="headerlink" href="#block-diagram" title="Permalink to this headline">#</a></h2>
+<p><a class="reference internal" href="#fig-cs-encoder"><span class="std std-numref">Fig. 4.1</span></a> presents the high-level block
+diagram of the proposed encoder.</p>
 <figure class="align-center" id="fig-cs-encoder">
 <img alt="../_images/cs_encoder.png" src="../_images/cs_encoder.png" />
 <figcaption>
 <p><span class="caption-number">Fig. 4.1 </span><span class="caption-text">Digital Compressive Sensing Encoder</span><a class="headerlink" href="#fig-cs-encoder" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
+<p>The ECG signal is split into windows
+of <span class="math notranslate nohighlight">\(n\)</span> samples each. The windows of
+the ECG signal are further grouped into
+frames of <span class="math notranslate nohighlight">\(w\)</span> windows each.
+The last frame may have less than <span class="math notranslate nohighlight">\(w\)</span> windows.
+The encoder compresses the ECG signal frame by frame.
+The encoder converts the ECG signal into a bitstream and the
+decoder reconstructs the ECG signal from the bitstream.</p>
+<p>A window of the signal is the level at which the compressive
+sensing is done. A frame (a sequence of windows) is the
+level at which the adaptive quantization is applied and
+compressed signal statistics are estimated.</p>
+<p>The encoding algorithm is further detailed in
+<a class="reference internal" href="#alg:encoder">Algorithm 4.2</a>.</p>
+<p><a class="reference internal" href="#fig-cs-decoder"><span class="std std-numref">Fig. 4.2</span></a> is a high-level block
+diagram of the proposed decoder.</p>
 <figure class="align-center" id="fig-cs-decoder">
 <img alt="../_images/cs_decoder.png" src="../_images/cs_decoder.png" />
 <figcaption>
 <p><span class="caption-number">Fig. 4.2 </span><span class="caption-text">Digital Compressive Sensing Decoder</span><a class="headerlink" href="#fig-cs-decoder" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
-<p>The encoding algorithm is presented in
-<a class="reference internal" href="#alg:encoder">Algorithm 4.1</a>.
-The decoding algorithm is presented in
-<a class="reference internal" href="#alg:decoder">Algorithm 4.2</a>.</p>
-<p>Following <span id="id1">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">3</a>]</span>,
-we construct a sparse binary sensing matrix <span class="math notranslate nohighlight">\(\Phi\)</span> of shape
-<span class="math notranslate nohighlight">\(m \times n\)</span>.
-Each column of <span class="math notranslate nohighlight">\(\Phi\)</span> consists of exactly <span class="math notranslate nohighlight">\(d\)</span> ones and
-<span class="math notranslate nohighlight">\(m-d\)</span> zeros, where the position of ones has been randomly
-selected in each column. Identical algorithm is used
-to generate the sensing matrix using the stream header
-parameters in both the encoder and the decoder.
-The randomization is seeded with the parameter <span class="math notranslate nohighlight">\(\mathrm{key}\)</span>
-sent in the stream header.</p>
+<p>The decoding algorithm is further detailed in
+<a class="reference internal" href="#alg:decoder">Algorithm 4.3</a>.</p>
 </section>
 <section id="bitstream-format">
-<h2><span class="section-number">4.1.2. </span>Bitstream Format<a class="headerlink" href="#bitstream-format" title="Permalink to this headline">#</a></h2>
+<h2><span class="section-number">4.1.3. </span>Bitstream Format<a class="headerlink" href="#bitstream-format" title="Permalink to this headline">#</a></h2>
 <p>The encoder first sends
 the encoder parameters in the form
-of a stream header <a class="reference internal" href="#tbl-header-stream"><span class="std std-numref">Table 4.1</span></a>.
-Then for each frame of ECG signal,
-it sends a frame header <a class="reference internal" href="#tbl-header-frame"><span class="std std-numref">Table 4.2</span></a>
+of a stream header (<a class="reference internal" href="#tbl-header-stream"><span class="std std-numref">Table 4.1</span></a>).
+Then for each frame of the ECG signal,
+it sends a frame header (<a class="reference internal" href="#tbl-header-frame"><span class="std std-numref">Table 4.2</span></a>)
 followed by a frame payload consisting of the
-entropy coded measurements for the frame.</p>
-<section id="stream-header">
-<h3><span class="section-number">4.1.2.1. </span>Stream Header<a class="headerlink" href="#stream-header" title="Permalink to this headline">#</a></h3>
+entropy-coded measurements for the frame.</p>
+<div class="proof algorithm admonition" id="algorithm-0">
+<p class="admonition-title"><span class="caption-number">Algorithm 4.1 </span> (Bitstream format)</p>
+<section class="algorithm-content" id="proof-content">
+<ol class="simple">
+<li><p>Send stream header.</p></li>
+<li><p>While there are more ECG data frames:</p>
+<ol class="simple">
+<li><p>Send frame header.</p></li>
+<li><p>Send encoded frame data.</p></li>
+</ol>
+</li>
+</ol>
+</section>
+</div><section id="stream-header">
+<h3><span class="section-number">4.1.3.1. </span>Stream Header<a class="headerlink" href="#stream-header" title="Permalink to this headline">#</a></h3>
 <p>The stream header <a class="reference internal" href="#tbl-header-stream"><span class="std std-numref">Table 4.1</span></a>
-consists of all necessary information
+consists of all the necessary information
 required to initialize the decoder.
 In particular, it contains the pseudo-random
 generator key that can be used to reproduce
@@ -718,7 +763,7 @@ and adaptive clipping (<span class="math notranslate nohighlight">\(\gamma\)</sp
 If fixed quantization is used, then it contains
 the fixed quantization parameter value (<span class="math notranslate nohighlight">\(q\)</span>).
 Both <span class="math notranslate nohighlight">\(\rho\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> in the stream header
-are encoded using a simple decimal format <span class="math notranslate nohighlight">\(a 1e^{-b}\)</span> where <span class="math notranslate nohighlight">\(a\)</span>
+are encoded using a simple decimal format <span class="math notranslate nohighlight">\(a 10^{-b}\)</span> where <span class="math notranslate nohighlight">\(a\)</span>
 and <span class="math notranslate nohighlight">\(b\)</span> are encoded as 4-bit integers.</p>
 <table class="colwidths-given table" id="tbl-header-stream">
 <caption><span class="caption-number">Table 4.1 </span><span class="caption-text">Stream header</span><a class="headerlink" href="#tbl-header-stream" title="Permalink to this table">#</a></caption>
@@ -782,7 +827,7 @@ and <span class="math notranslate nohighlight">\(b\)</span> are encoded as 4-bit
 </table>
 </section>
 <section id="frame-header">
-<h3><span class="section-number">4.1.2.2. </span>Frame Header<a class="headerlink" href="#frame-header" title="Permalink to this headline">#</a></h3>
+<h3><span class="section-number">4.1.3.2. </span>Frame Header<a class="headerlink" href="#frame-header" title="Permalink to this headline">#</a></h3>
 <p>The frame header precedes the encoded data
 for each frame. It captures the encoding
 parameters that vary from frame to frame.</p>
@@ -829,9 +874,9 @@ parameters that vary from frame to frame.</p>
 </section>
 </section>
 <section id="encoder">
-<h2><span class="section-number">4.1.3. </span>Encoder<a class="headerlink" href="#encoder" title="Permalink to this headline">#</a></h2>
+<h2><span class="section-number">4.1.4. </span>Encoder<a class="headerlink" href="#encoder" title="Permalink to this headline">#</a></h2>
 <div class="proof algorithm admonition" id="alg:encoder">
-<p class="admonition-title"><span class="caption-number">Algorithm 4.1 </span> (Encoder algorithm)</p>
+<p class="admonition-title"><span class="caption-number">Algorithm 4.2 </span> (Encoder algorithm)</p>
 <section class="algorithm-content" id="proof-content">
 <ol class="simple">
 <li><p>Send stream header.</p></li>
@@ -855,7 +900,7 @@ parameters that vary from frame to frame.</p>
 <li><p><span class="math notranslate nohighlight">\(\sigma_y \leftarrow \lceil (\text{std}(\bar{\by}) \rceil\)</span>.</p></li>
 </ol>
 </li>
-<li><p>Adaptive range adjustment. For <span class="math notranslate nohighlight">\(r=2:8\)</span></p>
+<li><p>Adaptive range adjustment. For <span class="math notranslate nohighlight">\(r=2 \dots 8\)</span></p>
 <ol class="simple">
 <li><p><span class="math notranslate nohighlight">\(y_{\min} \leftarrow \mu_y  - r \sigma_y\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(y_{\max} \leftarrow \mu_y  + r \sigma_y\)</span>.</p></li>
@@ -876,20 +921,25 @@ parameters that vary from frame to frame.</p>
 The input to the encoder is a frame of digital ECG samples
 at a given sampling rate <span class="math notranslate nohighlight">\(f_s\)</span>. In the MIT-BIH database,
 the samples are digitally encoded in 11 bits per sample (unsigned).
-Let the frame of ECG signal be denoted by <span class="math notranslate nohighlight">\(\bx\)</span>.
+Let the frame of the ECG signal be denoted by <span class="math notranslate nohighlight">\(\bx\)</span>.
 The frame is split into non-overlapping windows of <span class="math notranslate nohighlight">\(n\)</span>
 samples each. We shall denote each window of <span class="math notranslate nohighlight">\(n\)</span> samples
 by vectors <span class="math notranslate nohighlight">\(\bx_i\)</span>.</p>
 <section id="windowing">
-<h3><span class="section-number">4.1.3.1. </span>Windowing<a class="headerlink" href="#windowing" title="Permalink to this headline">#</a></h3>
+<h3><span class="section-number">4.1.4.1. </span>Windowing<a class="headerlink" href="#windowing" title="Permalink to this headline">#</a></h3>
 <p>A frame of ECG consists of multiple
 such windows (up to a maximum of <span class="math notranslate nohighlight">\(w\)</span> windows per
 frame as per the encoder configuration).
 Let the windows by denoted by <span class="math notranslate nohighlight">\(\bx_1, \bx_2, \dots\)</span>.
 Let there be <span class="math notranslate nohighlight">\(w\)</span> such windows.
-We can put them together to form the (signed) signal matrix
-\footnote{
-PhysioNet provides the baseline values for each channel
+We can put them together to form the (signed) signal matrix:</p>
+<div class="math notranslate nohighlight">
+\[
+\bX = \begin{bmatrix}
+\bx_1 &amp; \bx_2 &amp; \dots &amp; \bx_w
+\end{bmatrix}.
+\]</div>
+<p>PhysioNet provides the baseline values for each channel
 in their ECG records.
 Since the digital samples are unsigned, we have subtracted
 them by the baseline value (<span class="math notranslate nohighlight">\(1024\)</span> for 11-bit encoding).
@@ -897,18 +947,21 @@ them by the baseline value (<span class="math notranslate nohighlight">\(1024\)<
 <span class="math notranslate nohighlight">\(0\)</span> to <span class="math notranslate nohighlight">\(2047\)</span>. The baseline for zero amplitude is
 digitally represented as <span class="math notranslate nohighlight">\(1024\)</span>.
 After baseline adjustment, the range of values becomes
-<span class="math notranslate nohighlight">\([-1024,1023]\)</span>.
-}:</p>
-<div class="math notranslate nohighlight">
-\[
-\bX = \begin{bmatrix}
-\bx_1 &amp; \bx_2 &amp; \dots &amp; \bx_w
-\end{bmatrix}.
-\]</div>
+<span class="math notranslate nohighlight">\([-1024,1023]\)</span>.</p>
 </section>
 <section id="compressive-sensing">
-<h3><span class="section-number">4.1.3.2. </span>Compressive Sensing<a class="headerlink" href="#compressive-sensing" title="Permalink to this headline">#</a></h3>
-<p>The digital compressive sensing
+<h3><span class="section-number">4.1.4.2. </span>Compressive Sensing<a class="headerlink" href="#compressive-sensing" title="Permalink to this headline">#</a></h3>
+<p>Following <span id="id1">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">22</a>]</span>,
+we construct a sparse binary sensing matrix <span class="math notranslate nohighlight">\(\Phi\)</span> of shape
+<span class="math notranslate nohighlight">\(m \times n\)</span>.
+Each column of <span class="math notranslate nohighlight">\(\Phi\)</span> consists of exactly <span class="math notranslate nohighlight">\(d\)</span> ones and
+<span class="math notranslate nohighlight">\(m-d\)</span> zeros, where the position of ones has been randomly
+selected in each column. An identical algorithm is used
+to generate the sensing matrix using the stream header
+parameters in both the encoder and the decoder.
+The randomization is seeded with the parameter <span class="math notranslate nohighlight">\(\mathrm{key}\)</span>
+sent in the stream header.</p>
+<p>The digital compressive sensing operation
 is represented as</p>
 <div class="math notranslate nohighlight">
 \[
@@ -916,7 +969,7 @@ is represented as</p>
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\by_i\)</span> is the measurement vector for the <span class="math notranslate nohighlight">\(i\)</span>-th
 window. Combining the measurement vectors for each window,
-the measurement matrix for the entire record is given by</p>
+the measurement matrix for the entire frame is given by</p>
 <div class="math notranslate nohighlight">
 \[
 \bY = \Phi \bX.
@@ -928,8 +981,8 @@ to be picked up and summed. Consequently, <span class="math notranslate nohighli
 only signed integer values.</p>
 </section>
 <section id="flattening">
-<h3><span class="section-number">4.1.3.3. </span>Flattening<a class="headerlink" href="#flattening" title="Permalink to this headline">#</a></h3>
-<p>Beyond this point, the window structure of signal is not
+<h3><span class="section-number">4.1.4.3. </span>Flattening<a class="headerlink" href="#flattening" title="Permalink to this headline">#</a></h3>
+<p>Beyond this point, the window structure of the signal is not
 relevant for quantization and entropy coding purposes in our design.
 Hence, we flatten it (column by column) into a vector
 <span class="math notranslate nohighlight">\(\by\)</span> of <span class="math notranslate nohighlight">\(m w\)</span> measurements.</p>
@@ -939,18 +992,18 @@ Hence, we flatten it (column by column) into a vector
 \]</div>
 </section>
 <section id="quantization">
-<h3><span class="section-number">4.1.3.4. </span>Quantization<a class="headerlink" href="#quantization" title="Permalink to this headline">#</a></h3>
+<h3><span class="section-number">4.1.4.4. </span>Quantization<a class="headerlink" href="#quantization" title="Permalink to this headline">#</a></h3>
 <p>Next, we perform a simple quantization of measurement values.
 If fixed quantization has been specified in the stream header,
 then for each entry <span class="math notranslate nohighlight">\(y\)</span> in <span class="math notranslate nohighlight">\(\by\)</span>, we compute</p>
 <div class="math notranslate nohighlight">
 \[
-\bar{y} = y / 2^q.
+\bar{y} = \lfloor y / 2^q \rfloor.
 \]</div>
 <p>For the whole measurement vector, we can write this as</p>
 <div class="math notranslate nohighlight">
 \[
-\bar{\by} = \frac{1}{2^q} \by.
+\bar{\by} = \left \lfloor \frac{1}{2^q} \by \right \rfloor.
 \]</div>
 <p>This can be easily implemented in a computer as a signed
 right shift by <span class="math notranslate nohighlight">\(q\)</span> bits (for integer values).
@@ -958,13 +1011,13 @@ This reduces the range of values in <span class="math notranslate nohighlight">\
 <p>If adaptive quantization has been specified, then we vary
 the quantization parameter <span class="math notranslate nohighlight">\(q\)</span> from a value <span class="math notranslate nohighlight">\(q_{\max}=6\)</span>
 down to a value <span class="math notranslate nohighlight">\(q_{\min}=0\)</span>. For each value of <span class="math notranslate nohighlight">\(q\)</span>,
-we compute <span class="math notranslate nohighlight">\(\bar{\by} = \frac{1}{2^q} \by\)</span>. We then
+we compute <span class="math notranslate nohighlight">\(\bar{\by} = \lfloor \frac{1}{2^q} \by \rfloor\)</span>. We then
 compute <span class="math notranslate nohighlight">\(\tilde{\by} = 2^q \bar{\by}\)</span>. We stop
 if <span class="math notranslate nohighlight">\(\nrmse(\by, \tilde{\by})\)</span> reaches a limit specified by
 the parameter <span class="math notranslate nohighlight">\(\rho\)</span> in the stream header.</p>
 </section>
 <section id="entropy-model">
-<h3><span class="section-number">4.1.3.5. </span>Entropy Model<a class="headerlink" href="#entropy-model" title="Permalink to this headline">#</a></h3>
+<h3><span class="section-number">4.1.4.5. </span>Entropy Model<a class="headerlink" href="#entropy-model" title="Permalink to this headline">#</a></h3>
 <p>Before we explain the clipping step, we shall describe
 our entropy model.
 We model the measurements as samples from a quantized Gaussian
@@ -973,16 +1026,25 @@ First, we estimate the mean <span class="math notranslate nohighlight">\(\mu_y\)
 of measurement values in <span class="math notranslate nohighlight">\(\bar{\by}\)</span>.
 We shall need to transmit <span class="math notranslate nohighlight">\(\mu_y\)</span> and <span class="math notranslate nohighlight">\(\sigma_y\)</span> in the frame header.
 We round the values of <span class="math notranslate nohighlight">\(\mu_y\)</span> and <span class="math notranslate nohighlight">\(\sigma_y\)</span> to the nearest integer
-so that it can be transmitted efficiently as integers.</p>
+so that they can be transmitted efficiently as integers.</p>
 <p>Entropy coding works with a finite alphabet.
 Accordingly, the quantized Gaussian model
-requires specification of the minimum
+requires the specification of the minimum
 and maximum values that our quantized
 measurements can take. The range of values
 in <span class="math notranslate nohighlight">\(\bar{\by}\)</span> must be clipped to this range.</p>
 </section>
 <section id="adaptive-clipping">
-<h3><span class="section-number">4.1.3.6. </span>Adaptive Clipping<a class="headerlink" href="#adaptive-clipping" title="Permalink to this headline">#</a></h3>
+<h3><span class="section-number">4.1.4.6. </span>Adaptive Clipping<a class="headerlink" href="#adaptive-clipping" title="Permalink to this headline">#</a></h3>
+<p>The clipping function for scalar values is defined as follows:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\clip (x, a, b) \triangleq \begin{cases}
+a &amp; &amp; x \leq a \\
+b &amp; &amp; x \geq b \\
+x &amp; &amp; \text{otherwise}.
+\end{cases}
+\end{split}\]</div>
 <p>We clip the values in <span class="math notranslate nohighlight">\(\bar{\by}\)</span> to the range
 <span class="math notranslate nohighlight">\([\mu_y - r \sigma_y, \mu_y + r \sigma_y]\)</span>
 where <span class="math notranslate nohighlight">\(r\)</span> is the range parameter estimate from the data.
@@ -996,7 +1058,7 @@ till we have captured sufficient variation in <span class="math notranslate nohi
 and <span class="math notranslate nohighlight">\(\nrmse(\by, \hat{\by}) \leq \gamma\)</span>.</p>
 </section>
 <section id="entropy-coding">
-<h3><span class="section-number">4.1.3.7. </span>Entropy Coding<a class="headerlink" href="#entropy-coding" title="Permalink to this headline">#</a></h3>
+<h3><span class="section-number">4.1.4.7. </span>Entropy Coding<a class="headerlink" href="#entropy-coding" title="Permalink to this headline">#</a></h3>
 <p>We then model the measurement values in <span class="math notranslate nohighlight">\(\hat{\by}\)</span>
 as a quantized Gaussian distributed random variable
 with mean <span class="math notranslate nohighlight">\(\mu_y\)</span>, standard deviation <span class="math notranslate nohighlight">\(\sigma_y\)</span>,
@@ -1011,31 +1073,32 @@ and not the unclipped <span class="math notranslate nohighlight">\(\bar{\by}\)</
 is a lossless encoding scheme. Hence, <span class="math notranslate nohighlight">\(\hat{\by}\)</span>
 will be reproduced faithfully in the decoder if there
 are no bit errors involved in the transmission
-\footnote{We assume that appropriate channel coding
-mechanism has been used.}.</p>
+We assume that an appropriate channel coding
+mechanism has been used.</p>
 </section>
 <section id="integer-arithmetic">
-<h3><span class="section-number">4.1.3.8. </span>Integer Arithmetic<a class="headerlink" href="#integer-arithmetic" title="Permalink to this headline">#</a></h3>
-<p>The input to digital compressive sensing is a stream of integers.
-The sensing process with sparse binary sensing matrix can be implemented
+<h3><span class="section-number">4.1.4.8. </span>Integer Arithmetic<a class="headerlink" href="#integer-arithmetic" title="Permalink to this headline">#</a></h3>
+<p>The input to digital compressive sensing is a stream of
+integer-valued ECG samples.
+The sensing process with the sparse binary sensing matrix can be implemented
 using integer sums and lookup.
 It is possible to implement the computation of
 approximate mean and standard deviation
 using integer arithmetic.
-We can use the normalized mean square error
-based thresholds for adaptive quantization and clipping steps.
+We can use the normalized mean square error-based thresholds
+for adaptive quantization and clipping steps.
 ANS entropy coding is fully implemented using integer arithmetic.
 Thus, the proposed encoder can be fully implemented using integer arithmetic.</p>
 </section>
 </section>
 <section id="decoder">
-<h2><span class="section-number">4.1.4. </span>Decoder<a class="headerlink" href="#decoder" title="Permalink to this headline">#</a></h2>
+<h2><span class="section-number">4.1.5. </span>Decoder<a class="headerlink" href="#decoder" title="Permalink to this headline">#</a></h2>
 <p>The decoder initializes itself by reading the stream
 header and creating the sensing matrix to be used
 for the decoding of compressive measurements
 frame by frame.</p>
 <div class="proof algorithm admonition" id="alg:decoder">
-<p class="admonition-title"><span class="caption-number">Algorithm 4.2 </span> (Decoder algorithm)</p>
+<p class="admonition-title"><span class="caption-number">Algorithm 4.3 </span> (Decoder algorithm)</p>
 <section class="algorithm-content" id="proof-content">
 <ol class="simple">
 <li><p>Read stream header.</p></li>
@@ -1070,10 +1133,10 @@ Decoding of a frame starts by reading the frame header
 which provides the frame encoding parameters:
 <span class="math notranslate nohighlight">\(\mu_y, \sigma_y, q, r, n_w, n_c\)</span>.</p>
 <section id="entropy-decoding">
-<h3><span class="section-number">4.1.4.1. </span>Entropy Decoding<a class="headerlink" href="#entropy-decoding" title="Permalink to this headline">#</a></h3>
+<h3><span class="section-number">4.1.5.1. </span>Entropy Decoding<a class="headerlink" href="#entropy-decoding" title="Permalink to this headline">#</a></h3>
 <p>The frame header is used for building the quantized
 Gaussian distribution model for the decoding of the
-entropy coded measurements from the frame payload.
+entropy-coded measurements from the frame payload.
 The minimum and maximum values for the model are
 computed as:</p>
 <div class="math notranslate nohighlight">
@@ -1086,7 +1149,7 @@ The ANS decoder is used to extract the encoded measurement
 values <span class="math notranslate nohighlight">\(\hat{\by}\)</span> from the frame payload.</p>
 </section>
 <section id="inverse-quantization">
-<h3><span class="section-number">4.1.4.2. </span>Inverse Quantization<a class="headerlink" href="#inverse-quantization" title="Permalink to this headline">#</a></h3>
+<h3><span class="section-number">4.1.5.2. </span>Inverse Quantization<a class="headerlink" href="#inverse-quantization" title="Permalink to this headline">#</a></h3>
 <p>We then perform the inverse quantization as</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1101,8 +1164,8 @@ corresponding to the signal windows of size <span class="math notranslate nohigh
 <p>We are now ready for the reconstruction of the ECG signal for each window.</p>
 </section>
 <section id="reconstruction">
-<h3><span class="section-number">4.1.4.3. </span>Reconstruction<a class="headerlink" href="#reconstruction" title="Permalink to this headline">#</a></h3>
-<p>The architecture is flexible in terms of choice of the
+<h3><span class="section-number">4.1.5.3. </span>Reconstruction<a class="headerlink" href="#reconstruction" title="Permalink to this headline">#</a></h3>
+<p>The architecture is flexible in terms of the choice of the
 reconstruction algorithm.</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1111,11 +1174,11 @@ reconstruction algorithm.</p>
 <p>Each column (window) in <span class="math notranslate nohighlight">\(\tilde{\bY}\)</span> is decoded independently.
 In our experiments, we built
 a BSBL-BO (Block Sparse Bayesian Learning-Bound Optimization)
-decoder <span id="id2">[<a class="reference internal" href="../bib.html#id38" title="Zhilin Zhang, Tzyy-Ping Jung, Scott Makeig, and Bhaskar D Rao. Compressed sensing for energy-efficient wireless telemonitoring of noninvasive fetal ecg via block sparse bayesian learning. IEEE Transactions on Biomedical Engineering, 60(2):300–309, 2012.">5</a>, <a class="reference internal" href="../bib.html#id39" title="Zhilin Zhang and Bhaskar D Rao. Extension of sbl algorithms for the recovery of block sparse signals with intra-block correlation. IEEE Transactions on Signal Processing, 61(8):2009–2015, 2013.">6</a>, <a class="reference internal" href="../bib.html#id42" title="Zhimin Zhang, Shoushui Wei, Dingwen Wei, Liping Li, Feng Liu, and Chengyu Liu. Comparison of four recovery algorithms used in compressed sensing for ecg signal processing. In 2016 Computing in Cardiology Conference (CinC), 401–404. IEEE, 2016.">7</a>]</span>.
+decoder <span id="id2">[<a class="reference internal" href="../bib.html#id38" title="Zhilin Zhang, Tzyy-Ping Jung, Scott Makeig, and Bhaskar D Rao. Compressed sensing for energy-efficient wireless telemonitoring of noninvasive fetal ecg via block sparse bayesian learning. IEEE Transactions on Biomedical Engineering, 60(2):300–309, 2012.">35</a>, <a class="reference internal" href="../bib.html#id39" title="Zhilin Zhang and Bhaskar D Rao. Extension of sbl algorithms for the recovery of block sparse signals with intra-block correlation. IEEE Transactions on Signal Processing, 61(8):2009–2015, 2013.">36</a>, <a class="reference internal" href="../bib.html#id42" title="Zhimin Zhang, Shoushui Wei, Dingwen Wei, Liping Li, Feng Liu, and Chengyu Liu. Comparison of four recovery algorithms used in compressed sensing for ecg signal processing. In 2016 Computing in Cardiology Conference (CinC), 401–404. IEEE, 2016.">37</a>]</span>.
 Our implementation of BSBL is available as part of CR-Sparse library
-<span id="id3">[<a class="reference internal" href="../bib.html#id20" title="Shailesh Kumar. Cr-sparse: hardware accelerated functional algorithms for sparse signal processing in python using jax. Journal of Open Source Software, 6(68):3917, 2021.">2</a>]</span>.
-As Zhang et al. suggest in <span id="id4">[<a class="reference internal" href="../bib.html#id38" title="Zhilin Zhang, Tzyy-Ping Jung, Scott Makeig, and Bhaskar D Rao. Compressed sensing for energy-efficient wireless telemonitoring of noninvasive fetal ecg via block sparse bayesian learning. IEEE Transactions on Biomedical Engineering, 60(2):300–309, 2012.">5</a>]</span>,
-block sizes are user defined and are identical and
+<span id="id3">[<a class="reference internal" href="../bib.html#id20" title="Shailesh Kumar. Cr-sparse: hardware accelerated functional algorithms for sparse signal processing in python using jax. Journal of Open Source Software, 6(68):3917, 2021.">18</a>]</span>.
+As Zhang et al. suggest in <span id="id4">[<a class="reference internal" href="../bib.html#id38" title="Zhilin Zhang, Tzyy-Ping Jung, Scott Makeig, and Bhaskar D Rao. Compressed sensing for energy-efficient wireless telemonitoring of noninvasive fetal ecg via block sparse bayesian learning. IEEE Transactions on Biomedical Engineering, 60(2):300–309, 2012.">35</a>]</span>,
+block sizes are user-defined, they are identical for all blocks, and
 no pruning of blocks is applied. Our implementation has been
 done under these assumptions and is built using JAX so that it can
 be run on GPU hardware easily to speed up decoding.
@@ -1130,28 +1193,28 @@ the sequence of decoded ECG samples to form the ECG record.</p>
 \]</div>
 </section>
 <section id="alternate-reconstruction-algorithms">
-<h3><span class="section-number">4.1.4.4. </span>Alternate Reconstruction Algorithms<a class="headerlink" href="#alternate-reconstruction-algorithms" title="Permalink to this headline">#</a></h3>
-<p>It is entirely possible to use a deep learning based
-reconstruction network like CS-NET <span id="id5">[<a class="reference internal" href="../bib.html#id43" title="Hongpo Zhang, Zhongren Dong, Zhen Wang, Lili Guo, and Zongmin Wang. Csnet: a deep learning approach for ecg compressed sensing. Biomedical Signal Processing and Control, 70:103065, 2021.">4</a>]</span>
+<h3><span class="section-number">4.1.5.4. </span>Alternate Reconstruction Algorithms<a class="headerlink" href="#alternate-reconstruction-algorithms" title="Permalink to this headline">#</a></h3>
+<p>It is entirely possible to use a deep learning-based
+reconstruction network like CS-NET <span id="id5">[<a class="reference internal" href="../bib.html#id43" title="Hongpo Zhang, Zhongren Dong, Zhen Wang, Lili Guo, and Zongmin Wang. Csnet: a deep learning approach for ecg compressed sensing. Biomedical Signal Processing and Control, 70:103065, 2021.">32</a>]</span>
 in the decoder. We will need to train the network with
 <span class="math notranslate nohighlight">\(\tilde{\by}\)</span> as inputs and <span class="math notranslate nohighlight">\(\bx\)</span> as expected output.
 However, we haven’t pursued this direction yet as our
 focus was to study the quantization and entropy coding
-steps in this work. One concern with deep learning
-based architectures is that the decoder network
+steps in this work. One concern with
+deep learning-based architectures is that the decoder network
 needs to be trained separately for each encoder
 configuration and each database. The ability
 to dynamically change the encoder/decoder
 configuration parameters is severely restricted
-in deep learning based architectures.
-This limitation doesn’t exist with BSBL type
+in deep learning-based architectures.
+This limitation doesn’t exist with BSBL
 algorithms.</p>
 </section>
 </section>
 <section id="discussion">
-<h2><span class="section-number">4.1.5. </span>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">#</a></h2>
+<h2><span class="section-number">4.1.6. </span>Discussion<a class="headerlink" href="#discussion" title="Permalink to this headline">#</a></h2>
 <section id="measurement-statistics">
-<h3><span class="section-number">4.1.5.1. </span>Measurement statistics<a class="headerlink" href="#measurement-statistics" title="Permalink to this headline">#</a></h3>
+<h3><span class="section-number">4.1.6.1. </span>Measurement statistics<a class="headerlink" href="#measurement-statistics" title="Permalink to this headline">#</a></h3>
 <p>Several aspects of our encoder architecture are based on the
 statistics of the measurements <span class="math notranslate nohighlight">\(\by\)</span>. We collected the summary
 statistics including mean <span class="math notranslate nohighlight">\(\mu\)</span>, standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span>,
@@ -1712,8 +1775,8 @@ and the iqr (inter quantile range) divided by standard deviation
 </table>
 </section>
 <section id="gaussianity">
-<h3><span class="section-number">4.1.5.2. </span>Gaussianity<a class="headerlink" href="#gaussianity" title="Permalink to this headline">#</a></h3>
-<p>The key idea behind the our entropy coding
+<h3><span class="section-number">4.1.6.2. </span>Gaussianity<a class="headerlink" href="#gaussianity" title="Permalink to this headline">#</a></h3>
+<p>The key idea behind our entropy coding
 design is to model the measurement values as
 being sampled from a quantized
 Gaussian distribution. Towards this, we measured the
@@ -1727,17 +1790,17 @@ While the skew is not very high, Kurtosis does vary widely.
 show the histograms of measurement
 values for 6 different records. Although the measurements are not
 Gaussian distributed, it is not a bad approximation.
-The quantized Gaussian approximation works well in the entropy
+The quantized Gaussian approximation works well in entropy
 coding. It is easy to estimate from the data.</p>
 <p>The best compression can be achieved by using the empirical
 probabilities of different values in <span class="math notranslate nohighlight">\(\by\)</span> in entropy coding.
 However, doing so would require us to transmit the empirical
 probabilities as side information. This may be expensive.
 We can estimate the improvement in compression overhead
-by use of the quantized Gaussian approximation.
+by the use of the quantized Gaussian approximation.
 Let <span class="math notranslate nohighlight">\(\PP\)</span> denote the empirical probability distribution
 of data and let <span class="math notranslate nohighlight">\(\QQ\)</span> denote the corresponding
-quantized Gaussian distribution. Bamler in <span id="id6">[<a class="reference internal" href="../bib.html#id3" title="Robert Bamler. Understanding entropy coding with asymmetric numeral systems (ans): a statistician's perspective. arXiv preprint arXiv:2201.01741, 2022.">1</a>]</span>
+quantized Gaussian distribution. Bamler in <span id="id6">[<a class="reference internal" href="../bib.html#id3" title="Robert Bamler. Understanding entropy coding with asymmetric numeral systems (ans): a statistician's perspective. arXiv preprint arXiv:2201.01741, 2022.">2</a>]</span>
 show empirically that the overhead of using an approximation
 distribution <span class="math notranslate nohighlight">\(\QQ\)</span> in place of <span class="math notranslate nohighlight">\(\PP\)</span> in ANS entropy coding
 is close to the KL divergence <span class="math notranslate nohighlight">\(\text{KL}(\PP || \QQ)\)</span>
@@ -1749,7 +1812,7 @@ which is given by</p>
 <p>We computed the empirical distribution for <span class="math notranslate nohighlight">\(\by\)</span> for each
 record and measured its KL divergence with the corresponding
 quantized Gaussian distribution.
-It is tabulated in the \emph{kld} column in <a class="reference internal" href="#tbl-cs-codec-measure-stats"><span class="std std-numref">Table 4.3</span></a>.
+It is tabulated in the <em>kld</em> column in <a class="reference internal" href="#tbl-cs-codec-measure-stats"><span class="std std-numref">Table 4.3</span></a>.
 It varies around <span class="math notranslate nohighlight">\(0.11 \pm 0.07\)</span> bits
 across the 48 records.
 Thus, the overhead of using a quantized
@@ -1771,8 +1834,8 @@ the <span class="math notranslate nohighlight">\(\by\)</span> values have been b
 suggest that the empirical
 distributions vary widely from one record to another in the
 database. Hence using a single fixed empirical distribution
-(e.g. the Huffman code book preloaded into the device in
-<span id="id7">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">3</a>]</span>)
+(e.g. the Huffman code-book preloaded into the device in
+<span id="id7">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">22</a>]</span>)
 may lead to lower compression.</p>
 <figure class="align-center" id="fig-cs-codec-y-hist-100">
 <img alt="../_images/rec_100_hist_measurements_200_bins.png" src="../_images/rec_100_hist_measurements_200_bins.png" />
@@ -1819,8 +1882,8 @@ may lead to lower compression.</p>
 </figure>
 </section>
 <section id="clipping">
-<h3><span class="section-number">4.1.5.3. </span>Clipping<a class="headerlink" href="#clipping" title="Permalink to this headline">#</a></h3>
-<p>An entropy coder can handle with a finite set of symbols
+<h3><span class="section-number">4.1.6.3. </span>Clipping<a class="headerlink" href="#clipping" title="Permalink to this headline">#</a></h3>
+<p>An entropy coder can handle a finite set of symbols
 only. Hence, the range of input values [measurements
 coded as integers] must be restricted to a finite range.
 This is the reason one has to choose a distribution
@@ -1830,19 +1893,19 @@ while the complete range of measurement values can be
 up to 40-50x larger than the standard deviation, the iqr
 is less than <span class="math notranslate nohighlight">\(1.5\)</span> times the standard deviation. In other
 words, the measurement values are fairly concentrated
-around its mean. This can be visually seen from the
+around the mean value. This can be visually seen from the
 histograms in
 <a class="reference internal" href="#fig-cs-codec-y-hist-100"><span class="std std-numref">Fig. 4.3</span></a>-<a class="reference internal" href="#fig-cs-codec-y-hist-234"><span class="std std-numref">Fig. 4.8</span></a>
 also.</p>
 </section>
 <section id="id8">
-<h3><span class="section-number">4.1.5.4. </span>Quantization<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h3>
+<h3><span class="section-number">4.1.6.4. </span>Quantization<a class="headerlink" href="#id8" title="Permalink to this headline">#</a></h3>
 <p><a class="reference internal" href="#fig-100-q-0-7"><span class="std std-numref">Fig. 4.10</span></a> demonstrates the impact of the
 quantization step on the reconstruction quality
 for record 100 under non-adaptive quantization.
 <span class="math notranslate nohighlight">\(6\)</span> windows of <span class="math notranslate nohighlight">\(512\)</span> samples
 were used in this example. The first panel
-shows the original (digital) signal. Remaining
+shows the original (digital) signal. The remaining
 panels show the reconstruction at different
 quantization parameters.
 The reconstruction visual quality is excellent
@@ -1850,7 +1913,7 @@ up to <span class="math notranslate nohighlight">\(q=5\)</span> (PRD below 7%), 
 and clinically unacceptable at <span class="math notranslate nohighlight">\(q=7\)</span>
 (with PRD more than 15%).
 One can see significant waveform distortions at <span class="math notranslate nohighlight">\(q=7\)</span>.
-Also note how the quality score keeps increasing till
+Also, note how the quality score keeps increasing till
 <span class="math notranslate nohighlight">\(q=4\)</span> and starts decreasing after that with a massive
 drop at <span class="math notranslate nohighlight">\(q=7\)</span>.</p>
 <figure class="align-center" id="fig-100-q-0-7">

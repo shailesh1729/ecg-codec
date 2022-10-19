@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>3.3. Performance Metrics &#8212; ECG Codec</title>
+    <title>3.2. Compressive Sensing &#8212; ECG Codec</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -55,8 +55,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="3.4. Datasets" href="datasets.html" />
-    <link rel="prev" title="3.2. Compressive Sensing" href="cs.html" />
+    <link rel="next" title="3.3. Performance Metrics" href="metrics.html" />
+    <link rel="prev" title="3.1. History" href="history.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -129,13 +129,13 @@ const thebe_selector_output = ".output, .cell_output"
      3.1. History
     </a>
    </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="cs.html">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      3.2. Compressive Sensing
     </a>
    </li>
-   <li class="toctree-l2 current active">
-    <a class="current reference internal" href="#">
+   <li class="toctree-l2">
+    <a class="reference internal" href="metrics.html">
      3.3. Performance Metrics
     </a>
    </li>
@@ -273,7 +273,7 @@ title="Source repository"
       </li>
       
       <li>
-        <a href="https://github.com/shailesh1729/ecg-codec/issues/new?title=Issue%20on%20page%20%2Fcompression/metrics.html&body=Your%20issue%20content%20here."
+        <a href="https://github.com/shailesh1729/ecg-codec/issues/new?title=Issue%20on%20page%20%2Fcompression/cs.html&body=Your%20issue%20content%20here."
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -290,7 +290,7 @@ title="Open an issue"
       </li>
       
       <li>
-        <a href="https://github.com/shailesh1729/ecg-codec/edit/main/docs/compression/metrics.md"
+        <a href="https://github.com/shailesh1729/ecg-codec/edit/main/docs/compression/cs.md"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -318,7 +318,7 @@ title="Edit this page"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="../_sources/compression/metrics.md"
+        <a href="../_sources/compression/cs.md"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -378,13 +378,8 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#compression-ratio">
-   3.3.1. Compression Ratio
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#reconstruction-quality">
-   3.3.2. Reconstruction Quality
+  <a class="reference internal nav-link" href="#block-sparse-bayesian-learning">
+   3.2.1. Block Sparse Bayesian Learning
   </a>
  </li>
 </ul>
@@ -396,7 +391,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Performance Metrics</h1>
+                <h1>Compressive Sensing</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -407,13 +402,8 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#compression-ratio">
-   3.3.1. Compression Ratio
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#reconstruction-quality">
-   3.3.2. Reconstruction Quality
+  <a class="reference internal nav-link" href="#block-sparse-bayesian-learning">
+   3.2.1. Block Sparse Bayesian Learning
   </a>
  </li>
 </ul>
@@ -426,174 +416,104 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="performance-metrics">
-<span id="sec-metrics"></span><h1><span class="section-number">3.3. </span>Performance Metrics<a class="headerlink" href="#performance-metrics" title="Permalink to this headline">#</a></h1>
-<p>In our encoder, the ECG signal is split into windows
-of <span class="math notranslate nohighlight">\(n\)</span> samples each which can be multiplied
-with a sensing matrix. Each window of <span class="math notranslate nohighlight">\(n\)</span>
-samples generates <span class="math notranslate nohighlight">\(m\)</span> measurements by the
-sensing equation <span class="math notranslate nohighlight">\(\by = \Phi \bx\)</span>.
-Assume that we are encoding <span class="math notranslate nohighlight">\(s\)</span> ECG samples where
-<span class="math notranslate nohighlight">\(s = n w\)</span> and <span class="math notranslate nohighlight">\(w\)</span> is the number of signal windows
-being encoded.
-Let the ECG signal be sampled by the ADC device
-at a resolution of <span class="math notranslate nohighlight">\(r\)</span> bits per sample.
-For MIT-BIH Arrhythmia database, <span class="math notranslate nohighlight">\(r=11\)</span>.
-Then the number of uncompressed bits is given by
-<span class="math notranslate nohighlight">\(\bits_u = r s\)</span>.</p>
-<section id="compression-ratio">
-<h2><span class="section-number">3.3.1. </span>Compression Ratio<a class="headerlink" href="#compression-ratio" title="Permalink to this headline">#</a></h2>
-<p>Let the total number of compressed
-bits corresponding to the <span class="math notranslate nohighlight">\(s\)</span> ECG samples be
-<span class="math notranslate nohighlight">\(\bits_c\)</span>.
-This includes the overhead bits required
-for the stream header and frame headers to be explained later.
-Then the <em>compression ratio</em> (<span class="math notranslate nohighlight">\(\compr\)</span>) is defined as</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="compressive-sensing">
+<span id="sec-cs"></span><h1><span class="section-number">3.2. </span>Compressive Sensing<a class="headerlink" href="#compressive-sensing" title="Permalink to this headline">#</a></h1>
+<p>Under the digital CS paradigm, we assume that the
+signals have passed through the analog-to-digital
+converter (ADC) and are represented using signed integers
+at a specific resolution.</p>
+<p>CS is an emerging signal compression paradigm that relies
+on the sparsity of signals (using an appropriate basis)
+to compress using incoherent measurements.
+The basic model can be expressed as:</p>
 <div class="math notranslate nohighlight">
 \[
-\compr \triangleq \frac{\bits_u}{\bits_c}.
+\by = \Phi \bx + \be
 \]</div>
-<p><em>Percentage space saving</em> (<span class="math notranslate nohighlight">\(\pss\)</span>) is defined as</p>
+<p>where <span class="math notranslate nohighlight">\(\bx \in \RR^n\)</span> is a signal to compress
+(of length <span class="math notranslate nohighlight">\(n\)</span>). <span class="math notranslate nohighlight">\(\Phi \in \RR^{m \times n}\)</span>
+is a sensing matrix which compresses <span class="math notranslate nohighlight">\(\bx\)</span>
+via linear measurements. Each row of <span class="math notranslate nohighlight">\(\Phi\)</span>
+represents one linear measurement as a linear
+functional on <span class="math notranslate nohighlight">\(\bx\)</span>. <span class="math notranslate nohighlight">\(\by\)</span> is a measurement
+vector consisting of <span class="math notranslate nohighlight">\(m\)</span> distinct measurements
+done on <span class="math notranslate nohighlight">\(\bx\)</span>. By design, <span class="math notranslate nohighlight">\(\Phi\)</span> is a full-rank matrix.
+Hence every set of <span class="math notranslate nohighlight">\(m\)</span> columns of <span class="math notranslate nohighlight">\(\Phi\)</span>
+is linearly independent. <span class="math notranslate nohighlight">\(\be \in \RR^m\)</span> is the
+error/noise introduced during the measurement process.
+In our digital CS paradigm, the noise is introduced
+by the quantization step in our encoder.
+In our case, <span class="math notranslate nohighlight">\(\bx\)</span> is a window of a raw ECG record
+from one channel/lead.
+Often <span class="math notranslate nohighlight">\(\bx\)</span> is not sparse by itself, but is sparse
+in some orthonormal basis <span class="math notranslate nohighlight">\(\Psi\)</span> expressed as
+<span class="math notranslate nohighlight">\(\bx = \Phi \alpha\)</span> and the representation <span class="math notranslate nohighlight">\(\alpha\)</span>
+is sparse. ECG signals exhibit sparsity in wavelet
+bases.</p>
+<p>Most natural signals have richer structures beyond
+sparsity. A common structure is natural signals
+is a block/group structure <span id="id1">[<a class="reference internal" href="../bib.html#id17" title="Yonina C Eldar, Patrick Kuppinger, and Helmut Bolcskei. Block-sparse signals: uncertainty relations and efficient recovery. IEEE Transactions on Signal Processing, 58(6):3042–3054, 2010.">15</a>]</span>.
+We introduce the block/group structure on <span class="math notranslate nohighlight">\(\bx\)</span> as</p>
 <div class="math notranslate nohighlight">
 \[
-\pss \triangleq \frac{\bits_u - \bits_c}{\bits_u} \times 100.
+\bx = \begin{pmatrix}
+\bx_1 &amp; \bx_2 &amp; \dots &amp; \bx_g
+\end{pmatrix}
 \]</div>
-<p>Note that often in literature, <span class="math notranslate nohighlight">\(\pss\)</span> is defined as compression ratio
-(e.g., <span id="id1">[<a class="reference internal" href="../bib.html#id26" title="Hossein Mamaghanian, Nadia Khaled, David Atienza, and Pierre Vandergheynst. Compressed sensing for real-time energy-efficient ecg compression on wireless body sensor nodes. IEEE Transactions on Biomedical Engineering, 58(9):2456–2466, 2011.">22</a>]</span>).
-Several papers ignore the bitstream formation aspect
-and report <span class="math notranslate nohighlight">\(\frac{m}{n} \times 100\)</span>
-(e.g., <span id="id2">[<a class="reference internal" href="../bib.html#id42" title="Zhimin Zhang, Shoushui Wei, Dingwen Wei, Liping Li, Feng Liu, and Chengyu Liu. Comparison of four recovery algorithms used in compressed sensing for ecg signal processing. In 2016 Computing in Cardiology Conference (CinC), 401–404. IEEE, 2016.">37</a>]</span>)
-or <span class="math notranslate nohighlight">\(\frac{n - m}{n} \times 100\)</span> (e.g., <span id="id3">[<a class="reference internal" href="../bib.html#id43" title="Hongpo Zhang, Zhongren Dong, Zhen Wang, Lili Guo, and Zongmin Wang. Csnet: a deep learning approach for ecg compressed sensing. Biomedical Signal Processing and Control, 70:103065, 2021.">32</a>]</span>)
-as the compression ratio
-which measures the reduction in number of measurements
-compared to the number of samples in each window.
-We shall call this metric
-<em>percentage measurement saving</em> (<span class="math notranslate nohighlight">\(\pms\)</span>):</p>
+<p>where each <span class="math notranslate nohighlight">\(\bx_i\)</span> is a block of <span class="math notranslate nohighlight">\(b\)</span> values.
+The signal <span class="math notranslate nohighlight">\(\bx\)</span> consists of <span class="math notranslate nohighlight">\(g\)</span> such blocks/groups.
+Under the block sparsity model, only a few <span class="math notranslate nohighlight">\(k \ll g\)</span>
+blocks are nonzero (active) in the signal <span class="math notranslate nohighlight">\(\bx\)</span>
+however, the locations of these blocks are unknown.
+We can rewrite the sensing equation as:</p>
 <div class="math notranslate nohighlight">
 \[
-\pms \triangleq \frac{n - m}{n} \times 100.
+\by = \sum_{i=1}^g \Phi_i \bx_i + \be
 \]</div>
-<p>The ratio <span class="math notranslate nohighlight">\(m/n\)</span> will be called the <em>measurement ratio</em>:</p>
+<p>by splitting the sensing matrix into blocks of columns appropriately.</p>
+<section id="block-sparse-bayesian-learning">
+<h2><span class="section-number">3.2.1. </span>Block Sparse Bayesian Learning<a class="headerlink" href="#block-sparse-bayesian-learning" title="Permalink to this headline">#</a></h2>
+<p>Under the sparse Bayesian framework, each block
+is assumed to satisfy a parametrized multivariate
+Gaussian distribution:</p>
 <div class="math notranslate nohighlight">
 \[
-\mathrm{MR}= \frac{m}{n}.
+\PP(\bx_i ; \gamma_i, \bB_i) = \NNN(\bzero, \gamma_i \bB_i), \Forall i=1,\dots,g.
 \]</div>
-<p>The measurement ratio <span class="math notranslate nohighlight">\(\frac{m}{n}\)</span> is not a
-good indicator of compression ratio.
-If the sensing matrix <span class="math notranslate nohighlight">\(\Phi\)</span> is Gaussian,
-then the measurement values are real-valued.
-In literature using Gaussian sensing matrices
-(e.g., <span id="id4">[<a class="reference internal" href="../bib.html#id42" title="Zhimin Zhang, Shoushui Wei, Dingwen Wei, Liping Li, Feng Liu, and Chengyu Liu. Comparison of four recovery algorithms used in compressed sensing for ecg signal processing. In 2016 Computing in Cardiology Conference (CinC), 401–404. IEEE, 2016.">37</a>]</span>),
-it is unclear how many bits are
-being used to represent each floating point measurement value
-for transmission.
-Under standard 32-bit IEEE floating point format,
-each value would require 32-bits.
-Then for MIT-BIH data, the compression ratio in bits
-would be <span class="math notranslate nohighlight">\(\frac{11 \times n}{32 \times m}\)</span>.
-The only way the ratio <span class="math notranslate nohighlight">\(\frac{m}{n}\)</span> would make sense
-is if the measurements are also quantized at 11 bits
-resolution. However, the impact of such quantization
-is not considered in the simulations.</p>
-<p>Now consider the case of a sparse binary sensing
-matrix. Since it consists of only zeros and ones,
-hence for integer inputs, it generates integer
-outputs. Thus, we can say that the output of a sparse
-binary sensor is quantized by design.
-However, the range of values changes.
-Assume that the sensing matrix has <span class="math notranslate nohighlight">\(d\)</span> ones per column.
-Then it has a total of <span class="math notranslate nohighlight">\(n d\)</span> ones. Thus, each row
-will have on average <span class="math notranslate nohighlight">\(\frac{n d}{m}\)</span> ones.
-Since the ones are randomly placed, hence
-we won’t have the same number of ones in each row.
-If we assume the input data to be in the range
-of <span class="math notranslate nohighlight">\([-1024, 1023]\)</span> (under 11-bit), then in the
-worst case, the range of output values may go
-up to<span class="math notranslate nohighlight">\([-\frac{n d}{m} \times 1024, \frac{n d}{m} \times 1023]\)</span>.
-For a simple case where <span class="math notranslate nohighlight">\(n = 2m\)</span> and <span class="math notranslate nohighlight">\(d=4\)</span>, we will require
-14 bits to represent each measurement value.
-To achieve <span class="math notranslate nohighlight">\(\frac{m}{n}\)</span> as the compression ratio, we will
-have to quantize the measurements in 11 bits. If we do so,
-we shall need to provide some way to communicate the quantization
-parameters to the decoder as well as study the impact of
-quantization noise.
-This issue seems to be ignored in <span id="id5">[<a class="reference internal" href="../bib.html#id38" title="Zhilin Zhang, Tzyy-Ping Jung, Scott Makeig, and Bhaskar D Rao. Compressed sensing for energy-efficient wireless telemonitoring of noninvasive fetal ecg via block sparse bayesian learning. IEEE Transactions on Biomedical Engineering, 60(2):300–309, 2012.">35</a>]</span>.</p>
-<p>Another way of looking at the compressibility is how
-many bits per sample (<span class="math notranslate nohighlight">\(\bps\)</span>) are needed on average in the compressed
-bitstream. We define <span class="math notranslate nohighlight">\(\bps\)</span> as:</p>
+<p>The covariance matrix <span class="math notranslate nohighlight">\(\bB_i\)</span> captures the intra-block correlations.
+We further assume that the blocks are mutually uncorrelated.
+The prior of <span class="math notranslate nohighlight">\(\bx\)</span> can then be written as</p>
 <div class="math notranslate nohighlight">
 \[
-\bps \triangleq \frac{\bits_c}{s}.
+\PP(\bx; \{ \gamma_i, \bB_i\}_i ) = \NNN(\bzero, \Sigma_0)
 \]</div>
-<p>Since the entropy coder is coding the measurements rather than
-the samples directly, hence it is also useful to see how
-many bits are needed to code each measurement. We
-denote this as bits per measurement (<span class="math notranslate nohighlight">\(\bpm\)</span>):</p>
+<p>where</p>
 <div class="math notranslate nohighlight">
 \[
-\bpm \triangleq \frac{\bits_c}{m w}.
+\Sigma_0 = \text{diag}\{\gamma_1 \bB_1, \dots, \gamma_g \bB_g \}.
 \]</div>
-</section>
-<section id="reconstruction-quality">
-<h2><span class="section-number">3.3.2. </span>Reconstruction Quality<a class="headerlink" href="#reconstruction-quality" title="Permalink to this headline">#</a></h2>
-<p>The <em>normalized root mean square error</em> is defined as</p>
+<p>We also model the correlation among the values
+within each active block as an AR-1 process.
+Under this assumption the matrices
+<span class="math notranslate nohighlight">\(\bB_i\)</span> take the form of a Toeplitz matrix</p>
 <div class="math notranslate nohighlight">
-\[
-\nrmse (\bx, \tilde{\bx}) \triangleq \frac{\| \bx - \tilde{\bx}\|_2}{\| \bx \|_2}
-\]</div>
-<p>where <span class="math notranslate nohighlight">\(\bx\)</span> is the original ECG signal and <span class="math notranslate nohighlight">\(\tilde{\bx}\)</span>
-is the reconstructed signal.
-A popular metric to measure the quality of reconstruction
-of ECG signals is
-<em>percentage root mean square difference</em> (<span class="math notranslate nohighlight">\(\prd\)</span>):</p>
-<div class="math notranslate nohighlight">
-\[
-\prd(\bx, \tilde{\bx}) \triangleq \nrmse(\bx, \tilde{\bx}) \times 100
-\]</div>
-<p>The <em>signal to noise ratio</em> (<span class="math notranslate nohighlight">\(\snr\)</span>) is related to <span class="math notranslate nohighlight">\(\prd\)</span> as</p>
-<div class="math notranslate nohighlight">
-\[
-\snr \triangleq -20 \log_{10}(0.01 \prd).
-\]</div>
-<p>As one desires higher compression ratios and lower
-<span class="math notranslate nohighlight">\(\prd\)</span>, one can define a combined <em>quality score</em> (QS) as</p>
-<div class="math notranslate nohighlight">
-\[
-\text{QS} = \frac{\compr}{\prd} \times 100.
-\]</div>
-<p>Zigel et al. <span id="id6">[<a class="reference internal" href="../bib.html#id44" title="Yaniv Zigel, Arnon Cohen, and Amos Katz. The weighted diagnostic distortion (wdd) measure for ecg signal compression. IEEE transactions on biomedical engineering, 47(11):1422–1430, 2000.">38</a>]</span> established
-a link between the diagnostic distortion and
-the easy-to-measure <span class="math notranslate nohighlight">\(\prd\)</span> metric.
-<a class="reference internal" href="#tbl-quality-prd-snr"><span class="std std-numref">Table 3.1</span></a> shows the classified quality
-and corresponding SNR (signal-to-noise ratio) and PRD ranges.</p>
-<table class="table" id="tbl-quality-prd-snr">
-<caption><span class="caption-number">Table 3.1 </span><span class="caption-text">Quality of Reconstruction</span><a class="headerlink" href="#tbl-quality-prd-snr" title="Permalink to this table">#</a></caption>
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 33%" />
-<col style="width: 33%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Quality</p></th>
-<th class="head"><p>PRD</p></th>
-<th class="head"><p>SNR</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Very good</p></td>
-<td><p><span class="math notranslate nohighlight">\(&lt;\)</span> 2%</p></td>
-<td><p><span class="math notranslate nohighlight">\(&gt;\)</span> 33 dB</p></td>
-</tr>
-<tr class="row-odd"><td><p>Good</p></td>
-<td><p>2-9%</p></td>
-<td><p>20-33 dB</p></td>
-</tr>
-<tr class="row-even"><td><p>Undetermined</p></td>
-<td><p><span class="math notranslate nohighlight">\(\geq\)</span> 9%</p></td>
-<td><p><span class="math notranslate nohighlight">\(\leq\)</span> 20 dB</p></td>
-</tr>
-</tbody>
-</table>
+\[\begin{split}
+\bB = \begin{bmatrix}
+1 &amp; r &amp; \dots &amp; r^{b-1}\\
+r &amp; 1 &amp; \dots &amp; r^{b-2}\\
+\vdots &amp;  &amp; \ddots &amp; \vdots\\
+r^{b-1} &amp; r^{b-2} &amp; \dots &amp; 1
+\end{bmatrix}
+\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(r\)</span> is the AR-1 model coefficient.
+This constraint significantly reduces the model parameters to be learned.</p>
+<p>Measurement error is modeled as independent zero mean Gaussian
+noise <span class="math notranslate nohighlight">\(\PP(\be; \lambda) \sim \NNN(\bzero, \lambda \bI)\)</span>.
+BSBL doesn’t require us to provide the value of noise variance
+as input.
+It can estimate <span class="math notranslate nohighlight">\(\lambda\)</span> within the algorithm.</p>
+<p>The estimate of <span class="math notranslate nohighlight">\(\bx\)</span> under the Bayesian learning framework
+is given by the posterior mean of <span class="math notranslate nohighlight">\(\bx\)</span> given the measurements <span class="math notranslate nohighlight">\(\by\)</span>.</p>
 </section>
 </section>
 
@@ -624,17 +544,17 @@ and corresponding SNR (signal-to-noise ratio) and PRD ranges.</p>
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="cs.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="history.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title"><span class="section-number">3.2. </span>Compressive Sensing</p>
+            <p class="prev-next-title"><span class="section-number">3.1. </span>History</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="datasets.html" title="next page">
+    <a class='right-next' id="next-link" href="metrics.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">3.4. </span>Datasets</p>
+        <p class="prev-next-title"><span class="section-number">3.3. </span>Performance Metrics</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
