@@ -53,6 +53,8 @@ SEC_WORD_BITS = 16
 ######################################################################
 
 class EncoderParams(NamedTuple):
+    """The set of parameters to configure the ECG encoder
+    """
     key: jax.numpy.ndarray
     "PRNG Key for generating sensing matrix"
     n: int
@@ -74,9 +76,15 @@ class EncoderParams(NamedTuple):
 
     @property
     def frame_length(self):
+        """Length of each frame"""
         return self.n * self.w
 
     def __eq__(self, other):
+        """Checks if two instances of EncoderParams are equal
+
+        This is useful for verifying if the encoding parameters
+        were properly serialized and de-serialized in a bitstream.
+        """
         if isinstance(other, self.__class__):
             if not jnp.all(self.key == other.key):
                 return False
@@ -103,105 +111,147 @@ class EncoderParams(NamedTuple):
             return False
 
 class EncodedFrame(NamedTuple):
-    "Information about each encoded frame"
+    """Information about each encoded frame"""
     n_measurements: int
+    "Number of measurements"
     n_windows: int
+    "Number of windows"
     max_val: int
+    "Maximum value of measurements"
     min_val: int
+    "Minimum value of measurements"
     mean_val: int
+    "Mean value of measurements (integer)"
     std_val: int
+    "Standard deviation of measurements (integer)"
     q : int
+    "Quantization parameter used for encoding the frame data"
     rng_mult: int
+    "Range multiplier used for restricting the set of values"
     n_words : int
+    "Number of words in the compressed entropy coded frame payload"
     n_header_bits: int
+    "Number of bits in the frame header"
     n_payload_bits: int
+    "Number of bits in the frame payload"
     n_bits: int
+    "Total number of bits in the encoded frame"
     q_nmse: float
+    "NMSE for the quantization step"
     c_nmse: float
+    "NMSE for the clipping step"
     qc_nmse: float
+    "NMSE for combined quantization and clipping"
     qc_snr: float
+    "SNR for combined quantization and clipping"
 
     @property
     def overhead(self):
+        "Fractional overhead of the header bits"
         return self.n_header_bits / self.n_payload_bits
 
 class EncodedStream(NamedTuple):
+    "Information about the encoded bitstream"
     n_samples: int
+    "Number of samples in the bitstream"
     n_windows: int
+    "Number of windows in the bitstream"
     n_frames: int
+    "Number of frames in the bitstream"
     n_measurements: int
+    "Number of measurements in the bitstream"
     n_header_bits: int
+    "Number of bits in the stream header"
     n_bits: int
+    "Total number of bits in the bitstream"
     frames: List[EncodedFrame]
+    "List of encoded frames"
 
     @property
     def q_vals(self):
+        """List of quantization parameters across all frames"""
         return np.array([frame.q for frame in self.frames])
 
     @property
     def mean_vals(self):
+        """List of measurement mean values across all frames"""
         return np.array([frame.mean_val for frame in self.frames])
 
     @property
     def std_vals(self):
+        """List of measurement standard deviation values across all frames"""
         return np.array([frame.std_val for frame in self.frames])
 
     @property
     def rng_mults(self):
+        """List of range multipliers across all frames"""
         return np.array([frame.rng_mult for frame in self.frames])
 
     @property
     def overheads(self):
+        """List of fractional overheads of frame headers across all frames"""
         return np.array([frame.overhead for frame in self.frames])
 
     @property
     def q_nmses(self):
+        """List of NMSE for quantization step across all frames"""
         return np.array([frame.q_nmse for frame in self.frames])
 
     @property
     def c_nmses(self):
+        """List of NMSE for clipping step across all frames"""
         return np.array([frame.c_nmse for frame in self.frames])
 
     @property
     def qc_nmses(self):
+        """List of NMSE for quantization+clipping step across all frames"""
         return np.array([frame.qc_nmse for frame in self.frames])
 
     @property
     def qc_snrs(self):
+        """List of SNR values for quantization+clipping step across all frames"""
         return np.array([frame.qc_snr for frame in self.frames])
 
     @property
     def overhead_bits(self):
+        """List of overhead bits across all frames"""
         hbits = np.sum([frame.n_header_bits for frame in self.frames])
         hbits += self.n_header_bits
         return hbits
 
     @property
     def total_overhead(self):
+        """Total fractional overhead of header bits across all frames"""
         return self.overhead_bits / self.n_bits
 
     @property
     def compressed_bits(self):
+        """Total compressed bits in the encoded bitstream"""
         return self.n_bits
 
     @property
     def uncompressed_bits(self):
+        """Total uncompressed bits in the original ECG signal"""
         return self.n_samples * 11
 
     @property
     def cr(self):
+        """Compression ratio"""
         return crn.compression_ratio(self.uncompressed_bits , self.compressed_bits)
 
     @property
     def pss(self):
+        """Percentage space savings"""
         return crn.percent_space_saving(self.uncompressed_bits, self.compressed_bits)
 
     @property
     def bps(self):
+        """Bits per sample"""
         return self.compressed_bits / self.n_samples
 
     @property
     def bpm(self):
+        """Bits per measurement"""
         return self.compressed_bits / self.n_measurements
 
     def __str__(self):
@@ -223,12 +273,18 @@ class EncodedStream(NamedTuple):
 
 
 class EncodedData(NamedTuple):
+    """Encoded bitstream and encoding summary"""
     info: EncodedStream
+    "Summarized information about the encoded bitstream"
     y: np.ndarray
+    "Measurement values array (across all frames)"
     bits: bitarray
+    "Encoded (compressed) bitstream"
 
 
 def serialize_encoder_params(params: EncoderParams):
+    """Serializes encoding parameters into a bitarray
+    """
     a = bitarray()
     key = params.key.to_py()
     a.extend(int2ba(int(key[0]), 32))
@@ -254,11 +310,16 @@ def serialize_encoder_params(params: EncoderParams):
 
 
 def build_sensor(params: EncoderParams):
+    """ Constructs a sparse binary sensing matrix based on the
+    encoding parameters.
+    """
     Phi = crdict.sparse_binary_mtx(params.key, 
         params.m, params.n, d=params.d, normalize_atoms=False)
     return Phi
     
 def sense(params, Phi, ecg):
+    """Performs windowing, compressing sensing and flattening of ECG signal
+    """
     X = crn.vec_to_windows(ecg, params.n)
     # Measurements
     Y = Phi @ X
@@ -269,6 +330,13 @@ def sense(params, Phi, ecg):
 
 def encode(params: EncoderParams, ecg: np.ndarray):
     """Encodes ECG data into a bitstream
+
+    This function:
+    
+    * Splits the ECG signal into frames
+    * Performs windowing, compressing sensing and flattening on each frame.
+    * Performs entropy coding of measurements for each frame.
+    * Serializes stream header, frame headers and frame payloads into a bitstream.
     """
     stream = bitarray()
     stream.extend(serialize_encoder_params(params))
@@ -305,6 +373,8 @@ def encode(params: EncoderParams, ecg: np.ndarray):
 
 
 def encode_frame(params: EncoderParams, y: np.ndarray):
+    """Encodes a single frame of ECG signal
+    """
     n_measurements=len(y)
     n_windows = n_measurements // params.m
     q_nmse_limit = float(params.q_nmse_limit)
@@ -379,6 +449,8 @@ def encode_frame(params: EncoderParams, y: np.ndarray):
 ######################################################################
 
 def deserialize_encoder_params(bits: bitarray, pos=0):
+    """Reads the encoding parameters
+    """
     key0 = ba2int(bits[pos:pos+32])
     pos = 32
     key1 = ba2int(bits[pos:pos+32])
@@ -418,16 +490,35 @@ def next_byte_pos(pos):
 
 
 class DecodedData(NamedTuple):
+    """Decoded ECG signal and decoding summary
+    """
     x: np.ndarray
+    "Decoded ECG signal"
     y_hat: np.ndarray
+    "Decoded measurements (after entropy decoding and inverse quantization)"
     r_times: np.ndarray
+    "List of reconstruction times for each frame"
     r_iters: np.ndarray
+    "List of number of iterations for reconstruction of each frame"
 
     @property
     def total_time(self):
+        """Total reconstruction time"""
         return np.sum(self.r_times)
 
 def decode(bits: bitarray, block_size=32):
+    """Decodes an encoded bitstream
+
+    This function:
+
+    * reads the stream header
+    * reads the frame headers and frame payloads one by one
+    * decode each frame
+    * combine them together to form the decoded bitstream
+
+    The input is a bitarray. The only parameter is the
+    block size for the BSBL reconstruction algorithm.
+    """
     # read the parameters
     params, pos = deserialize_encoder_params(bits)
     # extend the pos to next multiple of 8
@@ -461,6 +552,9 @@ def decode(bits: bitarray, block_size=32):
     return DecodedData(x=x, y_hat=y_hat, r_times=r_times, r_iters=r_iters)
 
 def read_measurements(params, bits, pos):
+    """Performs entropy decoding and inverse quantization of measurement values
+    for all frames
+    """
     # total bits
     n_bits = len(bits)
     yhats = []
@@ -506,6 +600,7 @@ def read_measurements(params, bits, pos):
 ######################################################################
 
 class CompressionStats(NamedTuple):
+    """Compression statistics"""
     u_bits: int
     "Uncompressed bits count"
     c_bits: int
@@ -529,13 +624,17 @@ class CompressionStats(NamedTuple):
     rtime: float
     "reconstruction time"
     qc_snr: float
-    "signal to noise ratio (dB)"
+    "signal to noise ratio (dB) for quantization+clipping"
     qc_prd: float
-    "percent root mean square difference"
+    "percent root mean square difference for quantization+clipping"
     qc_nmse: float
+    "NMSE for quantization+clipping"
 
 
 def compression_stats(ecg, coded_ecg, decoded_ecg):
+    """Computes the compression statistics from the original ECG signal,
+    encoded bitstream and decoded signal
+    """
     info = coded_ecg.info
     n_samples = info.n_samples
     n_windows = info.n_windows

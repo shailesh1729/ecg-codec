@@ -47,6 +47,10 @@ myst_enable_extensions:
 sphinx:
   extra_extensions:
     - sphinx_proof
+    - 'sphinx.ext.autodoc'
+    - 'sphinx.ext.napoleon'
+    - 'sphinx.ext.viewcode'
+    - 'sphinx.ext.autosummary'
   config:
     bibtex_default_style: plain
     bibtex_reference_style: label

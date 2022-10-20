@@ -19,5 +19,6 @@ chapters:
   - file: codec_b/architecture
   - file: codec_b/implementation
   - file: codec_b/experiments
+- file: api
 - file: bib
 - file: genindex
