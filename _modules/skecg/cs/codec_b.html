@@ -1,0 +1,1098 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>skecg.cs.codec_b &#8212; ECG Codec</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/proof.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">ECG Codec</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../install.html">
+   1. Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../usage.html">
+   2. Usage
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../compression/index.html">
+   3. ECG Data Compression Review
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../compression/history.html">
+     3.1. History
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../compression/cs.html">
+     3.2. Compressive Sensing
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../compression/metrics.html">
+     3.3. Performance Metrics
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../compression/datasets.html">
+     3.4. Datasets
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../codec_b/index.html">
+   4. Codec B
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../codec_b/architecture.html">
+     4.1. Architecture
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../codec_b/implementation.html">
+     4.2. Implementation
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../codec_b/experiments.html">
+     4.3. Experiments
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../../../api.html">
+   5. API Docs
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/>
+  <label for="toctree-checkbox-3">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.EncoderParams.html">
+     5.1.1. skecg.cs.codec_b.EncoderParams
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.EncodedData.html">
+     5.1.2. skecg.cs.codec_b.EncodedData
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.encode.html">
+     5.1.3. skecg.cs.codec_b.encode
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.DecodedData.html">
+     5.1.4. skecg.cs.codec_b.DecodedData
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.decode.html">
+     5.1.5. skecg.cs.codec_b.decode
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.CompressionStats.html">
+     5.1.6. skecg.cs.codec_b.CompressionStats
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.compression_stats.html">
+     5.1.7. skecg.cs.codec_b.compression_stats
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.EncodedFrame.html">
+     5.2.1. skecg.cs.codec_b.EncodedFrame
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.EncodedStream.html">
+     5.2.2. skecg.cs.codec_b.EncodedStream
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.encode_frame.html">
+     5.2.3. skecg.cs.codec_b.encode_frame
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.sense.html">
+     5.2.4. skecg.cs.codec_b.sense
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../../../_autosummary/skecg.cs.codec_b.build_sensor.html">
+     5.2.5. skecg.cs.codec_b.build_sensor
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../bib.html">
+   6. Bibliography
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../../genindex.html">
+   7. Index
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/shailesh1729/ecg-codec"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/shailesh1729/ecg-codec/issues/new?title=Issue%20on%20page%20%2F_modules/skecg/cs/codec_b.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1></h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <h1>Source code for skecg.cs.codec_b</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This codec supports adaptive quantization</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="c1"># std imports</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">decimal</span> <span class="kn">import</span> <span class="n">Decimal</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+
+<span class="c1"># NumPy</span>
+<span class="kn">import</span> <span class="nn">jax</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
+
+
+<span class="c1"># CR-Suite libraries</span>
+<span class="kn">import</span> <span class="nn">cr.nimble</span> <span class="k">as</span> <span class="nn">crn</span>
+<span class="kn">import</span> <span class="nn">cr.nimble.dsp</span> <span class="k">as</span> <span class="nn">crdsp</span>
+<span class="kn">import</span> <span class="nn">cr.sparse</span> <span class="k">as</span> <span class="nn">crs</span>
+<span class="kn">import</span> <span class="nn">cr.sparse.dict</span> <span class="k">as</span> <span class="nn">crdict</span>
+<span class="kn">import</span> <span class="nn">cr.sparse.block.bsbl</span> <span class="k">as</span> <span class="nn">bsbl</span>
+
+
+<span class="c1"># Bitarray</span>
+<span class="kn">from</span> <span class="nn">bitarray</span> <span class="kn">import</span> <span class="n">bitarray</span>
+<span class="kn">from</span> <span class="nn">bitarray.util</span> <span class="kn">import</span> <span class="n">int2ba</span><span class="p">,</span> <span class="n">ba2int</span>
+<span class="kn">from</span> <span class="nn">cr.nimble.compression</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># Entropy coding</span>
+<span class="kn">import</span> <span class="nn">constriction</span>
+
+<span class="c1"># Constants for Encoder Design</span>
+<span class="n">N_BITS</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">M_BITS</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">D_BITS</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">W_BITS</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">Q_BITS</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">Q_MAX</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">Q_MIN</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">SEC_MEAN_BITS</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">SEC_STD_BITS</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">SEC_Q_BITS</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">SEC_RNG_BITS</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">SEC_WORD_BITS</span> <span class="o">=</span> <span class="mi">16</span>
+
+
+<span class="c1">######################################################################</span>
+<span class="c1">#                       ENCODER</span>
+<span class="c1">######################################################################</span>
+
+<div class="viewcode-block" id="EncoderParams"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.EncoderParams.html#skecg.cs.codec_b.EncoderParams">[docs]</a><span class="k">class</span> <span class="nc">EncoderParams</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The set of parameters to configure the ECG encoder</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">key</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="s2">&quot;PRNG Key for generating sensing matrix&quot;</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;number of samples per window&quot;</span>
+    <span class="n">m</span> <span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;number of measurements per window&quot;</span>
+    <span class="n">d</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Number of ones per column in sparse binary sensing matrix&quot;</span>
+    <span class="n">w</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;number of windows in each frame of the signal&quot;</span>
+    <span class="n">adaptive</span><span class="p">:</span> <span class="nb">bool</span>    
+    <span class="s2">&quot;A flag to indicate if the quantization is adaptive&quot;</span>
+    <span class="n">q</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;quantization parameter if the quantization is fixed&quot;</span>
+    <span class="n">q_nmse_limit</span><span class="p">:</span> <span class="n">Decimal</span>
+    <span class="s2">&quot;NMSE limit for the quantization step&quot;</span>
+    <span class="n">c_nmse_limit</span><span class="p">:</span> <span class="n">Decimal</span>
+    <span class="s2">&quot;NMSE limit for the clipping step&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frame_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Length of each frame&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks if two instances of EncoderParams are equal</span>
+
+<span class="sd">        This is useful for verifying if the encoding parameters</span>
+<span class="sd">        were properly serialized and de-serialized in a bitstream.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">jnp</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">key</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">n</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">m</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">d</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">w</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">adaptive</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">adaptive</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">adaptive</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_nmse_limit</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">q_nmse_limit</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">q</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_nmse_limit</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">c_nmse_limit</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="EncodedFrame"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.EncodedFrame.html#skecg.cs.codec_b.EncodedFrame">[docs]</a><span class="k">class</span> <span class="nc">EncodedFrame</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Information about each encoded frame&quot;&quot;&quot;</span>
+    <span class="n">n_measurements</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Number of measurements&quot;</span>
+    <span class="n">n_windows</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Number of windows&quot;</span>
+    <span class="n">max_val</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Maximum value of measurements&quot;</span>
+    <span class="n">min_val</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Minimum value of measurements&quot;</span>
+    <span class="n">mean_val</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Mean value of measurements (integer)&quot;</span>
+    <span class="n">std_val</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Standard deviation of measurements (integer)&quot;</span>
+    <span class="n">q</span> <span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Quantization parameter used for encoding the frame data&quot;</span>
+    <span class="n">rng_mult</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Range multiplier used for restricting the set of values&quot;</span>
+    <span class="n">n_words</span> <span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Number of words in the compressed entropy coded frame payload&quot;</span>
+    <span class="n">n_header_bits</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Number of bits in the frame header&quot;</span>
+    <span class="n">n_payload_bits</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Number of bits in the frame payload&quot;</span>
+    <span class="n">n_bits</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Total number of bits in the encoded frame&quot;</span>
+    <span class="n">q_nmse</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;NMSE for the quantization step&quot;</span>
+    <span class="n">c_nmse</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;NMSE for the clipping step&quot;</span>
+    <span class="n">qc_nmse</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;NMSE for combined quantization and clipping&quot;</span>
+    <span class="n">qc_snr</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;SNR for combined quantization and clipping&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">overhead</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s2">&quot;Fractional overhead of the header bits&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_header_bits</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_payload_bits</span></div>
+
+<div class="viewcode-block" id="EncodedStream"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.EncodedStream.html#skecg.cs.codec_b.EncodedStream">[docs]</a><span class="k">class</span> <span class="nc">EncodedStream</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="s2">&quot;Information about the encoded bitstream&quot;</span>
+    <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Number of samples in the bitstream&quot;</span>
+    <span class="n">n_windows</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Number of windows in the bitstream&quot;</span>
+    <span class="n">n_frames</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Number of frames in the bitstream&quot;</span>
+    <span class="n">n_measurements</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Number of measurements in the bitstream&quot;</span>
+    <span class="n">n_header_bits</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Number of bits in the stream header&quot;</span>
+    <span class="n">n_bits</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Total number of bits in the bitstream&quot;</span>
+    <span class="n">frames</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">EncodedFrame</span><span class="p">]</span>
+    <span class="s2">&quot;List of encoded frames&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">q_vals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of quantization parameters across all frames&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">frame</span><span class="o">.</span><span class="n">q</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mean_vals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of measurement mean values across all frames&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">frame</span><span class="o">.</span><span class="n">mean_val</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">std_vals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of measurement standard deviation values across all frames&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">frame</span><span class="o">.</span><span class="n">std_val</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rng_mults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of range multipliers across all frames&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">frame</span><span class="o">.</span><span class="n">rng_mult</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">overheads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of fractional overheads of frame headers across all frames&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">frame</span><span class="o">.</span><span class="n">overhead</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">q_nmses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of NMSE for quantization step across all frames&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">frame</span><span class="o">.</span><span class="n">q_nmse</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">c_nmses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of NMSE for clipping step across all frames&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">frame</span><span class="o">.</span><span class="n">c_nmse</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qc_nmses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of NMSE for quantization+clipping step across all frames&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">frame</span><span class="o">.</span><span class="n">qc_nmse</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">qc_snrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of SNR values for quantization+clipping step across all frames&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">frame</span><span class="o">.</span><span class="n">qc_snr</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">overhead_bits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of overhead bits across all frames&quot;&quot;&quot;</span>
+        <span class="n">hbits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">frame</span><span class="o">.</span><span class="n">n_header_bits</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">])</span>
+        <span class="n">hbits</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_header_bits</span>
+        <span class="k">return</span> <span class="n">hbits</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_overhead</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Total fractional overhead of header bits across all frames&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">overhead_bits</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_bits</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">compressed_bits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Total compressed bits in the encoded bitstream&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_bits</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">uncompressed_bits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Total uncompressed bits in the original ECG signal&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span> <span class="o">*</span> <span class="mi">11</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compression ratio&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">crn</span><span class="o">.</span><span class="n">compression_ratio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uncompressed_bits</span> <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compressed_bits</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Percentage space savings&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">crn</span><span class="o">.</span><span class="n">percent_space_saving</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uncompressed_bits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compressed_bits</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Bits per sample&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compressed_bits</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">bpm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Bits per measurement&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compressed_bits</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_measurements</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;n_samples=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;n_measurements=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_measurements</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;n_windows=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_windows</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;n_frames=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;n_header_bits=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_header_bits</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;overhead_bits=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">overhead_bits</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;compressed_bits=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compressed_bits</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;uncompressed_bits=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">uncompressed_bits</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;compression_ratio=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cr</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;percent_space_saving=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pss</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> %&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;bps=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bps</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;bpm=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bpm</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;overhead=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total_overhead</span> <span class="o">*</span> <span class="mi">100</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> %&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EncodedData"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.EncodedData.html#skecg.cs.codec_b.EncodedData">[docs]</a><span class="k">class</span> <span class="nc">EncodedData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Encoded bitstream and encoding summary&quot;&quot;&quot;</span>
+    <span class="n">info</span><span class="p">:</span> <span class="n">EncodedStream</span>
+    <span class="s2">&quot;Summarized information about the encoded bitstream&quot;</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="s2">&quot;Measurement values array (across all frames)&quot;</span>
+    <span class="n">bits</span><span class="p">:</span> <span class="n">bitarray</span>
+    <span class="s2">&quot;Encoded (compressed) bitstream&quot;</span></div>
+
+
+<span class="k">def</span> <span class="nf">serialize_encoder_params</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">EncoderParams</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Serializes encoding parameters into a bitarray</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">bitarray</span><span class="p">()</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">to_py</span><span class="p">()</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">32</span><span class="p">))</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="mi">32</span><span class="p">))</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">N_BITS</span><span class="p">))</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="n">M_BITS</span><span class="p">))</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">D_BITS</span><span class="p">))</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">W_BITS</span><span class="p">))</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">adaptive</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="o">.</span><span class="n">adaptive</span><span class="p">:</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="n">Q_BITS</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span><span class="p">,</span> <span class="n">digits</span><span class="p">,</span> <span class="n">exp</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">q_nmse_limit</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">digits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="o">-</span><span class="n">exp</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="c1"># encoded the clipping limit</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">digits</span><span class="p">,</span> <span class="n">exp</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">c_nmse_limit</span><span class="o">.</span><span class="n">as_tuple</span><span class="p">()</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">digits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="o">-</span><span class="n">exp</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">a</span>
+
+
+
+
+<div class="viewcode-block" id="build_sensor"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.build_sensor.html#skecg.cs.codec_b.build_sensor">[docs]</a><span class="k">def</span> <span class="nf">build_sensor</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">EncoderParams</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Constructs a sparse binary sensing matrix based on the</span>
+<span class="sd">    encoding parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Phi</span> <span class="o">=</span> <span class="n">crdict</span><span class="o">.</span><span class="n">sparse_binary_mtx</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> 
+        <span class="n">params</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">normalize_atoms</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Phi</span></div>
+    
+<div class="viewcode-block" id="sense"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.sense.html#skecg.cs.codec_b.sense">[docs]</a><span class="k">def</span> <span class="nf">sense</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">ecg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Performs windowing, compressing sensing and flattening of ECG signal</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">vec_to_windows</span><span class="p">(</span><span class="n">ecg</span><span class="p">,</span> <span class="n">params</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+    <span class="c1"># Measurements</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">Phi</span> <span class="o">@</span> <span class="n">X</span>
+    <span class="c1"># Convert to numpy</span>
+    <span class="n">Y_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">Y_np</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">y</span></div>
+
+<div class="viewcode-block" id="encode"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.encode.html#skecg.cs.codec_b.encode">[docs]</a><span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">EncoderParams</span><span class="p">,</span> <span class="n">ecg</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Encodes ECG data into a bitstream</span>
+
+<span class="sd">    This function:</span>
+<span class="sd">    </span>
+<span class="sd">    * Splits the ECG signal into frames</span>
+<span class="sd">    * Performs windowing, compressing sensing and flattening on each frame.</span>
+<span class="sd">    * Performs entropy coding of measurements for each frame.</span>
+<span class="sd">    * Serializes stream header, frame headers and frame payloads into a bitstream.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">bitarray</span><span class="p">()</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">serialize_encoder_params</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+    <span class="c1"># fill to the multiple of 8</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">fill</span><span class="p">()</span>
+    <span class="n">n_header_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+    <span class="c1"># sensing matrix</span>
+    <span class="n">Phi</span> <span class="o">=</span> <span class="n">build_sensor</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="c1"># measurements</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">sense</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">Phi</span><span class="p">,</span> <span class="n">ecg</span><span class="p">)</span>
+    <span class="n">n_measurements</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">n_windows</span> <span class="o">=</span> <span class="n">n_measurements</span> <span class="o">//</span> <span class="n">params</span><span class="o">.</span><span class="n">m</span>
+    <span class="n">n_samples</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">n_windows</span>
+    <span class="c1"># compute number of frames</span>
+    <span class="n">n_frames</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">n_windows</span> <span class="o">/</span> <span class="n">params</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+    <span class="c1"># length of each frame of measurements</span>
+    <span class="n">sl</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">m</span> <span class="o">*</span> <span class="n">params</span><span class="o">.</span><span class="n">w</span>
+    <span class="c1"># work frame by frame</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i_sec</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_frames</span><span class="p">):</span>
+        <span class="c1"># print(f&#39;Encoding frame {i_sec}&#39;)</span>
+        <span class="n">sec_info</span><span class="p">,</span> <span class="n">bits</span> <span class="o">=</span> <span class="n">encode_frame</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span><span class="o">+</span><span class="n">sl</span><span class="p">])</span>
+        <span class="n">start</span> <span class="o">+=</span> <span class="n">sl</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+        <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sec_info</span><span class="p">)</span>
+    <span class="n">n_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">EncodedStream</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_windows</span><span class="o">=</span><span class="n">n_windows</span><span class="p">,</span>
+        <span class="n">n_frames</span><span class="o">=</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">n_measurements</span><span class="o">=</span><span class="n">n_measurements</span><span class="p">,</span>
+        <span class="n">n_header_bits</span><span class="o">=</span><span class="n">n_header_bits</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="n">n_bits</span><span class="p">,</span>
+        <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">EncodedData</span><span class="p">(</span><span class="n">info</span><span class="o">=</span><span class="n">info</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">bits</span><span class="o">=</span><span class="n">stream</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="encode_frame"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.encode_frame.html#skecg.cs.codec_b.encode_frame">[docs]</a><span class="k">def</span> <span class="nf">encode_frame</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">EncoderParams</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Encodes a single frame of ECG signal</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_measurements</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">n_windows</span> <span class="o">=</span> <span class="n">n_measurements</span> <span class="o">//</span> <span class="n">params</span><span class="o">.</span><span class="n">m</span>
+    <span class="n">q_nmse_limit</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">q_nmse_limit</span><span class="p">)</span>
+    <span class="n">c_nmse_limit</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">c_nmse_limit</span><span class="p">)</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">q</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">adaptive</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q_MAX</span><span class="p">,</span> <span class="n">Q_MIN</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">yq</span> <span class="o">=</span> <span class="n">y</span> <span class="o">&gt;&gt;</span> <span class="n">q</span>
+            <span class="n">yhat</span> <span class="o">=</span> <span class="n">yq</span> <span class="o">&lt;&lt;</span> <span class="n">q</span>
+            <span class="n">q_nmse</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">normalized_root_mse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">q_nmse</span> <span class="o">&lt;=</span> <span class="n">q_nmse_limit</span><span class="p">:</span>
+                <span class="c1"># we have achieved the desired quantization</span>
+                <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">yq</span> <span class="o">=</span> <span class="n">y</span> <span class="o">&gt;&gt;</span> <span class="n">q</span>
+        <span class="n">yhat</span> <span class="o">=</span> <span class="n">yq</span> <span class="o">&lt;&lt;</span> <span class="n">q</span>
+        <span class="n">q_nmse</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">normalized_root_mse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
+    <span class="n">max_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">yq</span><span class="p">)</span>
+    <span class="n">min_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">yq</span><span class="p">)</span>
+    <span class="n">mean_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">yq</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
+    <span class="n">std_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">yq</span><span class="o">.</span><span class="n">std</span><span class="p">()))</span>
+    <span class="c1"># make sure that std-val is positive</span>
+    <span class="n">std_val</span> <span class="o">=</span> <span class="n">std_val</span> <span class="k">if</span> <span class="n">std_val</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="n">s_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">max_val</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">min_val</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">rng_mult</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">):</span>
+        <span class="n">a_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mean_val</span> <span class="o">-</span> <span class="n">rng_mult</span> <span class="o">*</span> <span class="n">std_val</span><span class="p">)</span>
+        <span class="n">a_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mean_val</span> <span class="o">+</span> <span class="n">rng_mult</span> <span class="o">*</span> <span class="n">std_val</span><span class="p">)</span>
+        <span class="n">yc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">yq</span><span class="p">,</span> <span class="n">a_min</span><span class="p">,</span> <span class="n">a_max</span><span class="p">)</span>
+        <span class="n">c_nmse</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">normalized_root_mse</span><span class="p">(</span><span class="n">yq</span><span class="p">,</span> <span class="n">yc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">c_nmse</span> <span class="o">&lt;=</span> <span class="n">c_nmse_limit</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="c1"># Measure the overall SNR</span>
+    <span class="n">yhat</span> <span class="o">=</span> <span class="n">yc</span> <span class="o">&lt;&lt;</span> <span class="n">q</span>
+    <span class="n">qc_nmse</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">normalized_root_mse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
+    <span class="n">qc_snr</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">signal_noise_ratio</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">constriction</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">QuantizedGaussian</span><span class="p">(</span><span class="n">a_min</span><span class="p">,</span> <span class="n">a_max</span><span class="p">,</span>
+        <span class="n">mean</span><span class="o">=</span><span class="n">mean_val</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">std_val</span><span class="p">)</span>
+    <span class="n">encoder</span> <span class="o">=</span> <span class="n">constriction</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">AnsCoder</span><span class="p">()</span>
+    <span class="n">encoder</span><span class="o">.</span><span class="n">encode_reverse</span><span class="p">(</span><span class="n">yc</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+    <span class="n">compressed</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">get_compressed</span><span class="p">()</span>
+    <span class="c1"># number of words of compressed bits</span>
+    <span class="n">n_words</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">compressed</span><span class="p">)</span>
+    <span class="c1"># start encoding</span>
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">bitarray</span><span class="p">()</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">mean_val</span><span class="p">,</span> <span class="n">SEC_MEAN_BITS</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">std_val</span><span class="p">,</span> <span class="n">SEC_STD_BITS</span><span class="p">))</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">SEC_Q_BITS</span><span class="p">))</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">rng_mult</span><span class="p">,</span> <span class="n">SEC_RNG_BITS</span><span class="p">))</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">n_windows</span><span class="p">,</span> <span class="n">W_BITS</span><span class="p">))</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="n">n_words</span><span class="p">,</span> <span class="n">SEC_WORD_BITS</span><span class="p">))</span>
+    <span class="n">stream</span><span class="o">.</span><span class="n">fill</span><span class="p">()</span>
+    <span class="n">n_header_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">compressed</span><span class="p">:</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">int2ba</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">word</span><span class="p">),</span> <span class="mi">32</span><span class="p">))</span>
+    <span class="n">n_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+    <span class="n">n_payload_bits</span> <span class="o">=</span> <span class="n">n_bits</span> <span class="o">-</span> <span class="n">n_header_bits</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">EncodedFrame</span><span class="p">(</span><span class="n">n_measurements</span><span class="o">=</span><span class="n">n_measurements</span><span class="p">,</span>
+        <span class="n">n_windows</span><span class="o">=</span><span class="n">n_windows</span><span class="p">,</span>
+        <span class="n">max_val</span><span class="o">=</span><span class="n">max_val</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="n">min_val</span><span class="p">,</span>
+        <span class="n">mean_val</span><span class="o">=</span><span class="n">mean_val</span><span class="p">,</span> <span class="n">std_val</span><span class="o">=</span><span class="n">std_val</span><span class="p">,</span>
+        <span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">rng_mult</span><span class="o">=</span><span class="n">rng_mult</span><span class="p">,</span>
+        <span class="n">n_words</span><span class="o">=</span><span class="n">n_words</span><span class="p">,</span> <span class="n">n_header_bits</span><span class="o">=</span><span class="n">n_header_bits</span><span class="p">,</span>
+        <span class="n">n_payload_bits</span><span class="o">=</span><span class="n">n_payload_bits</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="n">n_bits</span><span class="p">,</span>
+        <span class="n">q_nmse</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">q_nmse</span><span class="p">),</span> <span class="n">c_nmse</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">c_nmse</span><span class="p">),</span> 
+        <span class="n">qc_nmse</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">qc_nmse</span><span class="p">),</span> <span class="n">qc_snr</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">qc_snr</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">info</span><span class="p">,</span> <span class="n">stream</span></div>
+
+
+<span class="c1">######################################################################</span>
+<span class="c1">#                       DECODER</span>
+<span class="c1">######################################################################</span>
+
+<span class="k">def</span> <span class="nf">deserialize_encoder_params</span><span class="p">(</span><span class="n">bits</span><span class="p">:</span> <span class="n">bitarray</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reads the encoding parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">key0</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="mi">32</span><span class="p">])</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">key1</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="mi">32</span><span class="p">])</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">key0</span><span class="p">,</span> <span class="n">key1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+    <span class="n">pos</span> <span class="o">+=</span> <span class="mi">32</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="n">N_BITS</span><span class="p">])</span>
+    <span class="n">pos</span> <span class="o">+=</span> <span class="n">N_BITS</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="n">M_BITS</span><span class="p">])</span>
+    <span class="n">pos</span> <span class="o">+=</span> <span class="n">M_BITS</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="n">D_BITS</span><span class="p">])</span>
+    <span class="n">pos</span> <span class="o">+=</span> <span class="n">D_BITS</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="n">W_BITS</span><span class="p">])</span>
+    <span class="n">pos</span> <span class="o">+=</span> <span class="n">W_BITS</span>
+    <span class="n">adaptive</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span>
+    <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">adaptive</span><span class="p">:</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="n">Q_BITS</span><span class="p">])</span>
+        <span class="n">pos</span> <span class="o">+=</span> <span class="mi">4</span>
+        <span class="n">q_nmse_limit</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">digit</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">pos</span> <span class="o">+=</span> <span class="mi">4</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">pos</span> <span class="o">+=</span> <span class="mi">4</span>
+        <span class="n">q_nmse_limit</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">digit</span><span class="p">,),</span> <span class="o">-</span><span class="n">exp</span><span class="p">))</span>
+    <span class="n">digit</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="mi">4</span><span class="p">])</span>
+    <span class="n">pos</span> <span class="o">+=</span> <span class="mi">4</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="mi">4</span><span class="p">])</span>
+    <span class="n">pos</span> <span class="o">+=</span> <span class="mi">4</span>
+    <span class="n">c_nmse_limit</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">digit</span><span class="p">,),</span> <span class="o">-</span><span class="n">exp</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">EncoderParams</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">adaptive</span><span class="o">=</span><span class="n">adaptive</span><span class="p">,</span>
+        <span class="n">q</span><span class="o">=</span><span class="n">q</span><span class="p">,</span> <span class="n">q_nmse_limit</span><span class="o">=</span><span class="n">q_nmse_limit</span><span class="p">,</span> <span class="n">c_nmse_limit</span><span class="o">=</span><span class="n">c_nmse_limit</span><span class="p">),</span> <span class="n">pos</span>
+
+<span class="k">def</span> <span class="nf">next_byte_pos</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">7</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DecodedData"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.DecodedData.html#skecg.cs.codec_b.DecodedData">[docs]</a><span class="k">class</span> <span class="nc">DecodedData</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decoded ECG signal and decoding summary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="s2">&quot;Decoded ECG signal&quot;</span>
+    <span class="n">y_hat</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="s2">&quot;Decoded measurements (after entropy decoding and inverse quantization)&quot;</span>
+    <span class="n">r_times</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="s2">&quot;List of reconstruction times for each frame&quot;</span>
+    <span class="n">r_iters</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="s2">&quot;List of number of iterations for reconstruction of each frame&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Total reconstruction time&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_times</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="decode"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.decode.html#skecg.cs.codec_b.decode">[docs]</a><span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="n">bits</span><span class="p">:</span> <span class="n">bitarray</span><span class="p">,</span> <span class="n">block_size</span><span class="o">=</span><span class="mi">32</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decodes an encoded bitstream</span>
+
+<span class="sd">    This function:</span>
+
+<span class="sd">    * reads the stream header</span>
+<span class="sd">    * reads the frame headers and frame payloads one by one</span>
+<span class="sd">    * decode each frame</span>
+<span class="sd">    * combine them together to form the decoded bitstream</span>
+
+<span class="sd">    The input is a bitarray. The only parameter is the</span>
+<span class="sd">    block size for the BSBL reconstruction algorithm.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># read the parameters</span>
+    <span class="n">params</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">deserialize_encoder_params</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+    <span class="c1"># extend the pos to next multiple of 8</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">next_byte_pos</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+    <span class="n">y_hat</span> <span class="o">=</span> <span class="n">read_measurements</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">bits</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+
+    <span class="c1"># Arrange measurements into column vectors</span>
+    <span class="n">Yhat</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">vec_to_windows</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span> <span class="n">params</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">n_windows</span> <span class="o">=</span> <span class="n">Yhat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">bsbl</span><span class="o">.</span><span class="n">bsbl_bo_options</span><span class="p">(</span><span class="n">max_iters</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">X_hat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">params</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">n_windows</span><span class="p">))</span>
+    <span class="n">r_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_windows</span><span class="p">)</span>
+    <span class="n">r_iters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_windows</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="c1"># sensing matrix</span>
+    <span class="n">Phi</span> <span class="o">=</span> <span class="n">build_sensor</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">DPhi</span> <span class="o">=</span> <span class="n">Phi</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+    <span class="c1"># Start decoding</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_windows</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">Yhat</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">bsbl</span><span class="o">.</span><span class="n">bsbl_bo_np_jit</span><span class="p">(</span><span class="n">DPhi</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">block_size</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+        <span class="n">rtime</span> <span class="o">=</span> <span class="n">stop</span> <span class="o">-</span> <span class="n">start</span>
+        <span class="n">x_hat</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">X_hat</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_hat</span>
+        <span class="n">r_times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rtime</span>
+        <span class="n">r_iters</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">iterations</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">n_windows</span><span class="si">}</span><span class="s1">], time: </span><span class="si">{</span><span class="n">rtime</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> sec&#39;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">X_hat</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">DecodedData</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y_hat</span><span class="o">=</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">r_times</span><span class="o">=</span><span class="n">r_times</span><span class="p">,</span> <span class="n">r_iters</span><span class="o">=</span><span class="n">r_iters</span><span class="p">)</span></div>
+
+<span class="k">def</span> <span class="nf">read_measurements</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">bits</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Performs entropy decoding and inverse quantization of measurement values</span>
+<span class="sd">    for all frames</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># total bits</span>
+    <span class="n">n_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+    <span class="n">yhats</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="n">pos</span> <span class="o">&lt;</span> <span class="n">n_bits</span><span class="p">:</span>
+        <span class="c1"># decode a frame</span>
+        <span class="c1"># read frame header</span>
+        <span class="n">mean_val</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="n">SEC_MEAN_BITS</span><span class="p">],</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">pos</span> <span class="o">+=</span> <span class="n">SEC_MEAN_BITS</span>
+        <span class="n">std_val</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="n">SEC_STD_BITS</span><span class="p">])</span>
+        <span class="n">pos</span> <span class="o">+=</span> <span class="n">SEC_STD_BITS</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="n">SEC_Q_BITS</span><span class="p">])</span>
+        <span class="n">pos</span> <span class="o">+=</span> <span class="n">SEC_Q_BITS</span>
+        <span class="n">rng_mult</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="n">SEC_RNG_BITS</span><span class="p">])</span>
+        <span class="n">pos</span> <span class="o">+=</span> <span class="n">SEC_RNG_BITS</span>
+        <span class="n">n_windows</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="n">W_BITS</span><span class="p">])</span>
+        <span class="n">pos</span> <span class="o">+=</span> <span class="n">W_BITS</span>
+        <span class="n">n_words</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="n">SEC_WORD_BITS</span><span class="p">])</span>
+        <span class="n">pos</span> <span class="o">+=</span> <span class="n">SEC_WORD_BITS</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">next_byte_pos</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+        <span class="c1"># print(mean_val, std_val, q, rng_mult, n_words)</span>
+        <span class="n">compressed</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_words</span><span class="p">):</span>
+            <span class="n">word</span> <span class="o">=</span> <span class="n">ba2int</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="mi">32</span><span class="p">])</span>
+            <span class="n">pos</span> <span class="o">+=</span> <span class="mi">32</span>
+            <span class="n">compressed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+        <span class="n">a_min</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mean_val</span> <span class="o">-</span> <span class="n">rng_mult</span> <span class="o">*</span> <span class="n">std_val</span><span class="p">)</span>
+        <span class="n">a_max</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">mean_val</span> <span class="o">+</span> <span class="n">rng_mult</span> <span class="o">*</span> <span class="n">std_val</span><span class="p">)</span>
+        <span class="n">compressed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">compressed</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">constriction</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">QuantizedGaussian</span><span class="p">(</span><span class="n">a_min</span><span class="p">,</span> <span class="n">a_max</span><span class="p">,</span>
+            <span class="n">mean</span><span class="o">=</span><span class="n">mean_val</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">std_val</span><span class="p">)</span>
+        <span class="c1"># Decode the message:</span>
+        <span class="n">ans_decoder</span> <span class="o">=</span> <span class="n">constriction</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">AnsCoder</span><span class="p">(</span><span class="n">compressed</span><span class="p">)</span>
+        <span class="c1"># number of measurements in the frame</span>
+        <span class="n">sl</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">m</span> <span class="o">*</span> <span class="n">n_windows</span>
+        <span class="n">yc</span> <span class="o">=</span> <span class="n">ans_decoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sl</span><span class="p">)</span>
+        <span class="n">yhat</span> <span class="o">=</span> <span class="n">yc</span> <span class="o">&lt;&lt;</span> <span class="n">q</span>
+        <span class="n">yhats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">yhat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">yhats</span><span class="p">)</span>
+
+
+<span class="c1">######################################################################</span>
+<span class="c1">#                       COMPARISON</span>
+<span class="c1">######################################################################</span>
+
+<div class="viewcode-block" id="CompressionStats"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.CompressionStats.html#skecg.cs.codec_b.CompressionStats">[docs]</a><span class="k">class</span> <span class="nc">CompressionStats</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compression statistics&quot;&quot;&quot;</span>
+    <span class="n">u_bits</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;Uncompressed bits count&quot;</span>
+    <span class="n">c_bits</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="s2">&quot;compressed bits count&quot;</span>
+    <span class="n">bpm</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;bits per measurement&quot;</span>
+    <span class="n">bps</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;bits per sample&quot;</span>
+    <span class="n">cr</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;compression ratio&quot;</span>
+    <span class="n">pss</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;percentage space savings&quot;</span>
+    <span class="n">snr</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;signal to noise ratio (dB)&quot;</span>
+    <span class="n">prd</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;percent root mean square difference&quot;</span>
+    <span class="n">nmse</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;normalized mean square difference&quot;</span>
+    <span class="n">qs</span> <span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;Quality score&quot;</span>
+    <span class="n">rtime</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;reconstruction time&quot;</span>
+    <span class="n">qc_snr</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;signal to noise ratio (dB) for quantization+clipping&quot;</span>
+    <span class="n">qc_prd</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;percent root mean square difference for quantization+clipping&quot;</span>
+    <span class="n">qc_nmse</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="s2">&quot;NMSE for quantization+clipping&quot;</span></div>
+
+
+<div class="viewcode-block" id="compression_stats"><a class="viewcode-back" href="../../../_autosummary/skecg.cs.codec_b.compression_stats.html#skecg.cs.codec_b.compression_stats">[docs]</a><span class="k">def</span> <span class="nf">compression_stats</span><span class="p">(</span><span class="n">ecg</span><span class="p">,</span> <span class="n">coded_ecg</span><span class="p">,</span> <span class="n">decoded_ecg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Computes the compression statistics from the original ECG signal,</span>
+<span class="sd">    encoded bitstream and decoded signal</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">coded_ecg</span><span class="o">.</span><span class="n">info</span>
+    <span class="n">n_samples</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">n_samples</span>
+    <span class="n">n_windows</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">n_windows</span>
+    <span class="n">n_measurements</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">n_measurements</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">coded_ecg</span><span class="o">.</span><span class="n">y</span>
+    <span class="n">uncompressed_bits</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">*</span> <span class="mi">11</span>
+    <span class="n">compressed_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coded_ecg</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">compression_ratio</span><span class="p">(</span><span class="n">uncompressed_bits</span><span class="p">,</span> <span class="n">compressed_bits</span><span class="p">)</span>
+    <span class="n">pss</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">percent_space_saving</span><span class="p">(</span><span class="n">uncompressed_bits</span><span class="p">,</span> <span class="n">compressed_bits</span><span class="p">)</span>
+    <span class="n">bpm</span> <span class="o">=</span> <span class="n">compressed_bits</span>  <span class="o">/</span> <span class="n">n_measurements</span>
+    <span class="n">bps</span> <span class="o">=</span> <span class="n">compressed_bits</span><span class="o">/</span> <span class="n">n_samples</span>
+    <span class="n">y_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Uncompressed bits: </span><span class="si">{</span><span class="n">uncompressed_bits</span><span class="si">}</span><span class="s1"> Compressed bits: </span><span class="si">{</span><span class="n">compressed_bits</span><span class="si">}</span><span class="s1">, ratio: </span><span class="si">{</span><span class="n">ratio</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">x&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;bits per measurement in compressed data: </span><span class="si">{</span><span class="n">bpm</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;bits per measurement in cs measurements: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span> <span class="n">y_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Compressed bits per sample: </span><span class="si">{</span><span class="n">bps</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">rtime</span> <span class="o">=</span> <span class="n">decoded_ecg</span><span class="o">.</span><span class="n">total_time</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">ecg</span><span class="p">[:</span><span class="n">n_samples</span><span class="p">]</span>
+    <span class="n">x_hat</span> <span class="o">=</span> <span class="n">decoded_ecg</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">snr</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">signal_noise_ratio</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">)</span>
+    <span class="n">prd</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">percent_rms_diff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">)</span>
+    <span class="n">nmse</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">normalized_mse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">)</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ratio</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">/</span> <span class="n">prd</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SNR: </span><span class="si">{</span><span class="n">snr</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> dB, PRD: </span><span class="si">{</span><span class="n">prd</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1">%, QS: </span><span class="si">{</span><span class="n">qs</span><span class="si">:</span><span class="s1">.5f</span><span class="si">}</span><span class="s1">, Time: </span><span class="si">{</span><span class="n">rtime</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1"> sec&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># measurement SNR</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">coded_ecg</span><span class="o">.</span><span class="n">y</span>
+    <span class="n">y_hat</span> <span class="o">=</span> <span class="n">decoded_ecg</span><span class="o">.</span><span class="n">y_hat</span>
+    <span class="n">qc_snr</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">signal_noise_ratio</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span>
+    <span class="n">qc_prd</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">percent_rms_diff</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span>
+    <span class="n">qc_nmse</span> <span class="o">=</span> <span class="n">crn</span><span class="o">.</span><span class="n">normalized_mse</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">CompressionStats</span><span class="p">(</span>
+            <span class="n">u_bits</span><span class="o">=</span><span class="n">uncompressed_bits</span><span class="p">,</span>
+            <span class="n">c_bits</span><span class="o">=</span><span class="n">compressed_bits</span><span class="p">,</span>
+            <span class="n">cr</span><span class="o">=</span><span class="n">ratio</span><span class="p">,</span> <span class="n">pss</span><span class="o">=</span><span class="n">pss</span><span class="p">,</span>
+            <span class="n">bpm</span><span class="o">=</span><span class="n">bpm</span><span class="p">,</span> <span class="n">bps</span><span class="o">=</span><span class="n">bps</span><span class="p">,</span>
+            <span class="n">snr</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">snr</span><span class="p">),</span> <span class="n">prd</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">prd</span><span class="p">),</span> <span class="n">nmse</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">nmse</span><span class="p">),</span> <span class="n">qs</span><span class="o">=</span><span class="n">qs</span><span class="p">,</span> <span class="n">rtime</span><span class="o">=</span><span class="n">rtime</span><span class="p">,</span>
+            <span class="n">qc_snr</span><span class="o">=</span><span class="n">qc_snr</span><span class="p">,</span> <span class="n">qc_prd</span><span class="o">=</span><span class="n">qc_prd</span><span class="p">,</span> <span class="n">qc_nmse</span><span class="o">=</span><span class="n">qc_nmse</span>
+        <span class="p">)</span></div>
+</pre></div>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Shailesh Kumar<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
