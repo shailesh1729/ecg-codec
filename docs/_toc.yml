@@ -14,11 +14,12 @@ chapters:
   - file: compression/cs
   - file: compression/metrics
   - file: compression/datasets
+  - file: compression/sbsm
 - file: codec_b/index
   sections:
   - file: codec_b/architecture
   - file: codec_b/implementation
   - file: codec_b/experiments
-- file: api
 - file: bib
 - file: genindex
+- file: api
