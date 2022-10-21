@@ -10,6 +10,7 @@ High Level API
 
 .. autosummary::
   :toctree: _autosummary
+  :nosignatures:
 
   EncoderParams
   EncodedData
@@ -27,6 +28,7 @@ Lower Level Types and Functions
 
 .. autosummary::
   :toctree: _autosummary
+  :nosignatures:
 
 
   EncodedFrame
