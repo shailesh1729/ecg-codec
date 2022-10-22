@@ -135,6 +135,7 @@ docs/gallery/
 # experimental work area
 experiments/*
 scripts/**/*.csv
+scripts/**/*.png
 
 
 # latex related stuff
