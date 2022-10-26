@@ -324,7 +324,7 @@ def sense(params, Phi, ecg):
     # Measurements
     Y = Phi @ X
     # Convert to numpy
-    Y_np = np.array(Y).astype(int)
+    Y_np = np.asarray(Y).astype(np.int32)
     y = Y_np.flatten(order='F')
     return y
 
