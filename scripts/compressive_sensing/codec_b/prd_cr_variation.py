@@ -91,7 +91,7 @@ class Row(NamedTuple):
 def main(n, d, q, c, w, block_size, dry):
 
     ratios = np.arange(15, 85, 5)
-    destination = f'codec_b_n-{n}_d-{d}_q-{q}_c-{c}_b={block_size}-prd-cr-stats.csv'
+    destination = f'codec_b_n-{n}_d-{d}_q-{q}_c-{c}_b-{block_size}-prd-cr-stats.csv'
     q_nmse_limit = Decimal((0, (q,), -2))
     c_nmse_limit = Decimal((0, (c,), -2))
 
