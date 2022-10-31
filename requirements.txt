@@ -10,4 +10,5 @@ cr-nimble>=0.3.0
 cr-sparse>=0.3.0
 python-dotenv
 distrax>=0.1.2
+ml_collections>=0.1.1
 
