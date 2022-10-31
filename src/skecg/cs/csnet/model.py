@@ -31,8 +31,8 @@ def get_config():
   # config.learning_rate = 0.1
   # config.momentum = 0.9
   config.learning_rate = 0.0005
-  config.batch_size = 200
-  config.num_epochs = 200
+  config.batch_size = 256
+  config.num_epochs = 300
   return config
 
 @jax.jit
