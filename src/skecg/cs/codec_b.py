@@ -594,6 +594,13 @@ def read_measurements(params, bits, pos):
         yhats.append(yhat)
     return np.concatenate(yhats)
 
+def decode_measurements(bits: bitarray):
+    # read the parameters
+    params, pos = deserialize_encoder_params(bits)
+    # extend the pos to next multiple of 8
+    pos = next_byte_pos(pos)
+    y_hat = read_measurements(params, bits, pos)
+    return y_hat
 
 ######################################################################
 #                       COMPARISON
