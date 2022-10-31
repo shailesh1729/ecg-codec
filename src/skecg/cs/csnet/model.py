@@ -86,9 +86,10 @@ def train_epoch(state, X_risen, X_true, batch_size, rng):
 
 
 
-def train_and_evaluate(Phi, X, Y, params):
+def train_and_evaluate(Phi, X, Y, codec_params):
     config = get_config()
-    X_risen = Y @ Phi / params.d
+    X_risen = Y @ Phi / codec_params.d
+    n  = codec_params.n
     X_true = jnp.expand_dims(X, 2)
     X_risen = jnp.expand_dims(X_risen, 2)
     print(X_true.shape, X_risen.shape)
@@ -112,7 +113,9 @@ def train_and_evaluate(Phi, X, Y, params):
 
     # initialize the network
     rng, init_rng = jax.random.split(rng)
-    state = create_train_state(init_rng, X_risen_train, config)
+    shape = (1, n, 1)
+    dummy_x = jnp.empty(shape)
+    state = create_train_state(init_rng, dummy_x, config)
     # print(jax.tree_util.tree_map(lambda x: x.shape, state.params))
 
     # perform training
