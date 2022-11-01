@@ -152,3 +152,4 @@ scripts/**/*.png
 hugo/*
 
 *.mdl
+*.npy
