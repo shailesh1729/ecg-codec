@@ -25,7 +25,9 @@ TEST_SET = [100, 101, 102, 107, 109, 111, 115, 117, 118, 119]
 @click.option('-q', default=1, help='Quantization nmse factor')
 @click.option('-c', default=2, help='Clipping nmse factor')
 @click.option('-w', default=16, help='Windows per frame')
-def main(n, m, d, q, c, w):
+@click.option("--dry", is_flag=True, 
+    show_default=True, default=False, help="Dry run with small samples")
+def main(n, m, d, q, c, w, dry):
 
     mit_bih_dir = os.getenv('MIT_BIH_DIR')
 
@@ -38,6 +40,12 @@ def main(n, m, d, q, c, w):
 
     record_nums = MIT_BIH['record_nums']
     signals = []
+    sampfrom = 0
+    if dry:
+        sampto=n*128
+    else:
+        sampto=None
+
     n_rec = 0
     for record_num in record_nums:
         if record_num in TEST_SET:
@@ -47,9 +55,6 @@ def main(n, m, d, q, c, w):
         path = f'{mit_bih_dir}/{record_num}'
         header = wfdb.rdheader(path)
         fs = float(header.fs)
-        sampfrom=0
-        # sampto=n*100
-        sampto=None
         header = wfdb.rdheader(path)
         record = wfdb.rdrecord(path, channels=[0]
             , sampfrom=sampfrom, sampto=sampto, physical=False)
