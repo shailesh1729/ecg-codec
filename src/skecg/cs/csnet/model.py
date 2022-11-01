@@ -59,7 +59,7 @@ class CSNet(nn.Module):
         return h
 
 
-def get_config(epochs=200, batch_size=256):
+def get_config(epochs=400, batch_size=256):
   """Get the default hyperparameter configuration."""
   config = ml_collections.ConfigDict()
 
@@ -160,6 +160,10 @@ def train_and_evaluate(Phi, X, Y, codec_params, config):
     # print(jax.tree_util.tree_map(lambda x: x.shape, state.params))
 
     # perform training
+    best_epoch = -1
+    best_train_loss = 1000
+    best_validation_loss = 1000
+    best_params = None
     for epoch in range(1, config.num_epochs + 1):
         rng, input_rng = jax.random.split(rng)
         state, train_loss = train_epoch(state, X_risen_train, X_true_train,
@@ -168,11 +172,17 @@ def train_and_evaluate(Phi, X, Y, codec_params, config):
 
         _, validation_loss = apply_model(state, X_risen_validation,
                                               X_true_validation)
-
         print(f'epoch:{epoch}, train_loss: {train_loss:.2e}, validation_loss: {validation_loss:.2e}')
+        if validation_loss < best_validation_loss:
+            best_validation_loss = validation_loss
+            best_train_loss = train_loss
+            best_params = state.params
+            best_epoch = epoch
+
+    print(f'best epoch:{best_epoch}, train_loss: {best_train_loss:.2e}, validation_loss: {best_validation_loss:.2e}')
 
     # return the final trained model
-    return {'params' : state.params, 'mean': x_mean, 'std': x_std} 
+    return {'params' : best_params, 'mean': x_mean, 'std': x_std} 
 
 
 def save_to_disk(result, file_path_base):
@@ -182,8 +192,8 @@ def save_to_disk(result, file_path_base):
     with open(file_path, 'wb') as f:
         f.write(bytes_output)
         f.close()
-    x_mean = result['mean']
-    x_std = result['std']
+    mean = result['mean']
+    std = result['std']
     mean = np.asarray(mean)
     std = np.asarray(std)
     combined = np.concatenate((mean, std))
