@@ -45,20 +45,18 @@ def main(record_num, n, m, d, q, c, w):
         q=0, q_nmse_limit=q_nmse_limit, c_nmse_limit=c_nmse_limit)
     Phi = codec.build_sensor(params)
     coded_ecg = codec.encode(params, ecg)
-    info = coded_ecg.info
-    y = codec.decode_measurements(coded_ecg.bits)
-    Y = crn.vec_to_windows(jnp.asarray(y), m)
-    X = crn.vec_to_windows(jnp.asarray(ecg), n)
-    X = X.T
-    Y = Y.T
-
     file_path_base = f'model_n-{n}_m-{m}_d-{d}_q-{q}_c-{c}'
-    net, net_params = model.load_from_disk(file_path_base, n)
-    X_hat = model.predict(net, net_params, Phi, Y, d)
-    snr = crn.signal_noise_ratio(X, X_hat)
-    prd = crn.percent_rms_diff(X, X_hat)
-    print(f'SNR: {snr:.3f} dB, PRD: {prd:.2f} %')
-    model.test_loss(net, net_params, Phi, X, Y, d)
+    reconstructor = model.Reconstructor(file_path_base, params)
+    # decompression
+    decoded_ecg = codec.decode_general(coded_ecg.bits, 
+        reconstructor=reconstructor)
+    # encoding info
+    info = coded_ecg.info
+    print(info)
+    # stats
+    stats = codec.compression_stats(ecg, coded_ecg, decoded_ecg)
+    print(stats)
+    #model.test_loss(net, net_params, Phi, X, Y, d)
 
 if __name__ == '__main__':
     main()

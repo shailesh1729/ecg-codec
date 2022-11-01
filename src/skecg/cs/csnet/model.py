@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import jax
 from jax import numpy as jnp
@@ -7,6 +8,9 @@ from flax import linen as nn
 from flax.training import train_state
 from flax import serialization
 import optax
+
+import cr.sparse.dict as crdict
+
 
 
 class InitialModule(nn.Module):
@@ -260,3 +264,60 @@ def test_loss(net, net_params, Phi, X, Y, d):
     x_diff = x_diff
     loss = jnp.mean(x_diff * x_diff) / 2.0
     print(f'Test loss: {loss:.3e}')
+
+
+
+class Reconstructor:
+    """Utility class to wrap the reconstruction algorithm
+    """
+
+    def __init__(self, file_path_base, codec_params):
+        self.codec_params = codec_params
+        n = codec_params.n
+        model, net_params = load_from_disk(file_path_base, n)
+        self.model = model
+        self.params = net_params['params']
+        self.x_mean = net_params['mean']
+        self.x_std = net_params['std']
+
+
+    def __call__(self, Y):
+        # switch from column order to row order
+        Y = Y.T
+        cp = self.codec_params
+        d = cp.d
+        n = cp.n
+        Phi = crdict.sparse_binary_mtx(cp.key, 
+            cp.m, cp.n, d=cp.d, normalize_atoms=False)
+
+        batch_size = 256
+        n_windows = Y.shape[0]
+        n_batches = math.ceil(n_windows / batch_size)
+        # work batch by batch
+        start = 0
+        x_mean = self.x_mean
+        x_std = self.x_std
+        model = self.model
+        params = self.params
+        X_hat = np.zeros((n_windows, n))
+        for i_batch in range(n_batches):
+            end = min(start + batch_size, n_windows)
+            print(f'Processing batch [{start+1}-{end}]')
+            Y_batch = Y[start:end]
+            X_risen = Y_batch @ Phi / d
+
+            X_risen = X_risen  - x_mean
+            X_risen = X_risen / x_std
+
+            X_risen = jnp.expand_dims(X_risen, 2)
+            X_est = model.apply({'params': params}, X_risen)
+
+            # denormalize
+            X_est = jnp.squeeze(X_est)
+            X_est = X_est * x_std
+            X_est = X_est + x_mean
+            X_hat[start:end]  = np.array(X_est)
+            start += batch_size
+        # go from row order to column order
+        return X_hat.T
+

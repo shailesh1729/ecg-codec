@@ -7,7 +7,7 @@ This codec supports adaptive quantization
 import sys
 import math
 from decimal import Decimal
-from typing import NamedTuple, List
+from typing import NamedTuple, List, Callable
 import timeit
 
 # NumPy
@@ -496,9 +496,9 @@ class DecodedData(NamedTuple):
     "Decoded ECG signal"
     y_hat: np.ndarray
     "Decoded measurements (after entropy decoding and inverse quantization)"
-    r_times: np.ndarray
+    r_times: np.ndarray = []
     "List of reconstruction times for each frame"
-    r_iters: np.ndarray
+    r_iters: np.ndarray = []
     "List of number of iterations for reconstruction of each frame"
 
     @property
@@ -550,6 +550,42 @@ def decode(bits: bitarray, block_size=32):
         print(f'[{i}/{n_windows}], time: {rtime:.2f} sec')
     x = X_hat.flatten(order='F')
     return DecodedData(x=x, y_hat=y_hat, r_times=r_times, r_iters=r_iters)
+
+
+
+def decode_general(bits: bitarray, reconstructor: Callable):
+    """Decodes an encoded bitstream using a given reconstruction algorithm
+
+    This function:
+
+    * reads the stream header
+    * reads the frame headers and frame payloads one by one
+    * decode each frame
+    * combine them together to form the decoded bitstream
+
+    The input is a bitarray. The only parameter is the
+    block size for the BSBL reconstruction algorithm.
+    """
+    # read the parameters
+    params, pos = deserialize_encoder_params(bits)
+    # extend the pos to next multiple of 8
+    pos = next_byte_pos(pos)
+    y_hat = read_measurements(params, bits, pos)
+
+    # Arrange measurements into column vectors
+    Yhat = crn.vec_to_windows(jnp.asarray(y_hat, dtype=float), params.m)
+    n_windows = Yhat.shape[1]
+    options = bsbl.bsbl_bo_options(max_iters=20)
+    X_hat = np.zeros((params.n, n_windows))
+    r_iters = np.zeros(n_windows, dtype=int)
+    start = timeit.default_timer()
+    X_hat = reconstructor(Yhat)
+    stop = timeit.default_timer()
+    rtime = stop - start
+    r_times = np.full(n_windows, rtime / n_windows)
+    x = X_hat.flatten(order='F')
+    return DecodedData(x=x, y_hat=y_hat, r_times=r_times, r_iters=r_iters)
+
 
 def read_measurements(params, bits, pos):
     """Performs entropy decoding and inverse quantization of measurement values
