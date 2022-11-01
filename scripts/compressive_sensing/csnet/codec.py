@@ -56,7 +56,8 @@ def main(record_num, n, m, d, q, c, w):
     net, net_params = model.load_from_disk(file_path_base, n)
     X_hat = model.predict(net, net_params, Phi, Y, d)
     snr = crn.signal_noise_ratio(X, X_hat)
-    print(f'SNR: {snr:.3f} dB')
+    prd = crn.percent_rms_diff(X, X_hat)
+    print(f'SNR: {snr:.3f} dB, PRD: {prd:.2f} %')
     model.test_loss(net, net_params, Phi, X, Y, d)
 
 if __name__ == '__main__':
