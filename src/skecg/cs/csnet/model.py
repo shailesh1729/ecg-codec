@@ -28,10 +28,14 @@ class SecondaryModule(nn.Module):
 
     @nn.compact
     def __call__(self, carry, x):
+        # reshaping
         x = jnp.squeeze(x)
+        # LSTM
         carry, h  = nn.OptimizedLSTMCell()(carry, x)
-        # h = nn.tanh(h)
+        h = nn.tanh(h)
+        # dense layer
         h = nn.Dense(256)(h)
+        # reshaping
         h = jnp.expand_dims(h, 2)
         return carry, h
 
