@@ -9,19 +9,50 @@ from flax import serialization
 import optax
 
 
+class InitialModule(nn.Module):
+    """Initial reconstruction module
+    """
+    @nn.compact
+    def __call__(self, x):
+        x = nn.Conv(features=64, kernel_size=(11,), padding='CAUSAL')(x)
+        x = nn.relu(x)
+        x = nn.Conv(features=32, kernel_size=(11,), padding='CAUSAL')(x)
+        x = nn.relu(x)
+        x = nn.Conv(features=1, kernel_size=(11,), padding='CAUSAL')(x)
+        return x
+
+
+class SecondaryModule(nn.Module):
+    """Secondary reconstruction module"""
+
+
+    @nn.compact
+    def __call__(self, carry, x):
+        x = jnp.squeeze(x)
+        carry, h  = nn.OptimizedLSTMCell()(carry, x)
+        # h = nn.tanh(h)
+        h = nn.Dense(256)(h)
+        h = jnp.expand_dims(h, 2)
+        return carry, h
+
+    @staticmethod
+    def initialize_carry(batch_dims, hidden_size):
+        return nn.OptimizedLSTMCell.initialize_carry(
+            jax.random.PRNGKey(0), batch_dims, hidden_size)
+
+
 class CSNet(nn.Module):
-  """CS Net for ECG"""
+    """CS Net for ECG"""
+    hidden_size: int = 250
 
-  @nn.compact
-  def __call__(self, x):
-
-    x = nn.Conv(features=64, kernel_size=(11,), padding='CAUSAL')(x)
-    x = nn.relu(x)
-    x = nn.Conv(features=32, kernel_size=(11,), padding='CAUSAL')(x)
-    x = nn.relu(x)
-    x = nn.Conv(features=1, kernel_size=(11,), padding='CAUSAL')(x)
-    return x
-
+    @nn.compact
+    def __call__(self, x):
+        batch_size = x.shape[0]
+        batch_dims = (batch_size, )
+        x = InitialModule()(x)
+        initial_state = SecondaryModule.initialize_carry(batch_dims, self.hidden_size)
+        _, h = SecondaryModule()(initial_state, x)
+        return h
 
 
 def get_config():
@@ -32,7 +63,7 @@ def get_config():
   # config.momentum = 0.9
   config.learning_rate = 0.0005
   config.batch_size = 256
-  config.num_epochs = 300
+  config.num_epochs = 100
   return config
 
 @jax.jit
@@ -152,7 +183,6 @@ def load_from_disk(file_path, n):
         bytes_output = f.read()
         f.close()
         params = serialization.from_bytes(params, bytes_output)
-        print(jax.tree_util.tree_map(lambda x: x.shape, params))
         return model, params
 
 
