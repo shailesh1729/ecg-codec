@@ -59,15 +59,15 @@ class CSNet(nn.Module):
         return h
 
 
-def get_config():
+def get_config(epochs=300, batch_size=256):
   """Get the default hyperparameter configuration."""
   config = ml_collections.ConfigDict()
 
   # config.learning_rate = 0.1
   # config.momentum = 0.9
   config.learning_rate = 0.0005
-  config.batch_size = 256
-  config.num_epochs = 100
+  config.batch_size = batch_size
+  config.num_epochs = epochs
   return config
 
 @jax.jit
@@ -121,8 +121,7 @@ def train_epoch(state, X_risen, X_true, batch_size, rng):
 
 
 
-def train_and_evaluate(Phi, X, Y, codec_params):
-    config = get_config()
+def train_and_evaluate(Phi, X, Y, codec_params, config):
     X_risen = Y @ Phi / codec_params.d
     n  = codec_params.n
     X_true = jnp.expand_dims(X, 2)

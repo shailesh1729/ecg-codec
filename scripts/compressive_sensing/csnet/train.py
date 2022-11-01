@@ -76,7 +76,8 @@ def main(n, m, d, q, c, w, dry):
     X = X.T
     Y = Y.T
     print('Starting training.')
-    state = model.train_and_evaluate(Phi, X, Y, params)
+    config = model.get_config()
+    state = model.train_and_evaluate(Phi, X, Y, params, config)
     file_path = f'model_n-{n}_m-{m}_d-{d}_q-{q}_c-{c}.mdl'
     model.save_to_disk(state, file_path)
 
