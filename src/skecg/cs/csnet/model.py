@@ -32,7 +32,7 @@ class SecondaryModule(nn.Module):
         x = jnp.squeeze(x)
         # LSTM
         carry, h  = nn.OptimizedLSTMCell()(carry, x)
-        h = nn.tanh(h)
+        # h = nn.tanh(h)
         # dense layer
         h = nn.Dense(256)(h)
         # reshaping
@@ -59,7 +59,7 @@ class CSNet(nn.Module):
         return h
 
 
-def get_config(epochs=300, batch_size=256):
+def get_config(epochs=200, batch_size=256):
   """Get the default hyperparameter configuration."""
   config = ml_collections.ConfigDict()
 
@@ -76,8 +76,6 @@ def apply_model(state, X_input, X_true):
   def loss_fn(params):
     X_est = state.apply_fn({'params': params}, X_input)
     x_diff = X_est - X_true
-    # scale down
-    x_diff = x_diff / 1024.0
     loss = jnp.mean(x_diff * x_diff) / 2.0
     return loss, X_est
 
@@ -124,6 +122,15 @@ def train_epoch(state, X_risen, X_true, batch_size, rng):
 def train_and_evaluate(Phi, X, Y, codec_params, config):
     X_risen = Y @ Phi / codec_params.d
     n  = codec_params.n
+
+    # normalization procedure
+    x_mean = jnp.mean(X_risen, axis=0)
+    X_risen = X_risen  - x_mean
+    X = X - x_mean
+    x_std = jnp.std(X_risen, axis=0)
+    X_risen = X_risen / x_std
+    X = X / x_std
+
     X_true = jnp.expand_dims(X, 2)
     X_risen = jnp.expand_dims(X_risen, 2)
     print(X_true.shape, X_risen.shape)
@@ -165,45 +172,81 @@ def train_and_evaluate(Phi, X, Y, codec_params, config):
         print(f'epoch:{epoch}, train_loss: {train_loss:.2e}, validation_loss: {validation_loss:.2e}')
 
     # return the final trained model
-    return state 
+    return {'params' : state.params, 'mean': x_mean, 'std': x_std} 
 
 
-def save_to_disk(state, file_path):
-    params = state.params
+def save_to_disk(result, file_path_base):
+    params = result['params']
     bytes_output = serialization.to_bytes(params)
+    file_path = f'{file_path_base}.mdl'
     with open(file_path, 'wb') as f:
         f.write(bytes_output)
         f.close()
+    x_mean = result['mean']
+    x_std = result['std']
+    mean = np.asarray(mean)
+    std = np.asarray(std)
+    combined = np.concatenate((mean, std))
+    file_path = f'{file_path_base}.npy'
+    np.save(file_path, combined)
 
 
-def load_from_disk(file_path, n):
+def load_from_disk(file_path_base, n):
     shape = (1, n, 1)
     x = jnp.empty(shape)
     model = CSNet()
     rng = jax.random.PRNGKey(0)
     params = model.init(rng, x)['params']
+    file_path = f'{file_path_base}.mdl'
     with open(file_path, 'rb') as f:
         bytes_output = f.read()
         f.close()
         params = serialization.from_bytes(params, bytes_output)
-        return model, params
+    file_path = f'{file_path_base}.npy'
+    combined = np.load(file_path)
+    mean = combined[:n]
+    std = combined[n:]
+    return model, {'params' : params, 'mean': mean, 'std': std}
 
 
-def predict(net, params, Phi, Y, d):
+def predict(net, net_params, Phi, Y, d):
+    params = net_params['params']
+    x_mean = net_params['mean']
+    x_std = net_params['std']
     X_risen = Y @ Phi / d
+
+    X_risen = X_risen  - x_mean
+    X_risen = X_risen / x_std
+
     X_risen = jnp.expand_dims(X_risen, 2)
     X_est = net.apply({'params': params}, X_risen)
+
+    # denormalize
+    X_est = jnp.squeeze(X_est)
+    X_est = X_est * x_std
+    X_est = X_est + x_mean
+
     return X_est
 
 
-def test_loss(net, params, Phi, X, Y, d):
+def test_loss(net, net_params, Phi, X, Y, d):
+    params = net_params['params']
+    x_mean = net_params['mean']
+    x_std = net_params['std']
+
     X_risen = Y @ Phi / d
+
+    X_risen = X_risen  - x_mean
+    X = X - x_mean
+    X_risen = X_risen / x_std
+    X = X / x_std
+
     X_true = jnp.expand_dims(X, 2)
     X_risen = jnp.expand_dims(X_risen, 2)
-    print(X_true.shape, X_risen.shape)
+    # print(X_true.shape, X_risen.shape)
     X_est = net.apply({'params': params}, X_risen)
     x_diff = X_est - X_true
     # scale down
-    x_diff = x_diff / 1024.0
+    x_diff = x_diff
     loss = jnp.mean(x_diff * x_diff) / 2.0
     print(f'Test loss: {loss:.3e}')

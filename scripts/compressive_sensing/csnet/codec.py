@@ -52,12 +52,12 @@ def main(record_num, n, m, d, q, c, w):
     X = X.T
     Y = Y.T
 
-    file_path = f'model_n-{n}_m-{m}_d-{d}_q-{q}_c-{c}.mdl'
-    net, params = model.load_from_disk(file_path, n)
-    X_hat = model.predict(net, params, Phi, Y, d)
-    snr = crn.signal_noise_ratio(X, jnp.squeeze(X_hat))
+    file_path_base = f'model_n-{n}_m-{m}_d-{d}_q-{q}_c-{c}'
+    net, net_params = model.load_from_disk(file_path_base, n)
+    X_hat = model.predict(net, net_params, Phi, Y, d)
+    snr = crn.signal_noise_ratio(X, X_hat)
     print(f'SNR: {snr:.3f} dB')
-    model.test_loss(net, params, Phi, X, Y, d)
+    model.test_loss(net, net_params, Phi, X, Y, d)
 
 if __name__ == '__main__':
     main()
