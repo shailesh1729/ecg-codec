@@ -40,7 +40,7 @@ Discrete Cosine Transform \cite{batista2001compression,bendifallah2011improved},
 Discrete Wavelet Transform \cite{djohan1995ecg,lu2000wavelet,pooyan2004wavelet,kim2006wavelet}) are popular in ECG compression
 and achieve high compression ratios (CR) at clinically
 acceptable quality.
-However, they require computationally intensive sparsifying
+However, these are computationally intensive sparsifying
 transforms on all data samples and are thus not suitable
 for WBAN sensor nodes \cite{craven2014compressed}.
 
@@ -58,7 +58,7 @@ mathematically represented by a sensing operation
 where $\Phi \in \RR^{m \times n}$ is a matrix
 representation of the sensing process and $\by \in \RR^m$
 the set of $m$ measurements collected for $\bx$.
-A suitable reconstruction algorithm can recovery $\bx$
+A suitable reconstruction algorithm can recover $\bx$
 from $\by$.
 
 Ideally, the sensing process should be implemented at the
@@ -210,7 +210,7 @@ designed in a manner so that all the operations can
 be implemented by integer arithmetic. We have
 tested our encoder on MIT-BIH Arrhythmia database
 and are able to demonstrate additional space savings
-beyond the savings by reduced number of measurements.
+beyond the savings from reduced number of measurements.
 Our implementation is available as part of
 reproducible research on GitHub \cite{kumar2022ecgcodec}.
 
@@ -221,7 +221,7 @@ used for the evaluation of the codec and the
 performance metrics.
 \Cref{sec:arch} describes the proposed codec architecture.
 The analysis of the experimental results is covered in \cref{sec:results}.
-\Cref{sec:conclusion} summarizes our contributions and
+\Cref{sec:conclusion} summarizes our contributions and major findings, and
 identifies future work.
 \Cref{appsec:cs} provides a short overview on
 compressive sensing.

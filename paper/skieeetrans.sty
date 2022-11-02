@@ -1,0 +1,607 @@
+\usepackage{color}
+\usepackage{tikz}
+% Math support
+% cmex10 ensures usage of Type 1 fonts (a requirement of IEEE explore)
+\usepackage[cmex10]{amsmath}%
+% Restores IEEEtrans ability to automatically break within multi-line equations.
+\interdisplaylinepenalty=2500
+\usepackage{amsfonts}%
+\usepackage{amssymb}%
+% Alignment packages
+\usepackage{array}
+% Graphics support
+\usepackage{graphicx}
+% Miscellaneous 
+\usepackage{comment}
+% Citation enhancements
+\usepackage{cite}
+\usepackage{dsfont}% math font package
+
+% hyperref should be the last package which gets loaded
+\usepackage[pdftex, colorlinks, citecolor=blue, urlcolor=blue, bookmarksopen]{hyperref}
+\hypersetup{pdfstartview=}
+% But amsthm must come after hyperref otherwise we get bogus warnings
+% of destination with the same identifier (name{thm.1}) etc.
+\usepackage{amsthm}%
+\usepackage{thmtools}%
+\usepackage{mathtools}% support for additional stuff on amsmath
+% Bibliography support
+%\usepackage[square,numbers, sort]{natbib}
+
+
+% Clever references
+\usepackage{cleveref}
+\crefname{appsec}{Appendix}{Appendices}
+\crefname{algocf}{algorithm}{algorithms}
+\Crefname{algocf}{Algorithm}{Algorithms}
+% Listings support
+\usepackage{listings}
+% Acronyms
+\usepackage[nolist,nohyperlinks]{acronym}
+% Enumerations
+\usepackage{enumitem}
+% placeins like float barrier
+\usepackage{placeins}
+% toprule midrule
+\usepackage{booktabs}
+% \usepackage[justification=centering]{caption}
+
+% *** SUBFIGURE PACKAGES ***
+\ifCLASSOPTIONcompsoc
+ \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\else
+ \usepackage[caption=false,font=footnotesize]{subfig}
+\fi
+
+
+
+
+% *** FLOAT PACKAGES ***
+%
+%\usepackage{fixltx2e}
+% fixltx2e, the successor to the earlier fix2col.sty, was written by
+% Frank Mittelbach and David Carlisle. This package corrects a few problems
+% in the LaTeX2e kernel, the most notable of which is that in current
+% LaTeX2e releases, the ordering of single and double column floats is not
+% guaranteed to be preserved. Thus, an unpatched LaTeX2e can allow a
+% single column figure to be placed prior to an earlier double column
+% figure. The latest version and documentation can be found at:
+% http://www.ctan.org/tex-archive/macros/latex/base/
+
+
+%\usepackage{stfloats}
+% stfloats.sty was written by Sigitas Tolusis. This package gives LaTeX2e
+% the ability to do double column floats at the bottom of the page as well
+% as the top. (e.g., "\begin{figure*}[!b]" is not normally possible in
+% LaTeX2e). It also provides a command:
+%\fnbelowfloat
+% to enable the placement of footnotes below bottom floats (the standard
+% LaTeX2e kernel puts them above bottom floats). This is an invasive package
+% which rewrites many portions of the LaTeX2e float routines. It may not work
+% with other packages that modify the LaTeX2e float routines. The latest
+% version and documentation can be obtained at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/sttools/
+% Do not use the stfloats baselinefloat ability as IEEE does not allow
+% \baselineskip to stretch. Authors submitting work to the IEEE should note
+% that IEEE rarely uses double column equations and that authors should try
+% to avoid such use. Do not be tempted to use the cuted.sty or midfloat.sty
+% packages (also by Sigitas Tolusis) as IEEE does not format its papers in
+% such ways.
+% Do not attempt to use stfloats with fixltx2e as they are incompatible.
+% Instead, use Morten Hogholm'a dblfloatfix which combines the features
+% of both fixltx2e and stfloats:
+%
+% \usepackage{dblfloatfix}
+% The latest version can be found at:
+% http://www.ctan.org/tex-archive/macros/latex/contrib/dblfloatfix/
+
+
+
+% Miscellaneous packages.
+\usepackage{accents}
+\usepackage{ifpdf}
+% URLs
+\usepackage{url}
+% Basically, \url{my_url_here}.
+
+
+%-----------------------------------------Support for making algorithm2e work with IEEEtrans start ------------------------------------------
+%% Reference: http://tex.stackexchange.com/questions/147598/how-to-use-the-algorithm2e-package-with-ieeetran-class
+
+
+% Algorithms 
+\usepackage[ruled, norelsize]{algorithm2e}
+
+% H specifier is not allowed in two-column mode. This is the workaround for the same.
+\makeatletter
+\newcommand{\removelatexerror}{\let\@latex@error\@gobble}
+\makeatother
+
+%-----------------------------------------Support for making algorithm2e work with IEEEtrans end ------------------------------------------
+
+%-----------------------------------------General math commands start ------------------------------------------
+% Spark of a matrix
+\newcommand{\spark}{\mathop{\mathrm{spark}}}
+% Space of linear transformations
+\newcommand{\LinTSpace}{\mathcal{L}}
+
+% Null space symbol
+\newcommand{\NullSpace}{\mathcal{N}}
+% column space symbol
+\newcommand{\ColSpace}{\mathcal{C}}
+% Range of an operator
+\newcommand{\Range}{\mathrm{R}}
+% Image of an operator
+\newcommand{\Image}{\mathrm{im}}
+% Kernel of an operator
+\newcommand{\Kernel}{\mathrm{ker}}
+% row space symbol
+\newcommand{\RowSpace}{\mathcal{R}}
+%Span of a set of vectors
+\newcommand{\Span}{\mathop{\mathrm{span}}}
+%Nullity of a linear operator
+\newcommand{\Nullity}{\mathop{\mathrm{nullity}}}
+% Dimension of a vector space
+\newcommand{\Dim}{\mathop{\mathrm{dim}}}
+%Rank of a matrix
+\newcommand{\Rank}{\mathop{\mathrm{rank}}}
+%Trace of a matrix
+\newcommand{\Trace}{\mathop{\mathrm{tr}}}
+%A diagonal matrix
+\newcommand{\Diag}{\mathop{\mathrm{diag}}}
+%Bracket operator
+\newcommand{\Bracket}{\left [ \; \right ]}
+% sgn function
+\newcommand{\sgn}{\mathop{\mathrm{sgn}}}
+% support function
+\newcommand{\supp}{\mathop{\mathrm{supp}}}
+% Row support 
+\newcommand{\rowsupp}{\mathop{\mathrm{rowsupp}}}
+% Row q norm of each row
+\newcommand{\Rowq}[1]{\mathop{\mathrm{row}_{#1}}}
+
+% entry wise absolute value function
+\newcommand{\abs}{\mathop{\mathrm{abs}}}
+% powerset
+\newcommand{\Power}{\mathop{\mathcal{P}}}
+% Sub gaussian function
+\newcommand{\Sub}{\mathop{\mathrm{Sub}}}
+% Strictly Sub gaussian function
+\newcommand{\SSub}{\mathop{\mathrm{SSub}}}
+%Variance function
+\newcommand{\Var}{\mathop{\mathrm{Var}}}
+% Covariance matrix
+\newcommand{\Cov}{\mathop{\mathrm{Cov}}}
+\newcommand{\Forall}{\; \forall \;}
+
+% A vector of all ones
+\newcommand{\OneVec}{\ensuremath{\mathds{1}}}
+% A vector of all zeros
+\newcommand{\ZeroVec}{\ensuremath{0}}
+%\newcommand{\OneVec}{\ensuremath{\vec{1}}}
+% A matrix of all ones
+%\newcommand{\OneMat}{\ensuremath{\stackrel{\leftrightarrow}{1}}}
+\newcommand{\OneMat}{\ensuremath{\mathbf{1}}}
+
+\newcommand{\bigO}[1]{\ensuremath{\mathop{}\mathopen{}\mathcal{O}\mathopen{}\left(#1\right)}}
+
+%% Set theory related stuff
+\newcommand{\Card}[1]{\ensuremath{\mathrm{card}\,{#1}}}
+
+
+%% Topology related stuff
+\newcommand{\Interior}[1]{\ensuremath{\accentset{\circ}{#1}}}
+\newcommand{\Closure}[1]{\ensuremath{\overline{#1}}}
+
+
+
+%% Probability distributions
+\newcommand{\Gaussian}{\mathcal{N}}
+
+
+% Sparse and redundant systems related stuff
+\newcommand{\ERC}{\mathop{\mathrm{ERC}}}
+\newcommand{\Maxcor}{\mathop{\mathrm{maxcor}}}
+
+
+
+\newcommand\smallO[1]{
+    \mathchoice
+    {% mode \displaystyle
+      \scriptstyle\mathcal{O}\left(#1\right)
+    }
+    {% mode \textstyle
+      \scriptstyle\mathcal{O}\left(#1\right)
+    }
+    {% mode \scriptstyle
+      \scriptscriptstyle\mathcal{O}\left(#1\right)
+    }
+    {% mode \scriptscriptstyle
+      \scalebox{0.8}{$\scriptscriptstyle\mathcal{O}$}\left(#1\right)
+    }
+}
+
+\newcommand{\EmptySet}{\varnothing}
+
+% Convex analysis related stuff
+\newcommand{\AffineHull}{\mathop{\mathrm{aff}}}
+\newcommand{\ConvexHull}{\mathop{\mathrm{conv}}}
+
+% Binary hypothesis test rule
+\newcommand{\BinHypTestRule}{\mathop{\gtrless}_{H_0}^{H_1}}
+
+
+
+% A new term which is being defined.
+\newcommand{\term}{\textbf}
+
+
+
+
+\setcounter{MaxMatrixCols}{30}
+
+
+
+% \newcommand{\AA}{\mathbb{A}}
+% A linear operator
+\newcommand{\BB}{\mathbb{B}}
+% Complex space symbol
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\DD}{\mathbb{D}}
+% Expectation operator
+\newcommand{\EE}{\mathbb{E}}
+% A field
+\newcommand{\FF}{\mathbb{F}}
+\newcommand{\GG}{\mathbb{G}}
+% A Hilbert space
+\newcommand{\HH}{\mathbb{H}}
+% The set of irrational numbers
+\newcommand{\II}{\mathbb{I}}
+\newcommand{\JJ}{\mathbb{J}}
+\newcommand{\KK}{\mathbb{K}}
+\newcommand{\LL}{\mathbb{L}}
+\newcommand{\MM}{\mathbb{M}}
+% Natural numbers set symbol
+\newcommand{\NN}{\mathbb{N}}
+% Natural numbers set symbol
+\newcommand{\Nat}{\mathbb{N}}
+% Probability set symbol
+\newcommand{\PP}{\mathbb{P}}
+% Rational numbers set symbol
+\newcommand{\QQ}{\mathbb{Q}}
+% Real line symbol
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\RRMN}{\mathbb{R}^{M \times N}}
+% \newcommand{\SS}{\mathbb{S}}
+% A linear operator
+\newcommand{\TT}{\mathbb{T}}
+% Another linear operator
+\newcommand{\UU}{\mathbb{U}}
+% A vector space
+\newcommand{\VV}{\mathbb{V}}
+% A subspace
+\newcommand{\WW}{\mathbb{W}}
+% An inner product space
+\newcommand{\XX}{\mathbb{X}}
+\newcommand{\YY}{\mathbb{Y}}
+% Integers set symbol
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\ZERO}{\mathbf{O}}
+% Extended real line
+\newcommand{\ERL}{\overline{\mathbb{R}}}
+\newcommand{\RERL}{(-\infty, \infty]}
+\newcommand{\LERL}{[-\infty, \infty)}
+
+% All mathcal shortcuts
+% A set of sparse signal representations
+\newcommand{\AAA}{\mathcal{A}}
+\newcommand{\BBB}{\mathcal{B}}
+\newcommand{\CCC}{\mathcal{C}}
+% A clustering
+\newcommand{\DDD}{\mathcal{D}}
+\newcommand{\EEE}{\mathcal{E}}
+\newcommand{\FFF}{\mathcal{F}}
+\newcommand{\GGG}{\mathcal{G}}
+\newcommand{\HHH}{\mathcal{H}}
+\newcommand{\III}{\mathcal{I}}
+\newcommand{\JJJ}{\mathcal{J}}
+% Measurements tuple
+\newcommand{\KKK}{\mathcal{K}}
+\newcommand{\LLL}{\mathcal{L}}
+\newcommand{\MMM}{\mathcal{M}}
+\newcommand{\NNN}{\mathcal{N}}
+\newcommand{\OOO}{\mathcal{O}}
+% Joint sparsity model
+\newcommand{\PPP}{\mathcal{P}}
+\newcommand{\QQQ}{\mathcal{Q}}
+\newcommand{\RRR}{\mathcal{R}}
+\newcommand{\SSS}{\mathcal{S}}
+\newcommand{\TTT}{\mathcal{T}}
+\newcommand{\UUU}{\mathcal{U}}
+\newcommand{\VVV}{\mathcal{V}}
+\newcommand{\WWW}{\mathcal{W}}
+\newcommand{\XXX}{\mathcal{X}}
+\newcommand{\YYY}{\mathcal{Y}}
+\newcommand{\ZZZ}{\mathcal{Z}}
+\newcommand{\Tau}{\mathcal{T}}
+\newcommand{\Chi}{\mathcal{X}}
+\newcommand{\Eta}{\mathcal{H}}
+% Real part of a complex number
+% \newcommand{\Re}{\operatorname{Re}}
+% Imaginary part of a complex number
+% \newcommand{\Im}{\operatorname{Im}}
+\newcommand{\diag}{\mathrm{diag}}
+% Signum function
+% \newcommand{\sgn}{\mathrm{sgn}}
+% Domain function
+\newcommand{\dom}{\mathrm{dom}\,}
+\newcommand{\range}{\mathrm{range}\,}
+\newcommand{\image}{\mathrm{im}\,}
+\newcommand{\nullspace}{\mathrm{null}\,}
+% Epigraph
+\newcommand{\epi}{\mathrm{epi}\,}
+% Hypograph
+\newcommand{\hypo}{\mathrm{hypo}\,}
+% Sublevel set
+\newcommand{\sublevel}{\mathrm{sublevel}}
+% Superlevel set
+\newcommand{\superlevel}{\mathrm{superlevel}}
+% Level set / Contour
+\newcommand{\contour}{\mathrm{contour}}
+% Distance function
+\newcommand{\dist}{\mathrm{dist}}
+% Similarity function
+\newcommand{\simf}{\mathrm{sim}}
+% Optimum/optimal value
+\newcommand{\opt}{\mathrm{opt}}
+
+%% Metrics
+% SNR 
+\newcommand{\snr}{\mathrm{SNR}}
+% Reconstruction or Recovery SNR 
+\newcommand{\rsnr}{\mbox{R\_SNR}}
+% Percent Root Mean Square Difference
+\newcommand{\prd}{\mathrm{PRD}}
+% Number of bits
+\newcommand{\bits}{\mathrm{bits}}
+\newcommand{\bps}{\mathrm{bps}}
+\newcommand{\bpm}{\mathrm{bpm}}
+% Compression ratio
+\newcommand{\compr}{\mathrm{CR}}
+% Measurement ratio
+\newcommand{\measurer}{\mathrm{MR}}
+% Percentage space savings
+\newcommand{\pss}{\mathrm{PSS}}
+% Percentage measurement savings
+\newcommand{\pms}{\mathrm{PMS}}
+\newcommand{\nmse}{\mathrm{NMSE}}
+\newcommand{\nrmse}{\mathrm{N\_RMSE}}
+\newcommand{\window}{\mathrm{window}}
+\newcommand{\flatten}{\mathrm{flatten}}
+\newcommand{\clip}{\mathrm{clip}}
+\newcommand{\round}{\mathrm{round}}
+\newcommand{\ceiling}{\mathrm{ceiling}}
+
+
+% Symmetric group
+\newcommand{\Sym}{\mathrm{Sym}}
+\newcommand{\id}{\mathrm{id}}
+% Machine learning related stuff
+% ML
+\newcommand{\precision}{\mathrm{precision}}
+\newcommand{\recall}{\mathrm{recall}}
+\newcommand{\ML}{\mathbf{ML}}
+\newcommand{\MLE}{\mathbf{MLE}}
+\newcommand{\mah}{\mathbf{mah}}
+\newcommand{\chord}{\mathbf{chord}}
+\newcommand{\geo}{\mathbf{geo}}
+\newcommand{\nn}{\mathbf{nn}}
+\newcommand{\fn}{\mathbf{fn}}
+\newcommand{\ave}{\mathbf{ave}}
+\newcommand{\stat}{\mathbf{stat}}
+\newcommand{\mean}{\mathbf{mean}}
+\newcommand{\median}{\mathbf{median}}
+\newcommand{\mode}{\mathbf{mode}}
+% error function
+\newcommand{\erf}{\mathop{\mathrm{erf}}}
+% complementary error function
+\newcommand{\erfc}{\mathop{\mathrm{erfc}}}
+% Conic hull of a set
+\newcommand{\ConicHull}{\mathop{\mathrm{cone}}}
+% Set theory related stuff
+\newcommand{\argmin}{\mathrm{arg}\,\mathrm{min}}
+\newcommand{\argmax}{\mathrm{arg}\,\mathrm{max}}
+\newcommand{\card}{\mathrm{card}\,}
+% such that
+\newcommand{\ST}{\: | \:}
+% Sparse representations related stuff
+% infimal operator
+\newcommand{\infimal}{\;\square\;}
+% Topology related stuff
+\newcommand{\interior}{\mathrm{int}\,}
+\newcommand{\closure}{\mathrm{cl}\,}
+\newcommand{\boundary}{\mathrm{bd}\,}
+\newcommand{\frontier}{\mathrm{fr}\,}
+\newcommand{\diam}{\mathrm{diam}\,}
+\newcommand{\relint}{\mathrm{ri}\,}
+\newcommand{\relbd}{\mathrm{relbd}\,}
+\newcommand{\extreme}{\mathrm{ext}\,}
+\newcommand{\affine}{\mathrm{aff}\,}
+\newcommand{\cone}{\mathrm{cone}\,}
+\newcommand{\convex}{\mathrm{conv}\,}
+\newcommand{\graph}{\mathrm{gra}\,}
+\newcommand{\kernel}{\mathrm{ker}\,}
+\newcommand{\codim}{\mathrm{codim}\,}
+\newcommand{\nullity}{\mathrm{nullity}\,}
+\newcommand{\rank}{\mathrm{rank}\,}
+\newcommand{\prox}{\mathrm{prox}}
+\newcommand{\best}{\mathrm{best}}
+\newcommand{\ainterior}{\mathrm{int}}
+\newcommand{\aclosure}{\mathrm{cl}}
+\newcommand{\aboundary}{\mathrm{bd}}
+\newcommand{\afrontier}{\mathrm{fr}}
+\newcommand{\aextreme}{\mathrm{ext}}
+% Thresholding operators
+\newcommand{\st}{\mathrm{ST}}
+
+% boldface letters
+\newcommand{\bzero}{\mathbf{0}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\ba}{\mathbf{a}}
+\newcommand{\bb}{\mathbf{b}}
+\newcommand{\bc}{\mathbf{c}}
+\newcommand{\bd}{\mathbf{d}}
+\newcommand{\be}{\mathbf{e}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\bh}{\mathbf{h}}
+\newcommand{\bi}{\mathbf{i}}
+\newcommand{\bj}{\mathbf{j}}
+\newcommand{\bk}{\mathbf{k}}
+\newcommand{\bl}{\mathbf{l}}
+\newcommand{\bm}{\mathbf{m}}
+\newcommand{\bn}{\mathbf{n}}
+\newcommand{\bo}{\mathbf{o}}
+\newcommand{\bp}{\mathbf{p}}
+\newcommand{\bq}{\mathbf{q}}
+\newcommand{\br}{\mathbf{r}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\bt}{\mathbf{t}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bv}{\mathbf{v}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\bz}{\mathbf{z}}
+\newcommand{\bA}{\mathbf{A}}
+\newcommand{\bB}{\mathbf{B}}
+\newcommand{\bC}{\mathbf{C}}
+\newcommand{\bD}{\mathbf{D}}
+\newcommand{\bE}{\mathbf{E}}
+\newcommand{\bF}{\mathbf{F}}
+\newcommand{\bG}{\mathbf{G}}
+\newcommand{\bH}{\mathbf{H}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bJ}{\mathbf{J}}
+\newcommand{\bK}{\mathbf{K}}
+\newcommand{\bL}{\mathbf{L}}
+\newcommand{\bM}{\mathbf{M}}
+\newcommand{\bN}{\mathbf{N}}
+\newcommand{\bO}{\mathbf{O}}
+\newcommand{\bP}{\mathbf{P}}
+\newcommand{\bQ}{\mathbf{Q}}
+\newcommand{\bR}{\mathbf{R}}
+\newcommand{\bS}{\mathbf{S}}
+\newcommand{\bT}{\mathbf{T}}
+\newcommand{\bU}{\mathbf{U}}
+\newcommand{\bV}{\mathbf{V}}
+\newcommand{\bW}{\mathbf{W}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\bY}{\mathbf{Y}}
+\newcommand{\bZ}{\mathbf{Z}}
+% Bold mathcal shortcuts
+\newcommand{\bAAA}{\mathbf{\mathcal{A}}}
+\newcommand{\bBBB}{\mathbf{\mathcal{B}}}
+\newcommand{\bCCC}{\mathbf{\mathcal{C}}}
+\newcommand{\bDDD}{\mathbf{\mathcal{D}}}
+\newcommand{\bEEE}{\mathbf{\mathcal{E}}}
+\newcommand{\bFFF}{\mathbf{\mathcal{F}}}
+\newcommand{\bGGG}{\mathbf{\mathcal{G}}}
+\newcommand{\bHHH}{\mathbf{\mathcal{H}}}
+\newcommand{\bIII}{\mathbf{\mathcal{I}}}
+\newcommand{\bJJJ}{\mathbf{\mathcal{J}}}
+\newcommand{\bKKK}{\mathbf{\mathcal{K}}}
+\newcommand{\bLLL}{\mathbf{\mathcal{L}}}
+\newcommand{\bMMM}{\mathbf{\mathcal{M}}}
+\newcommand{\bNNN}{\mathbf{\mathcal{N}}}
+\newcommand{\bOOO}{\mathbf{\mathcal{O}}}
+\newcommand{\bPPP}{\mathbf{\mathcal{P}}}
+\newcommand{\bQQQ}{\mathbf{\mathcal{Q}}}
+\newcommand{\bRRR}{\mathbf{\mathcal{R}}}
+\newcommand{\bSSS}{\mathbf{\mathcal{S}}}
+\newcommand{\bTTT}{\mathbf{\mathcal{T}}}
+\newcommand{\bUUU}{\mathbf{\mathcal{U}}}
+\newcommand{\bVVV}{\mathbf{\mathcal{V}}}
+\newcommand{\bWWW}{\mathbf{\mathcal{W}}}
+\newcommand{\bXXX}{\mathbf{\mathcal{X}}}
+\newcommand{\bYYY}{\mathbf{\mathcal{Y}}}
+\newcommand{\bZZZ}{\mathbf{\mathcal{Z}}}
+% Bold Greek letters
+\newcommand{\blambda}{\pmb{\lambda}}
+
+
+
+%-----------------------------------------General math commands end ------------------------------------------
+
+
+%-----------------------------------------Theorems start ------------------------------------------
+
+\declaretheoremstyle[
+    headfont=\bfseries, 
+    notebraces={[}{]},
+    bodyfont=\normalfont,
+    headpunct={},
+    spacebelow=\parsep,
+    spaceabove=\parsep,
+]{skDefStyle}
+
+
+
+\declaretheoremstyle[
+    headfont=\bfseries, 
+    notebraces={[}{]},
+    bodyfont=\normalfont\itshape,
+    headpunct={},
+    %postheadspace=\newline,
+    %postheadhook={\textcolor{red}{\rule[.6ex]{\linewidth}{0.4pt}}\\},
+    %spacebelow=\parsep,
+    %spaceabove=\parsep
+]{skThmStyle}
+
+
+\declaretheorem[
+refname={axiom,axioms},
+Refname={Axiom,Axioms}
+]{axiom}
+
+\declaretheorem[
+style=skThmStyle,
+refname={theorem,theorems},
+Refname={Theorem,Theorems}
+]{theorem}
+
+% lemma will share the same counter as theorem
+\declaretheorem[sibling=theorem,
+style=skThmStyle,
+refname={lemma,lemmas},
+Refname={Lemma,Lemmas}
+]{lemma}
+
+\declaretheorem[sibling=theorem,
+style=skThmStyle,
+refname={proposition,propositions},
+Refname={Proposition,Propositions}
+]{proposition}
+
+\declaretheorem[sibling=theorem,
+style=skThmStyle,
+refname={corollary,corollaries},
+Refname={Corollary,Corollaries}]
+{corollary}
+
+
+\declaretheorem[
+style=skDefStyle,
+refname={definition,definitions},
+Refname={Definition,Definitions}]
+{definition}
+
+%-----------------------------------------Theorems end ------------------------------------------
+
+
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+% floors and ceilings
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}

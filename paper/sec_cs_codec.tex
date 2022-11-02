@@ -30,12 +30,12 @@ The decoding algorithm is presented in
 
 \subsection{Stream Header}
 The stream header \cref{tbl:header:stream}
-consists of all necessary information
+contains all the necessary information
 required to initialize the decoder.
 In particular, it contains the pseudo-random
 generator key that can be used to reproduce
 the sparse binary sensing matrix used in the
-encoder by the decoder,
+encoder at the decoder,
 the number of samples per window ($n$),
 the number of measurements per window ($m$),
 the number of ones per column in the sensing matrix
@@ -47,7 +47,7 @@ or fixed quantization will be used.
 It contains the limits on the normalized
 root mean square error for
 the adaptive quantization ($\rho$)
-and adaptive clipping ($\gamma$) steps.
+and adaptive clipping ($\gamma$) steps (elaborated subsequently).
 If fixed quantization is used, then it contains
 the fixed quantization parameter value ($q$).
 Both $\rho$ and $\gamma$ in the stream header
@@ -55,11 +55,11 @@ are encoded using a simple decimal format $a 1e^{-b}$ where $a$
 and $b$ are encoded as 4-bit integers.
 
 Following \cite{mamaghanian2011compressed},
-we construct a sparse binary sensing matrix $\Phi$ of shape
+we construct a sparse binary sensing matrix $\Phi$ of size
 $m \times n$.
 Each column of $\Phi$ consists of exactly $d$ ones and
 $m-d$ zeros, where the position of ones has been randomly
-selected in each column. Identical algorithm is used
+selected in each column. Identical algorithms are used
 to generate the sensing matrix using the stream header
 parameters in both the encoder and the decoder.
 The randomization is seeded with the parameter $\mathrm{key}$
@@ -87,14 +87,14 @@ Here we describe the encoding process for each frame.
 \Cref{fig:cs:encoder} shows a block diagram of the frame encoding process.
 The input to the encoder is a frame of digital ECG samples
 at a given sampling rate $f_s$. In the MIT-BIH database,
-the samples are digitally encoded in 11 bits per sample (unsigned).
+the samples are digitally encoded using 11 bits per sample (unsigned).
 Let the frame of ECG signal be denoted by $\bx$.
 The frame is split into non-overlapping windows of $n$
-samples each. We shall denote each window of $n$ samples
-by vectors $\bx_i$. 
+samples each. We shall denote windows (of $n$ samples each) of a frame
+by vectors $\bx_i, 1 \le i\le w$.
 
 \subsubsection{Windowing}
-A frame of ECG consists of multiple
+Thus, a frame of ECG consists of multiple
 such windows (up to a maximum of $w$ windows per
 frame as per the encoder configuration).
 Let the windows by denoted by $\bx_1, \bx_2, \dots$.
