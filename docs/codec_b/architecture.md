@@ -212,7 +212,7 @@ parameters that vary from frame to frame.
        1. $y_{\min} \leftarrow \mu_y  - r \sigma_y$.
        1. $y_{\max} \leftarrow \mu_y  + r \sigma_y$.
        1. $\hat{\by} \leftarrow \clip(\bar{\by}, y_{\min}, y_{\max})$.
-       1. If $\nrmse(\by, \hat{\by}) \leq \gamma$ then break.
+       1. If $\nrmse(\bar{\by}, \hat{\by}) \leq \gamma$ then break.
     1. $\bc \leftarrow \text{ans_code}(\hat{\by}, \mu_y, \sigma_y, y_{\min}, y_{\max})$.
     1. $n_c \leftarrow$ number of words in $\bc$.
     1. Send frame header($\mu_y, \sigma_y, q, r, n_w, n_c$).
@@ -360,7 +360,7 @@ $$
 $$
 Similar to adaptive quantization, we vary $r$ from $2$ to $8$
 till we have captured sufficient variation in $\bar{\by}$
-and $\nrmse(\by, \hat{\by}) \leq \gamma$.
+and $\nrmse(\bar{\by}, \hat{\by}) \leq \gamma$.
 
 
 ### Entropy Coding

@@ -1,0 +1,272 @@
+\subsection{Stream Header}
+The stream header \cref{tbl:header:stream}
+contains all the necessary information
+required to initialize the decoder.
+In particular, it contains the pseudo-random
+generator key that can be used to reproduce
+the sparse binary sensing matrix used in the
+encoder at the decoder,
+the number of samples per window ($n$),
+the number of measurements per window ($m$),
+the number of ones per column in the sensing matrix
+($d$),
+and the maximum number of windows in each frame
+of ECG signal ($w$).
+It contains a flag indicating whether adaptive
+or fixed quantization will be used.
+It contains the limits on the normalized
+root mean square error for
+the adaptive quantization ($\rho$)
+and adaptive clipping ($\gamma$) steps (elaborated subsequently).
+If fixed quantization is used, then it contains
+the fixed quantization parameter value ($q$).
+Both $\rho$ and $\gamma$ in the stream header
+are encoded using a simple decimal format $a \cdot 10^{-b}$ where $a$
+and $b$ are encoded as 4-bit integers.
+
+We then model the measurement values in $\hat{\by}$
+as a quantized Gaussian distributed random variable
+with mean $\mu_y$, standard deviation $\sigma_y$,
+minimum value $\mu_y - r \sigma_y$ and maximum value $\mu_y + r \sigma_y$.
+
+\subsubsection{Clipping}
+
+An entropy coder can handle with a finite set of symbols
+only. Hence, the range of input values [measurements
+coded as integers] must be restricted to a finite range.
+This is the reason one has to choose a distribution
+with finite support (like quantized Gaussian).
+From \cref{tbl:cs:codec:measure:stats} one can see that
+while the complete range of measurement values can be
+up to 40-50x larger than the standard deviation, the iqr
+is less than $1.5$ times the standard deviation. In other
+words, the measurement values are fairly concentrated
+around its mean. This can be visually seen from the
+histograms in \Cref{fig-cs-codec:y:hist:200} also.
+
+
+\subsubsection{Measurement statistics}
+Several aspects of our encoder architecture are based on the
+statistics of the measurements $\by$. We collected the summary
+statistics including mean $\mu$, standard deviation $\sigma$,
+range of values in $\by$, skew and kurtosis
+for the measurement values for each
+of the ECG records in the MIT-BIH database. These values
+have been reported for one particular encoder configuration
+in \cref{tbl:cs:codec:measure:stats}.
+In addition, we also compute the range divided by standard deviation
+$\frac{\text{rng}}{\sigma}$
+and the iqr (inter quantile range) divided by standard deviation
+$\frac{\text{iqr}}{\sigma}$.
+
+
+\subsection{Gaussianity}
+
+Towards this, we measured the
+skew and kurtosis for the measurements for each record
+as shown in \cref{tbl:cs:codec:measure:stats}
+for the sensing matrix configuration of $m=256,n=512,d=4$.
+For a Gaussian distributed variable,
+the skew should be close to $0$ while kurtosis should be close to $3$.
+While the skew is not very high, Kurtosis does vary widely.
+
+One can see that the divergence tends to increase as the
+kurtosis increases. We determined the Pearson correlation
+coefficient between kurtosis and kld to be $0.67$.
+
+
+\Cref{fig-cs-codec:y:234:empirical:quantized} shows an example
+where the empirical distribution is significantly different
+from the corresponding quantized Gaussian distribution
+due to the presence of a large
+number of $0$ values in $\by$. Note that this is different
+from the histograms in \cref{fig-cs-codec:y:hist:200} where
+the $\by$ values have been binned into 200 bins.
+
+\begin{figure}[htb]
+    \centering % <-- added
+  \centering 
+  \includegraphics[width=0.95\linewidth]
+  {images/rec_234_empirical_vs_quantized_gaussian.png}
+\caption{Empirical and quantized Gaussian distributions for measurement values
+$\by$ in record 234}
+\label{fig-cs-codec:y:234:empirical:quantized}
+\end{figure}
+
+%\input{stats/measurements}
+%\input{stats/compression}
+Note that often in literature, $\pss$ is defined as compression ratio
+(e.g., \cite{mamaghanian2011compressed}).
+Several papers ignore the bitstream formation aspect
+and report $\frac{m}{n} \times 100$
+(e.g., \cite{zhang2016comparison})
+or $\frac{n - m}{n} \times 100$ (e.g., \cite{zhang2021csnet})
+as the compression ratio
+which measures the reduction in number of measurements
+compared to the number of samples in each window.
+
+The measurement ratio $\frac{m}{n}$ is not a
+good indicator of compression ratio.
+If the sensing matrix $\Phi$ is Gaussian,
+then the measurement values are real valued.
+In literature using Gaussian sensing matrices
+(e.g., \cite{zhang2016comparison}),
+it is unclear how many bits are
+being used to represent each floating point measurement value
+for transmission.
+Under standard 32-bit IEEE floating point format,
+each value would require 32-bits.
+Then for MIT-BIH data the compression ratio in bits
+would be $\frac{11 \times n}{32 \times m}$.
+The only way the ratio $\frac{m}{n}$ would make sense
+if the measurements are also quantized at 11 bits
+resolution. However the impact of such quantization
+is not considered in the simulations.
+
+Now consider the case of a sparse binary sensing
+matrix. Since it consists of only zeros and ones,
+hence for integer inputs, it generates integer
+outputs. Thus, we can say that output of a sparse
+binary sensor are quantized by design.
+However, the range of values changes.
+Assume that the sensing matrix has $d$ ones per column.
+Then it has a total of $n d$ ones. Thus, each row
+will have on average $\frac{n d}{m}$ ones.
+\footnote{Since the ones are randomly placed, hence
+we won't have same number of ones in each row.}
+If we assume the input data to be in the range
+of $[-1024, 1023]$ (under 11-bit), then in the
+worst case, the range of output values may go
+up to$[-\frac{n d}{m} \times 1024, \frac{n d}{m} \times 1023]$.
+For a simple case where $n = 2m$ and $d=4$, we will require
+14 bits to represent each measurement value.
+To achieve $\frac{m}{n}$ as the compression ratio, we will
+have to quantize the measurements in 11 bits. If we do so,
+we shall need to provide some way to communicate the quantization
+parameters to the decoder as well as study the impact of
+quantization noise.
+This issue seems to be ignored in \cite{zhang2012compressed}.
+
+
+Since the entropy coder is coding the measurements rather than
+the samples directly, hence it is also useful to see how
+many bits are needed to code each measurement. We
+denote this
+
+As one desires higher compression ratios and lower
+$\prd$, one can define a combined \emph{quality score} (QS) as
+\begin{equation}
+\text{QS} = \frac{\compr}{\prd} \times 100.
+\end{equation}
+\subsection{Performance Metrics}
+\label{sec:codec:metrics}
+In our encoder, digital ECG signal is split into windows
+of $n$ samples each which can be multiplied
+with a sensing matrix. 
+
+
+\section{Intro}
+Noncommunicable diseases (NCDs) account for 72\%
+of all global deaths with cardiovascular diseases
+(CVDs) accounting for 44\% of all NCD mortality
+\cite{collins2019interact}.
+For patients with CVDs, wearable device based remote ECG
+monitoring plays a critical role in their disease
+management and care. 
+
+
+However, long term ECG monitoring
+can generate a large amount of uncompressed data.
+For example, each half hour 2 lead recording in the
+MIT-BIH Arrhythmia database \cite{moody2001impact}
+requires 1.9MB of storage. As shown in \cite{mamaghanian2011compressed},
+in a real time telemonitoring sensor node, the wireless
+transmission of data consumes most of the energy.
+The real time compression of ECG data by a low
+complexity encoder has received significant attention
+in the past decade.
+
+ECG signal compression has been an active area
+of interest for several decades. Extensive surveys
+can be found in \cite{singh2015review,rajankar2019electrocardiogram}.
+Compressive sensing (CS) based techniques for ECG
+data compression have been reviewed in 
+
+Transform domain techniques
+(e.g., Discrete Cosine Transform \cite{al1995dynamic},
+Discrete Cosine Transform \cite{batista2001compression,bendifallah2011improved},
+Discrete Wavelet Transform \cite{djohan1995ecg,lu2000wavelet,pooyan2004wavelet,kim2006wavelet}) are popular in ECG compression
+and achieve high compression ratios (CR) at clinically
+acceptable quality.
+However, these are computationally intensive sparsifying
+transforms on all data samples and are thus not suitable
+for WBAN sensor nodes \cite{craven2014compressed}.
+
+In order to keep the sensing matrix multiplication
+simple and efficient, sparse binary sensing matrices
+are a popular choice \cite{mamaghanian2011compressed,zhang2012compressed}.
+
+We consider whether a digital quantization of the compressive
+measurements affects the reconstruction quality.
+Further, we study the empirical distribution of compressive
+measurements to explore efficient ways of entropy coding
+of the quantized measurements.
+
+so that it
+can be implemented efficiently in low-power devices
+
+
+However, they don't
+provide much detail on how the codebook was designed or how should
+it be adapted for variations in ECG signals.
+They clearly define the compression ratio in terms
+of a ratio between the uncompressed bits $\bits_u$
+and the compressed bits $\bits_c$. They define it
+as $\frac{\bits_u - \bits_c}{\bits_u} \times 100$.
+This is often known in literature as
+\emph{percentage space savings}.
+
+\Cref{appsec:cs} provides a short overview on
+compressive sensing.
+\Cref{appsec:ec} provides a short overview on
+entropy coding.
+
+Zhang et al. \cite{zhang2012compressed},
+Zhang et al. \cite{zhang2021csnet} define
+$\frac{n - m}{n} \times 100$ as compression ratio. 
+Mangia et al. \cite{mangia2020deep} define $\frac{n}{m}$
+as the compression ratio.
+Polania et al. \cite{polania2018compressed} define
+$\frac{m}{n}$ as compression ratio.
+Picariello et al. \cite{picariello2021novel} use
+a non-random sensing matrix.
+They infer a circulant binary sensing matrix
+directly from the ECG signal being compressed.
+The sensing matrix is adapted as and when
+there is significant change in the signal
+statistics.
+They represent both the ECG samples and
+compressive measurements with same number of
+bits per sample/measurement. However,
+in their case, there is the additional
+overhead of sending the sensing matrix updates.
+Their compression ratio is slightly lower than
+$\frac{n}{m}$ where they call $\frac{n}{m}$ as
+the \emph{under-sampling ratio}.
+
+Luo et al. in \cite{luo2014dynamic} proposed a dynamic
+compression scheme for ECG signals which consisted
+of a digital integrate and fire sampler followed
+by an entropy coder. They used Huffman codes for
+entropy coding of the timestamps associated with
+the impulse train.
+
+Chouakri et al. in \cite{chouakri2013wavelet} compute
+the DWT of ECG signal by Db6 wavelet, select coefficients
+using higher order statistics thresholding, then perform
+linear prediction coding and Huffman coding of the selected
+coefficients.  
+
+\emph{zstd} by Facebook Inc. \cite{zstd}
+and \emph{LZFSE} by Apple Inc. are popular lossless
+data compression formats based on ANS.

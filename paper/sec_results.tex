@@ -7,7 +7,73 @@ of the encoder and the quality of reconstruction
 under different reconstruction algorithms.
 
 
-\begin{figure*}[ht]
+\subsection{Gaussianity}
+
+The key idea behind our entropy coding
+design is to model the measurement values as
+being sampled from a quantized Gaussian distribution.
+\Cref{fig-cs-codec:y:hist:200} shows the histograms of measurement
+values for 6 different records.
+Gaussian distribution is not a very bad approximation visually.
+
+The best compression can be achieved by using the empirical
+probabilities of different values in $\by$ in an entropy model.
+However, doing so would require us to transmit the empirical
+probabilities as side information. This may be expensive.
+We can estimate the improvement in compression overhead
+by use of the quantized Gaussian approximation.
+Let $\PP$ denote the empirical probability distribution
+of data and let $\QQ$ denote the corresponding
+quantized Gaussian distribution. Bamler in \cite{bamler2022constriction}
+show empirically that the overhead of using an approximation
+distribution $\QQ$ in place of $\PP$ in ANS entropy coding
+is close to the KL divergence $\text{KL}(\PP || \QQ)$
+which is given by
+\begin{equation}
+\text{KL}(\PP || \QQ) = \sum_y \PP(y) \log_2\left (\frac{\PP(y)}{\QQ(y)} \right).
+\end{equation}
+We computed the empirical distribution for $\by$ for each
+record and measured its KL divergence with the corresponding
+quantized Gaussian distribution.
+It varies around $0.11 \pm 0.07$ bits across the 48 records
+for an encoder configuration with $m=256,n=512,d=4$.
+Thus, the overhead of using a quantized
+Gaussian distribution in place of the empirical probabilities
+can be estimated to be $4-18\%$.
+The empirical distributions vary widely from one record to another
+in the database. Hence using a single fixed empirical distribution
+(e.g. the Huffman codebook preloaded into the device in
+\cite{mamaghanian2011compressed})
+may lead to lower compression.
+
+\begin{figure}
+\centering % <-- added
+\subfloat[Record 100]{%
+\includegraphics[width=0.3\linewidth]{images/rec_100_hist_measurements_200_bins.png}}
+\hfill
+\subfloat[Record 102]{%
+\includegraphics[width=0.3\linewidth]{images/rec_102_hist_measurements_200_bins.png}}
+\hfill
+\subfloat[Record 115]{%
+\includegraphics[width=0.3\linewidth]{images/rec_115_hist_measurements_200_bins.png}}
+\\
+\subfloat[Record 202]{%
+\includegraphics[width=0.3\linewidth]{images/rec_202_hist_measurements_200_bins.png}}
+\hfill
+\subfloat[Record 208]{%
+\includegraphics[width=0.3\linewidth]{images/rec_208_hist_measurements_200_bins.png}}
+\hfill
+\subfloat[Record 234]{%
+\includegraphics[width=0.3\linewidth]{images/rec_234_hist_measurements_200_bins.png}}
+\caption{Histograms of measurement values with the sparse binary sensing matrix
+with $m=256,n=512,d=4$ in 200 bins}
+\label{fig-cs-codec:y:hist:200}
+\end{figure}
+
+
+\subsection{Quantization Parameter}
+
+\begin{figure*}
 \centering
 \subfloat[$q$ vs $\prd$]{%
 \includegraphics[width=0.32\linewidth]{images/rec_100_q_vs_prd_at_mr.pdf}}
@@ -25,7 +91,6 @@ for record 100}
 \end{figure*}
 
 
-\subsection{Quantization Parameter}
 The quantization step is a key contributor to compression
 savings. This can be studied better under the fixed
 quantization mode. In the first experiment, we compress
@@ -52,18 +117,35 @@ to enjoy these savings in bit rate.
 At $40\%$ PMS, one can attain up to $69.3\%$ PSS without
 losing any reconstruction quality.
 
+\Cref{fig:100:q:0-7} shows the impact of the
+quantization step on the reconstruction quality
+for a small segment of record 100.
+The first panel shows the original (digital) signal.
+The remaining panels show the reconstruction at different $q$ values
+using the BSBL-BO algorithm.
+The reconstruction visual quality is excellent
+up to $q=5$ (PRD below 7\%), good at $q=6$ (PRD at 9\%)
+and clinically unacceptable at $q=7$
+(with PRD more than 15\%).
+One can see significant waveform distortions at $q=7$.
+Also, note how the quality score keeps increasing till
+$q=4$ and starts decreasing after that with a massive
+drop at $q=7$.
+
+\begin{figure}
+\centering 
+\includegraphics[width=0.95\linewidth]
+{images/rec_100_q_cr_prd_qs.png}
+\caption{Reconstruction of a small segment of record 100
+for different values of $q=0,2,4,5,6,7$ with $m=256,n=512,d=4$
+under non-adaptive quantization.
+Block size for the BSBL-BO decoder is $32$.}
+\label{fig:100:q:0-7}
+\end{figure}
+
+
 In the remaining experiments, we will be using adaptive
 quantization.
-
-\subsection{Compression across different records}
-
-This additional space savings is the contribution
-due to adaptive quantization and entropy coding.
-The PRD is $5.6 \pm 1.8 \%$.
-The quality score is $57.8 \pm 18.6$.
-Quantization SNR is $37.3 \pm 0.9$ dB.
-Our adaptive quantization algorithm ensures that the
-quantization SNR doesn't vary much.
 
 
 \subsection{Space Savings}
@@ -80,7 +162,7 @@ binary sensing matrices $\Phi$
 for two different values of $d$ at $d=4$ and $d=12$.
 All 48 records were encoded and $\pss$ was measured
 separately for each of them.
-\Cref{fig:res:pms-pss-errorbar} shows the variation
+\Cref{fig-res-pms-pss-errorbar} shows the variation
 of mean $\pss$ (over records) with $\pms$ along with
 error bars for standard deviation across records
 at each $\pms$.
@@ -92,22 +174,22 @@ At low PMS, we can see that the compression scheme can
 give additional savings of up to 25\%. The trend line
 is linear and savings reduce linearly to 5\% at 85\% PMS.
 
-\begin{figure}[!t]
+\begin{figure}
 \centering
 \includegraphics[width=0.95\linewidth]{images/bsbl/pms-vs-pss-errorbar.png}
 \caption{Error bars for variation of mean $\pss$
 with $\pms$ for 48 records at $d=4$ and $d=12$.}
-\label{fig:res:pms-pss-errorbar}
+\label{fig-res-pms-pss-errorbar}
 \end{figure}
 
-\Cref{fig:res:pms-pss-boxplot-d4} shows more detailed box plots
+\Cref{fig-res-pms-pss-boxplot-d4} shows more detailed box plots
 of variation of PMS across the 48 records at different PMS values.
 
-\begin{figure}[!t]
+\begin{figure}
 \centering
 \includegraphics[width=0.95\linewidth]{images/bsbl/pms-vs-pss-boxplot-d4.png}
 \caption{PMS vs PSS box plots over 48 records at $d=4$}
-\label{fig:res:pms-pss-boxplot-d4}
+\label{fig-res-pms-pss-boxplot-d4}
 \end{figure}
 In the following, we will report results for $d=4$
 configuration. Results are similar for $d=12$.
@@ -127,62 +209,103 @@ $1 \pm 0.1$ $\bps$ at PMS=85\%.
 This is significant compared to the uncompressed
 rate of $11$ bits per sample.
 
+Savings gain can be measured as the difference $\pss - \pms$.
+\Cref{fig-res-pms-gain-boxplot-d4} shows the box plots of
+savings gains at different PMS levels.
+Savings gain varies from $25\pm3\%$ at PMS=20\% down to
+$5.3 \pm 0.9\%$ at PMS=85\%. More measurements lead to
+more savings via the quantization, clipping and entropy coding steps.
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.95\linewidth]{images/bsbl/pms-vs-saving-gain-boxplot.png}
+\caption{PMS vs Savings gain (PSS - PMS) box plots over 48 records at $d=4$}
+\label{fig-res-pms-gain-boxplot-d4}
+\end{figure}
+
 Our adaptive quantization scheme is designed to
 keep the noise introduced by quantization and clipping
 steps to reasonable levels.
-\Cref{fig:res:pms-q-snr-boxplot-d4} shows the box plots
+\Cref{fig-res-pms-q-snr-boxplot-d4} shows the box plots
 of variation of quantization noise SNR across the 48
 records at different PMS. It is clear that quantization
 SNR remains limited between 35 and 40 dB.
 
-\begin{figure}[!t]
+\begin{figure}
 \centering
 \includegraphics[width=0.95\linewidth]{images/bsbl/pms-vs-q-snr-boxplot-d4.png}
 \caption{PMS vs Quantization SNR box plots over 48 records at $d=4$}
-\label{fig:res:pms-q-snr-boxplot-d4}
+\label{fig-res-pms-q-snr-boxplot-d4}
 \end{figure}
+
+Compression is to no avail if the signal cannot be reconstructed
+faithfully. The reconstruction heavily depends
+on the choice of the sparse recovery algorithm.
+In the following, we present our results for two different sparse
+recovery approaches.
 
 \subsection{Reconstruction with BSBL-BO}
 
-\begin{figure}[!t]
+\Cref{fig-res-bsbl-pms-prd-errorbar} shows the variation
+of mean PRD with PMS for $d=4$ as well as $d=12$ when BSBL-BO
+reconstruction algorithm is used in the decoder. The error
+bars show the standard deviation of PRD across the 48 records.
+We have drawn additional lines for 2\% and 9\% PRD that indicate
+very good and good reconstruction levels. 
+Surprisingly, $d=4$ gives us better PRD. 
+We can see that mean PRD is below 9\% level till up to 65\% PMS.
+At this PMS, we have a PSS of about 77\% (\cref{fig-res-pms-pss-errorbar}).
+
+\begin{figure}
 \centering
 \includegraphics[width=0.95\linewidth]{images/bsbl/pms-vs-prd-errorbar.png}
-\caption{Error bars for variation of PMS vs mean PRD at $d=4$ and $d=12$ for reconstruction with BSBL-BO algorithm.}
-\label{fig:res:bsbl-pms-prd-errorbar}
+\caption{Error bars for variation of PMS vs mean PRD at $d=4$ and $d=12$
+for reconstruction with the BSBL-BO algorithm.}
+\label{fig-res-bsbl-pms-prd-errorbar}
 \end{figure}
 
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.95\linewidth]{images/bsbl/pms-vs-prd-boxplot-d12.png}
-\caption{PMS vs PRD box plots over 48 records at $d=12$ for reconstruction
-with BSBL-BO algorithm.}
-\label{fig:res:bsbl-pms-prd-boxplot-d12}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.95\linewidth]{images/bsbl/pms-vs-prd-boxplot-d12.png}
+% \caption{PMS vs PRD box plots over 48 records at $d=12$ for reconstruction
+% with the BSBL-BO algorithm.}
+% \label{fig-res-bsbl-pms-prd-boxplot-d12}
+% \end{figure}
 
+\Cref{fig-res-bsbl-pms-prd-boxplot-d4} provides more detailed box plots
+for the variation of PRD with PMS across the 48 records at $d=4$.
 \begin{figure}[!t]
 \centering
 \includegraphics[width=0.95\linewidth]{images/bsbl/pms-vs-prd-boxplot-d4.png}
 \caption{PMS vs PRD box plots over 48 records at $d=4$ for reconstruction
 with BSBL-BO algorithm}
-\label{fig:res:bsbl-pms-prd-boxplot-d4}
+\label{fig-res-bsbl-pms-prd-boxplot-d4}
 \end{figure}
 
 \subsection{Reconstruction with CS-NET}
+For CS-NET, a window size of $n=256$ was chosen.
 
+\Cref{fig-res-csnet-pms-prd-errorbar} shows the variation
+of mean PRD with PMS for $d=4$ when CS-NET is used in the decoder.
+\Cref{fig-res-csnet-pms-prd-boxplot}  more detailed box plots
+for the variation of PRD with PMS across the 48 records.
+We note that CS-NET can reconstruct well up to 80\% PMS
+with 7\% additional space savings.
 
-\begin{figure}[!t]
+\begin{figure}
 \centering
 \includegraphics[width=0.95\linewidth]{images/csnet/pms-vs-prd-errorbar.png}
-\caption{Error bars for variation of PMS vs mean PRD at $d=4$ for reconstruction with
+\caption{Error bars for variation of mean PRD with PMS at $d=4$ for reconstruction with
 CS-NET.}
-\label{fig:res:csnet-pms-prd-errorbar}
+\label{fig-res-csnet-pms-prd-errorbar}
 \end{figure}
 
-\begin{figure}[!t]
+\begin{figure}
 \centering
 \includegraphics[width=0.95\linewidth]{images/csnet/pms-vs-prd-boxplot.png}
 \caption{PMS vs PRD box plots over 48 records at $d=4$ for reconstruction
 with CS-NET}
-\label{fig:res:csnet-pms-prd-boxplot}
+\label{fig-res-csnet-pms-prd-boxplot}
 \end{figure}
