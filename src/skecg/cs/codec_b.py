@@ -537,6 +537,7 @@ def decode(bits: bitarray, block_size=32):
     Phi = build_sensor(params)
     DPhi = Phi.todense()
     # Start decoding
+    initial_time = timeit.default_timer()
     for i in range(n_windows):
         y = Yhat[:, i]
         start = timeit.default_timer()
@@ -547,7 +548,8 @@ def decode(bits: bitarray, block_size=32):
         X_hat[:, i] = x_hat
         r_times[i] = rtime
         r_iters[i] = sol.iterations
-        print(f'[{i}/{n_windows}], time: {rtime:.2f} sec')
+        if i % 100 == 0:
+            print(f'[{i}/{n_windows}], time: {stop - initial_time:.2f} sec')
     x = X_hat.flatten(order='F')
     return DecodedData(x=x, y_hat=y_hat, r_times=r_times, r_iters=r_iters)
 
