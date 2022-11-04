@@ -156,3 +156,5 @@ hugo/*
 
 *.ckpt
 _*.tex
+
+*checkpoint_*
