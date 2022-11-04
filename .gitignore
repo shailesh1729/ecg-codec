@@ -153,3 +153,6 @@ hugo/*
 
 *.mdl
 *.npy
+
+*.ckpt
+_*.tex
