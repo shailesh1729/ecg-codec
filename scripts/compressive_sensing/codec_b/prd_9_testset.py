@@ -63,6 +63,7 @@ def main(n, d, q, c, w, block_size, dry):
     mit_bih_dir = get_db_dir()
     q_nmse_limit = Decimal((0, (q,), -2))
     c_nmse_limit = Decimal((0, (c,), -2))
+    all_stats = []
 
     sampfrom=0
     if dry:
