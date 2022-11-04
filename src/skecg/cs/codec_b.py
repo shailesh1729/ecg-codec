@@ -550,6 +550,7 @@ def decode(bits: bitarray, block_size=32):
         r_iters[i] = sol.iterations
         if i % 100 == 0:
             print(f'[{i}/{n_windows}], time: {stop - initial_time:.2f} sec')
+    print(f'[{i}/{n_windows}], total time: {stop - initial_time:.2f} sec')
     x = X_hat.flatten(order='F')
     return DecodedData(x=x, y_hat=y_hat, r_times=r_times, r_iters=r_iters)
 
