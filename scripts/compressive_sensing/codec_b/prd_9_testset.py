@@ -31,6 +31,8 @@ BSBL_TEST_SET = [
 class Row(NamedTuple):
     record: int
     "record number"
+    reference: int
+    "reference PMS"
     m: int
     "measurement space dimension"
     n: int
@@ -101,7 +103,8 @@ def main(n, d, q, c, w, block_size, dry):
             click.echo(info)
             # stats
             stats = codec.compression_stats(ecg, coded_ecg, decoded_ecg)
-            row = Row(record=record_num, 
+            row = Row(record=record_num,
+                reference=optimal_pms, 
                 m=m, n=n, d=d,
                 u_bits=stats.u_bits,
                 c_bits=stats.c_bits,
