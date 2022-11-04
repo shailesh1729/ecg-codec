@@ -73,11 +73,63 @@ we construct a sparse binary sensing matrix $\Phi$ of size
 $m \times n$.
 Each column of $\Phi$ consists of exactly $d$ ones and
 $m-d$ zeros, where the position of ones has been randomly
-selected in each column. Identical algorithms are used
-to generate the sensing matrix using the stream header
-parameters in both the encoder and the decoder.
-The randomization is seeded with the parameter $\mathrm{key}$
-sent in the stream header.
+selected in each column.
+
+Such sensing matrices can be treated as adjacency 
+matrix representations of bipartite graphs.
+In the equation $\by = \Phi \bx$, let $\bx$
+and $\by$ represent node sets $U$ and $V$
+respectively where each node in the node-set
+correspond to a component of the corresponding vector.
+Consider the bipartite graph $G (\Phi)$ such that
+an edge $(i, j)$ belongs to $G$ if and only if
+$\Phi(j, i) = 1$. Informally, such a graph is
+an expander \cite{gilbert2010sparse} if each
+small subset of nodes in $U$ has many neighbors
+in $V$. We refer to $U$ as the left part and $V$
+as the right part of the graph $G$.
+A bipartite graph is called left $d$-regular
+if every node in the left part has exactly
+$d$ neighbors in the right. This maps to having
+exactly $d$ ones in each column of $\Phi$.
+
+Such sparse matrices cannot satisfy the standard RIP
+property, however, they do satisfy a generalized
+RIP-p property \cite{gilbert2010sparse}.
+An $m \times n$ matrix $\Phi$ is said to satisfy
+RIP ($p, k, \delta$) if for any $k$-sparse vector
+$\bx$, we have
+
+\begin{equation}
+\| \bx \|_p (1 - \delta) \leq \| \Phi \bx \|_p \leq \| \bx \|_p.
+\end{equation}
+The adjacency matrices of expander graphs have
+this property. Gilbert et al. show in \cite{gilbert2010sparse}
+that if $\Phi$ is the adjacency matrix of a $(k,d, \epsilon)$
+expander graph $G = (U, V, E)$, then the scaled matrix
+$\Phi / d$ satisfies RIP $(1,k, \delta)$ property for
+$\delta = 2 \epsilon$.
+They further show that for an expander matrix $\Phi$,
+for any signal $\bx$, given $\by = \Phi \bx$, we
+can recover $\hat{\bx}$ such that
+
+$$
+\| \bx - \hat{\bx} \|_1 \leq c(\epsilon) \| \bx - \bx_{|k} \|_1
+$$
+where $\bx_{|k}$ is the best $k$-term approximation of $\bx$.
+These theoretical results are the foundation of our encoder
+design wherein a bounded quantization noise doesn't impact
+the reconstruction quality. 
+
+Mamaghanian et al. \cite{mamaghanian2011compressed}
+studied the variation of reconstruction SNR with $d$ for SPGL1
+algorithm. They chose a value of $d=12$ below which
+SPGL1 recovery suffered. Zhang et al. \cite{zhang2012compressed}
+showed experimentally that the BSBL-BO algorithm can do good
+recovery for much lower values of $d$.
+In our experiments, we have reported results for both $d=12$
+as well as $d=4$.
+
 
 \subsection{Encoding}
 
@@ -203,6 +255,7 @@ for adaptive quantization and clipping steps under integer arithmetic.
 ANS entropy coding is fully implemented using integer arithmetic.
 The proposed encoder can be fully implemented using integer arithmetic.
 
+
 \subsection{Decoding}
 Decoding of a frame starts by reading the frame header
 which provides the frame encoding parameters:
@@ -234,6 +287,65 @@ Once each window has been reconstructed, they are flattened
 to form the sequence of reconstructed samples.
 
 \subsection{BSBL-BO}
+Most natural signals have richer structures beyond
+sparsity. A common structure is natural signals
+is a block/group structure \cite{eldar2010block}. 
+We introduce the block/group structure on $\bx$ as
+\begin{equation}
+\bx = \begin{pmatrix}
+\bx_1 & \bx_2 & \dots & \bx_g
+\end{pmatrix}
+\end{equation}
+where each $\bx_i$ is a block of $b$ values.
+The signal $\bx$ consists of $g$ such blocks.
+Under the block sparsity model, only a few $k \ll g$
+blocks are nonzero (active) in the signal $\bx$
+however, the locations of these blocks are unknown.
+We can rewrite the sensing equation as:
+\begin{equation}
+\by = \sum_{i=1}^g \Phi_i \bx_i + \be
+\end{equation}
+by splitting the sensing matrix into blocks of columns appropriately.
+
+Under the sparse Bayesian framework, each block
+is assumed to satisfy a parametrized multivariate
+Gaussian distribution:
+\begin{equation}
+\PP(\bx_i ; \gamma_i, \bB_i) 
+= \NNN(\bzero, \gamma_i \bB_i), \Forall i=1,\dots,g.
+\end{equation}
+We further assume that the blocks are mutually uncorrelated.
+The prior of $\bx$ can then be written as
+\begin{equation}
+\PP(\bx; \{ \gamma_i, \bB_i\}_i ) = \NNN(\bzero, \Sigma_0)
+\end{equation}
+where
+\begin{equation}
+\Sigma_0 = \text{diag}\{\gamma_1 \bB_1, \dots, \gamma_g \bB_g \}.
+\end{equation}
+We also model the correlation among the values
+within each active block as an AR-1 process.
+Under this assumption the matrices
+$\bB_i$ take the form of a Toeplitz matrix
+\begin{equation}
+\bB = \begin{bmatrix}
+1 & r & \dots & r^{b-1}\\
+r & 1 & \dots & r^{b-2}\\
+\vdots &  & \ddots & \vdots\\
+r^{b-1} & r^{b-2} & \dots & 1
+\end{bmatrix}
+\end{equation}
+where $r$ is the AR-1 model coefficient.
+This constraint significantly reduces the model parameters to be learned.
+
+Measurement error is modeled as an independent zero-mean Gaussian
+noise $\PP(\be; \lambda) \sim \NNN(\bzero, \lambda \bI)$.
+BSBL doesn't require us to provide the value of noise variance
+as input.
+It is able to estimate $\lambda$ within the algorithm.
+The estimate of $\bx$ under the Bayesian learning framework
+is given by the posterior mean of $\bx$ given the measurements $\by$.
+
 Our implementation of the BSBL-BO algorithm is available as part of
 CR-Sparse library \cite{kumar2021cr}.
 As Zhang et al. suggest in \cite{zhang2012compressed},
@@ -243,9 +355,25 @@ done under these assumptions and is built using JAX so that it can
 be run on GPU hardware easily to speed up decoding.
 The only configurable parameter for this decoder is the block size
 which we shall denote by $b$ in the following.
-Once the samples have been decoded,
 
-\subsection{CS-NET}
-We trained the network with $\tilde{\bY}$
+\subsection{CSNet}
+
+CSNet \cite{zhang2021csnet} is a state-of-the-art deep learning network
+for the reconstruction of ECG signals from compressive
+measurements. The measurements are first raised back
+to $\RR^n$ as $\bz = \Phi^T \bx$. 
+An initial reconstruction module consists of three convolution
+layers. It is followed by the secondary reconstruction module
+consisting of an LSTM layer followed by a dense layer.
+We implemented this network and followed the training procedure
+as described in \cite{zhang2021csnet}.
+Our primary change was that we didn't feed the original
+measurements.
+Rather, we trained the network with $\tilde{\bY}$
 as inputs and $\bX$ as expected outputs.
+Thus, we tested whether CSNet can work well with our
+quantized and clipped measurements. 
+Another difference from \cite{zhang2021csnet} is that
+we use sparse binary sensing matrices rather than standard RIP compliant
+sensing matrices.
 

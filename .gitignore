@@ -153,3 +153,8 @@ hugo/*
 
 *.mdl
 *.npy
+
+*.ckpt
+_*.tex
+
+*checkpoint_*

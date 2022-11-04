@@ -59,16 +59,17 @@ class Row(NamedTuple):
 @click.option('-d', default=4, help='Ones in sensing matrix')
 @click.option('-q', default=1, help='Quantization nmse factor')
 @click.option('-c', default=2, help='Clipping nmse factor')
+@click.option('-r', default=2, help='nmse threshold exponent')
 @click.option('-w', default=64, help='Windows per frame')
 @click.option('-b', '--block-size', default=32, help='BSBL block size')
 @click.option("--dry", is_flag=True, 
     show_default=True, default=False, help="Dry run with small samples")
-def main(n, d, q, c, w, block_size, dry):
-    destination = f'codec_b_target_prd_bsbl_n-{n}_d-{d}-stats.csv'
+def main(n, d, q, c, r, w, block_size, dry):
+    destination = f'codec_b_target_prd_bsbl_n-{n}_d-{d}-q-{q}-c-{c}-r-{r}-stats.csv'
 
     mit_bih_dir = get_db_dir()
-    q_nmse_limit = Decimal((0, (q,), -2))
-    c_nmse_limit = Decimal((0, (c,), -2))
+    q_nmse_limit = Decimal((0, (q,), -r))
+    c_nmse_limit = Decimal((0, (c,), -r))
     all_stats = []
 
     sampfrom=0

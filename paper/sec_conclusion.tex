@@ -2,27 +2,38 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-The key contributions of our encoder architecture are the following:
+We summarize the key features and benefits of our encoding scheme.
 
 \begin{itemize}
-    \item We have presented a digital compressive sensing-based encoder
-    design including adaptive digital quantization
-    and entropy coding which can be
-    implemented entirely using integer arithmetic.
-    \item We have demonstrated that ANS-based arithmetic coding can
-    lead to significant space savings.
-    \item We have demonstrated that we don't need a hard-coded
-    code-book for entropy coding. We can simply model the
-    measurement values distributed as quantized Gaussian values
-    for effective entropy coding.
-    \item We use simple mean and standard deviation as the entropy model
-    parameters which can be dynamically adapted. The overhead of
-    the side information is negligible.
-    \item We have demonstrated up to $16\%$ of additional space
-    savings contributed by the quantization and entropy coding steps.
+    \item The scheme converts digital compressive measurements
+    to a finite alphabet suitable for entropy coding using
+    simple adaptive quantization and clipping steps that introduce
+    a limited amount of quantization noise.
+    \item The quantized measurements can be modeled using a quantized
+    Gaussian distribution reasonably well for entropy coding where
+    the model parameters are estimated directly from the data.
+    \item ANS entropy coding can efficiently encode them into a
+    bitstream.
+    \item The encoder can be easily implemented using integer arithmetic
+    on resource-limited devices.
+    \item Our entropy coding scheme does not require a fixed codebook.
+    It can adapt to changing signal characteristics frame by frame. 
+    \item The overhead of encoding the entropy model parameters
+    as side information in the bitstream is negligible.
+    \item Frame-by-frame encoding in the bitstream 
+    allows us to implement real-time decoding on the receiver side.
+    \item In the low PRD (high SNR) regime, where we need a larger number
+    of measurements, our encoding scheme can
+    give additional savings in the range of 25\%.
+    \item Even with a low number of measurements (with lower SNR),
+    we can get additional space savings of $5-10 \%$.
+    \item The decoder can use any suitable reconstruction algorithm.
+    We have shown it working with BSBL-BO and CSNet.  
     \item We have described a complete bitstream specification for
     the carriage of all the side information needed to decode the
     entropy-coded compressive measurements.
+    \item The codec architecture is general enough to be applied
+    in other compressive sensing applications also.
 \end{itemize}
 
 The software code implementing this codec
@@ -30,4 +41,13 @@ and all scripts for the experimental studies conducted
 in this work have been released as opensource software
 on GitHub \cite{kumar2022ecgcodec}.
 
-
+While the quantized Gaussian entropy model has worked okay in this
+design, better entropy models require further research.
+Lower values of $d$ tend to give better SNR with less number
+of measurements. It is unclear why this happens. Surprisingly,
+changing $d$ doesn't affect the compression ratio much.
+These issues require further investigation.
+More work is required in applying this architecture to other
+physiological signals. Images are also a candidate for this
+architecture. The architecture will need to be modified
+to handle multidimensional data. 

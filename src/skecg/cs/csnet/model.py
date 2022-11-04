@@ -1,3 +1,5 @@
+import os
+import shutil
 import math
 import numpy as np
 import jax
@@ -5,7 +7,7 @@ from jax import numpy as jnp
 import ml_collections
 
 from flax import linen as nn
-from flax.training import train_state
+from flax.training import checkpoints, train_state
 from flax import serialization
 import optax
 
@@ -63,7 +65,7 @@ class CSNet(nn.Module):
         return h
 
 
-def get_config(epochs=400, batch_size=256):
+def get_config(epochs=400, batch_size=256, ckpt_dir=None):
   """Get the default hyperparameter configuration."""
   config = ml_collections.ConfigDict()
 
@@ -72,6 +74,7 @@ def get_config(epochs=400, batch_size=256):
   config.learning_rate = 0.0005
   config.batch_size = batch_size
   config.num_epochs = epochs
+  config.ckpt_dir = ckpt_dir
   return config
 
 @jax.jit
@@ -124,7 +127,15 @@ def train_epoch(state, X_risen, X_true, batch_size, rng):
 
 
 def train_and_evaluate(Phi, X, Y, codec_params, config):
+    # check point directory
+    ckpt_dir = config.ckpt_dir
+    if ckpt_dir is not None:
+        if os.path.exists(ckpt_dir):
+            # Remove any existing checkpoints from the last run.
+            shutil.rmtree(ckpt_dir)
+
     X_risen = Y @ Phi / codec_params.d
+
     n  = codec_params.n
 
     # normalization procedure
@@ -168,6 +179,7 @@ def train_and_evaluate(Phi, X, Y, codec_params, config):
     best_train_loss = 1000
     best_validation_loss = 1000
     best_params = None
+    ckpt = None
     for epoch in range(1, config.num_epochs + 1):
         rng, input_rng = jax.random.split(rng)
         state, train_loss = train_epoch(state, X_risen_train, X_true_train,
@@ -182,11 +194,16 @@ def train_and_evaluate(Phi, X, Y, codec_params, config):
             best_train_loss = train_loss
             best_params = state.params
             best_epoch = epoch
-
+            ckpt = {'model': state, 'mean': x_mean, 'std': x_std }
+            if ckpt_dir is not None:
+                checkpoints.save_checkpoint(ckpt_dir=ckpt_dir,
+                    target=ckpt,
+                    step=epoch,
+                    overwrite=False,
+                    keep=3)
     print(f'best epoch:{best_epoch}, train_loss: {best_train_loss:.2e}, validation_loss: {best_validation_loss:.2e}')
-
     # return the final trained model
-    return {'params' : best_params, 'mean': x_mean, 'std': x_std} 
+    return ckpt 
 
 
 def save_to_disk(result, file_path_base):
