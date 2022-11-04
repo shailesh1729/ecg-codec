@@ -110,33 +110,19 @@ coding of compressive measurements.
 
 \subsection{Contributions}
 In this paper, we present an adaptive quantization and
-entropy coding scheme for the digital compressive measurements
-in the encoders running on the WBAN sensor nodes.
-The adaptive quantization scheme has been designed in a manner
-so that the quantization noise is kept within a specified
-threshold. Once the measurements are quantized and clipped,
-they are ready to be entropy coded. A quantized Gaussian
-distribution of the measurements is estimated directly from
-the data and the parameters for this distribution are used
+entropy coding scheme for digital compressive measurements.
+The adaptive quantization scheme has been designed
+to ensure bounded quantization noise.
+A quantized Gaussian probability model of the measurements
+is estimated directly from the data
+and the parameters for this model are used
 for the entropy coding of the measurements.  
 Asymmetric numeral systems (ANS) based
 entropy coding is then used for efficient entropy coding
 of the quantized and clipped measurements.
-The ECG signal is split into frames for encoding purposes.
-We have designed a bitstream format with a stream header
-to describe the encoding parameters and a frame header
-for each encoded frame containing frame wise quantization
-parameters. We have designed a decoder which accepts this
-encoded bitstream and reconstructs the ECG signal frame by
-frame in real time. 
-
 Our encoding scheme doesn't require a fixed codebook
-for entropy coding. The encoder has been
-designed in a manner so that all the operations can
-be implemented by integer arithmetic. We have
-tested our encoder on MIT-BIH Arrhythmia database
-and are able to demonstrate additional space savings
-beyond the savings from reduced number of measurements.
+for entropy coding.
+The encoder can be implemented entirely using integer arithmetic.
 Our implementation is available as part of
 reproducible research on GitHub \cite{kumar2022ecgcodec}.
 

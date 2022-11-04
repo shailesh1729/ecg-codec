@@ -309,3 +309,42 @@ CS-NET.}
 with CS-NET}
 \label{fig-res-csnet-pms-prd-boxplot}
 \end{figure}
+
+
+\subsection{Comparison}
+Zhang et al. \cite{zhang2021csnet} have reported
+optimal PMS values for different methods (BP, OMP, BSBL-BO, CSNet, etc.)
+for PRD=9\% for a subset of test records for $n=256$.
+In their setup, $\Phi$ is RIP satisfying matrix which is different
+from the binary sensing matrix used in our setup.
+For BSBL-BO reconstruction,
+we report the needed PMS as well as the corresponding PSS
+for these records for a PRD $\leq 9 \%$.
+in \cref{tbl-bsbl-optimal-pss-prd}.
+While our codec requires slightly more measurements
+due to the sparsity of the sensing matrix, it consistently
+outperforms in compression due to additional space
+savings from quantization and entropy coding.
+
+\begin{table}[ht]
+\centering
+\caption{Required PMS and corresponding PSS for BSBL-BO for
+a target PRD $\leq 9\%$}
+\begin{tabular}{ccccc}
+\toprule
+Record & Ref PMS & Our PMS & PSS & PRD\\
+\midrule 
+100 & 71 & 65 & 77.2 & 8.3 \\  
+101 & 71 & 65 & 76.5 & 8.5 \\  
+102 & 70 & 61 & 75.6 & 8.5 \\  
+107 & 74 & 64 & 74.4 & 8.5 \\  
+109 & 75 & 70 & 78.8 & 8.7 \\  
+111 & 69 & 63 & 74.5 & 8.6 \\
+115 & 68 & 66 & 78 & 8.5 \\  
+117 & 74 & 72 & 83.8 & 6.5 \\  
+118 & 76 & 68 & 81 & 8.5 \\  
+119 & 71 & 69 & 81.3 & 8.3 \\
+\bottomrule
+\end{tabular}
+\label{tbl-bsbl-optimal-pss-prd}
+\end{table}
