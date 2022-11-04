@@ -139,14 +139,21 @@ drop at $q=7$.
 \caption{Reconstruction of a small segment of record 100
 for different values of $q=0,2,4,5,6,7$ with $m=256,n=512,d=4$
 under non-adaptive quantization.
-Block size for the BSBL-BO decoder is $32$.}
+The block size for the BSBL-BO decoder is $32$.}
 \label{fig:100:q:0-7}
 \end{figure}
-
-
 In the remaining experiments, we will be using adaptive
 quantization.
 
+We note that Mamaghanian et al. \cite{mamaghanian2011compressed}
+have used an inter-packet redundancy removal step before
+Huffman coding. They suggest that measurements of consecutive
+windows are correlated due to the periodic nature of the ECG signal.
+However, we suspect that this was happening due to the use of
+unsigned digital values with a large DC component in their design.
+Since we removed the baseline from the signal before compression,
+we didn't notice any significant inter-packet redundancy.
+Hence, we haven't included any redundancy removal block in our encoder.
 
 \subsection{Space Savings}
 
@@ -319,7 +326,7 @@ In their setup, $\Phi$ is RIP satisfying matrix which is different
 from the binary sensing matrix used in our setup.
 For BSBL-BO reconstruction,
 we report the needed PMS as well as the corresponding PSS
-for these records for a PRD $\leq 9 \%$.
+for these records for a $\prd \leq 9 \%$.
 in \cref{tbl-bsbl-optimal-pss-prd}.
 While our codec requires slightly more measurements
 due to the sparsity of the sensing matrix, it consistently
@@ -348,3 +355,11 @@ Record & Ref PMS & Our PMS & PSS & PRD\\
 \end{tabular}
 \label{tbl-bsbl-optimal-pss-prd}
 \end{table}
+
+
+Mamaghanian et al. \cite{mamaghanian2011compressed}
+report their best result for CS for record 107
+for which they report that "good" ($\prd \leq 9\%$)
+signal recovery can be achieved up to a PSS of 74\%.
+For our codec with BSBL-BO reconstruction, good
+recovery was achieved up to a PSS of 75 \%.
