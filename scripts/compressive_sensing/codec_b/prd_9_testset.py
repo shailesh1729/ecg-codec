@@ -86,7 +86,7 @@ def main(n, d, q, c, w, block_size, dry):
         # data
         ecg = np.squeeze(record.d_signal) - int(record.baseline[0])
         mr = 100 - optimal_pms
-        m = math.ceil(n * mr / 100) + 4
+        m = math.ceil(n * mr / 100) + 2
         CURRENT_PRD = 100
         while CURRENT_PRD > TARGET_PRD:
             params = codec.EncoderParams(key=crn.KEY0, 
@@ -111,7 +111,7 @@ def main(n, d, q, c, w, block_size, dry):
                 )
             click.echo(row)
             CURRENT_PRD = stats.prd
-            m = m + 5
+            m = m + 2
             all_stats.append(row)
             if len(all_stats) % 4 == 0:
                 # save results after every 4 record
