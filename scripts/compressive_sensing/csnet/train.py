@@ -44,6 +44,7 @@ def main(n, pms, d, q, c, r, w, dry):
     params = codec.EncoderParams(key=crn.KEY0, n=n, m=m, d=d, w=w, 
         adaptive=True,
         q=0, q_nmse_limit=q_nmse_limit, c_nmse_limit=c_nmse_limit)
+    print(params)
     Phi = codec.build_sensor(params)
 
     models_dir = 'models'
@@ -51,6 +52,7 @@ def main(n, pms, d, q, c, r, w, dry):
     os.makedirs(models_dir, exist_ok=True)
     ckpt_dir_name = f'n-{n}_pms-{pms}_d-{d}_q-{q}_c-{c}_r-{r}_w-{w}'
     ckpt_dir_path = os.path.join(models_dir, ckpt_dir_name)
+    print(f'Check-point directory: ${ckpt_dir_name}')
 
     record_nums = MIT_BIH['record_nums']
     signals = []
@@ -67,7 +69,7 @@ def main(n, pms, d, q, c, r, w, dry):
         if record_num in TEST_SET:
             continue
         n_rec += 1
-        click.echo(f'Reading [{n_rec}]: {record_num}')
+        # click.echo(f'Reading [{n_rec}]: {record_num}')
         path = f'{mit_bih_dir}/{record_num}'
         header = wfdb.rdheader(path)
         fs = float(header.fs)
