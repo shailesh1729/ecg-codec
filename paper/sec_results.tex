@@ -328,29 +328,30 @@ For BSBL-BO reconstruction,
 we report the needed PMS as well as the corresponding PSS
 for these records for a $\prd \leq 9 \%$.
 in \cref{tbl-bsbl-optimal-pss-prd}.
-While our codec requires slightly more measurements
+While our codec requires slightly more measurements (lower PMS)
 due to the sparsity of the sensing matrix, it consistently
 outperforms in compression due to additional space
 savings from quantization and entropy coding.
+Our PSS is better by $6.5 \pm 3\%$. 
 
 \begin{table}[ht]
 \centering
 \caption{Required PMS and corresponding PSS for BSBL-BO for
 a target PRD $\leq 9\%$}
-\begin{tabular}{ccccc}
+\begin{tabular}{rrrrr}
 \toprule
-Record & Ref PMS & Our PMS & PSS & PRD\\
-\midrule 
-100 & 71 & 65 & 77.2 & 8.3 \\  
-101 & 71 & 65 & 76.5 & 8.5 \\  
-102 & 70 & 61 & 75.6 & 8.5 \\  
-107 & 74 & 64 & 74.4 & 8.5 \\  
-109 & 75 & 70 & 78.8 & 8.7 \\  
-111 & 69 & 63 & 74.5 & 8.6 \\
-115 & 68 & 66 & 78 & 8.5 \\  
-117 & 74 & 72 & 83.8 & 6.5 \\  
-118 & 76 & 68 & 81 & 8.5 \\  
-119 & 71 & 69 & 81.3 & 8.3 \\
+ Record &  Ref PMS &  Our PMS &  PSS &  PRD \\
+\midrule
+100 &         71 &   66 & 78.0 &  8.8 \\
+101 &         71 &   66 & 77.2 &  8.9 \\
+102 &         70 &   61 & 75.8 &  8.7 \\
+107 &         74 &   65 & 75.2 &  8.9 \\
+109 &         75 &   70 & 78.8 &  8.7 \\
+111 &         69 &   63 & 74.5 &  8.6 \\
+115 &         68 &   67 & 78.4 &  8.7 \\
+117 &         74 &   73 & 83.9 &  7.2 \\
+118 &         76 &   70 & 81.3 &  8.2 \\
+119 &         71 &   70 & 81.1 &  7.7 \\
 \bottomrule
 \end{tabular}
 \label{tbl-bsbl-optimal-pss-prd}
