@@ -33,6 +33,10 @@ class Row(NamedTuple):
     "record number"
     m: int
     "measurement space dimension"
+    n: int
+    "signal space dimension"
+    d: int
+    "number of ones per column in the sensing matrix"
     u_bits: int
     "Uncompressed bits count"
     c_bits: int
@@ -53,7 +57,7 @@ class Row(NamedTuple):
 @click.option('-d', default=4, help='Ones in sensing matrix')
 @click.option('-q', default=1, help='Quantization nmse factor')
 @click.option('-c', default=2, help='Clipping nmse factor')
-@click.option('-w', default=32, help='Windows per frame')
+@click.option('-w', default=64, help='Windows per frame')
 @click.option('-b', '--block-size', default=32, help='BSBL block size')
 @click.option("--dry", is_flag=True, 
     show_default=True, default=False, help="Dry run with small samples")
@@ -81,8 +85,8 @@ def main(n, d, q, c, w, block_size, dry):
             , sampfrom=sampfrom, sampto=sampto, physical=False)
         # data
         ecg = np.squeeze(record.d_signal) - int(record.baseline[0])
-
-        m = math.ceil(n * optimal_pms / 100)
+        mr = 100 - optimal_pms
+        m = math.ceil(n * mr / 100)
         CURRENT_PRD = 100
         while CURRENT_PRD > TARGET_PRD:
             params = codec.EncoderParams(key=crn.KEY0, 
@@ -98,7 +102,7 @@ def main(n, d, q, c, w, block_size, dry):
             # stats
             stats = codec.compression_stats(ecg, coded_ecg, decoded_ecg)
             row = Row(record=record_num, 
-                m=m,
+                m=m, n=n, d=d,
                 u_bits=stats.u_bits,
                 c_bits=stats.c_bits,
                 cr=stats.cr, pss=stats.pss,
