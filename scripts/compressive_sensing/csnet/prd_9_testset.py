@@ -116,7 +116,8 @@ def main(n, d, q, c, r, w, dry):
                 click.echo(f'Check-point directory does not exist: {ckpt_dir_name}')
                 continue
             mr = 100 - pms
-            m = math.ceil(n * mr / 100) + 2
+            print(f'Trying with PMS={pms} and m={m}')
+            m = math.ceil(n * mr / 100)
             params = codec.EncoderParams(key=crn.KEY0, 
                 n=n, m=m, d=d, w=w, adaptive=True,
                 q=0, q_nmse_limit=q_nmse_limit, c_nmse_limit=c_nmse_limit)
@@ -129,7 +130,7 @@ def main(n, d, q, c, r, w, dry):
                 reconstructor=reconstructor)
             # encoding info
             info = coded_ecg.info
-            click.echo(info)
+            # click.echo(info)
             # stats
             stats = codec.compression_stats(ecg, coded_ecg, decoded_ecg)
             row = Row(record=record_num,
