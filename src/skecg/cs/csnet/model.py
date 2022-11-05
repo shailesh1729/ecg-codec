@@ -206,39 +206,6 @@ def train_and_evaluate(Phi, X, Y, codec_params, config):
     return ckpt 
 
 
-def save_to_disk(result, file_path_base):
-    params = result['params']
-    bytes_output = serialization.to_bytes(params)
-    file_path = f'{file_path_base}.mdl'
-    with open(file_path, 'wb') as f:
-        f.write(bytes_output)
-        f.close()
-    mean = result['mean']
-    std = result['std']
-    mean = np.asarray(mean)
-    std = np.asarray(std)
-    combined = np.concatenate((mean, std))
-    file_path = f'{file_path_base}.npy'
-    np.save(file_path, combined)
-
-
-def load_from_disk(file_path_base, n):
-    shape = (1, n, 1)
-    x = jnp.empty(shape)
-    model = CSNet()
-    rng = jax.random.PRNGKey(0)
-    params = model.init(rng, x)['params']
-    file_path = f'{file_path_base}.mdl'
-    with open(file_path, 'rb') as f:
-        bytes_output = f.read()
-        f.close()
-        params = serialization.from_bytes(params, bytes_output)
-    file_path = f'{file_path_base}.npy'
-    combined = np.load(file_path)
-    mean = combined[:n]
-    std = combined[n:]
-    return model, {'params' : params, 'mean': mean, 'std': std}
-
 
 def predict(net, net_params, Phi, Y, d):
     params = net_params['params']
@@ -288,14 +255,24 @@ class Reconstructor:
     """Utility class to wrap the reconstruction algorithm
     """
 
-    def __init__(self, file_path_base, codec_params):
+    def __init__(self, config, codec_params):
         self.codec_params = codec_params
         n = codec_params.n
-        model, net_params = load_from_disk(file_path_base, n)
-        self.model = model
-        self.params = net_params['params']
-        self.x_mean = net_params['mean']
-        self.x_std = net_params['std']
+
+        shape = (1, n, 1)
+        dummy_x = jnp.empty(shape)
+        empty_state = create_train_state(jax.random.PRNGKey(0), dummy_x, config)
+        dummy_mean = jnp.zeros(n)
+        dummy_std = jnp.zeros(n)
+        target = {'model': empty_state, 
+        'mean': dummy_mean, 'std': dummy_std}
+        ckpt = checkpoints.restore_checkpoint(config.ckpt_dir, target=target)
+        print(ckpt.keys())
+        state = ckpt['model']
+        self.state = state
+        self.params = state.params
+        self.x_mean = ckpt['mean']
+        self.x_std = ckpt['std']
 
 
     def __call__(self, Y):
@@ -314,7 +291,7 @@ class Reconstructor:
         start = 0
         x_mean = self.x_mean
         x_std = self.x_std
-        model = self.model
+        state = self.state
         params = self.params
         X_hat = np.zeros((n_windows, n))
         for i_batch in range(n_batches):
@@ -327,7 +304,7 @@ class Reconstructor:
             X_risen = X_risen / x_std
 
             X_risen = jnp.expand_dims(X_risen, 2)
-            X_est = model.apply({'params': params}, X_risen)
+            X_est = state.apply_fn({'params': params}, X_risen)
 
             # denormalize
             X_est = jnp.squeeze(X_est)

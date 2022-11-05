@@ -52,7 +52,7 @@ def main(n, pms, d, q, c, r, w, dry):
     os.makedirs(models_dir, exist_ok=True)
     ckpt_dir_name = f'n-{n}_pms-{pms}_d-{d}_q-{q}_c-{c}_r-{r}_w-{w}'
     ckpt_dir_path = os.path.join(models_dir, ckpt_dir_name)
-    print(f'Check-point directory: ${ckpt_dir_name}')
+    print(f'Check-point directory: {ckpt_dir_name}')
 
     record_nums = MIT_BIH['record_nums']
     signals = []
