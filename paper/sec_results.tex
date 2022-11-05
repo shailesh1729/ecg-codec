@@ -359,9 +359,49 @@ a target PRD $\leq 9\%$}
 \end{table}
 
 
+Similarly, in \cref{tbl-csnet-optimal-pss-prd},
+we compare the PMS reported in \cite{zhang2021csnet}
+for CSNet for good recovery with  
+the needed PMS as well as the corresponding PSS
+for these records in our CSNet implementation for
+sparse binary sensing matrices.
+Again, we see slightly lower PMS (i.e., more measurements
+required) to attain the target PRD but this is more
+than compensated for by the higher PSS levels.
+We reiterate that studies like \cite{zhang2021csnet}
+simply assume that the measurements also require the same
+11-bit representation like original data and ignore
+the issue of entropy coding.  
+
+\begin{table}[ht]
+\centering
+\caption{Required PMS and corresponding PSS for CSNet for
+a target PRD $\leq 9\%$}
+\begin{tabular}{rrrrr}
+\toprule
+ Record &  Ref PMS &  Our PMS &  PSS &  PRD \\
+\midrule
+    100 &         88 &   80 & 87.8 &  8.6 \\
+    101 &         88 &   79 & 86.8 &  8.8 \\
+    102 &         63 &   56 & 72.8 &  8.2 \\
+    107 &         81 &   78 & 83.3 &  8.4 \\
+    109 &         87 &   84 & 89.4 &  8.7 \\
+    111 &         80 &   78 & 84.4 &  8.5 \\
+    115 &         91 &   88 & 92.3 &  7.6 \\
+    117 &         93 &   92 & 95.2 &  8.7 \\
+    118 &         87 &   84 & 91.0 &  8.9 \\
+    119 &         92 &   91 & 94.0 &  8.7 \\
+\bottomrule
+\end{tabular}
+\label{tbl-csnet-optimal-pss-prd}
+\end{table}
+
+
 Mamaghanian et al. \cite{mamaghanian2011compressed}
 report their best result for CS for record 107
 for which they report that "good" ($\prd \leq 9\%$)
-signal recovery can be achieved up to a PSS of 74\%.
+signal recovery can be achieved up to a PSS of 74\%
+using SPGL1 reconstruction.
 For our codec with BSBL-BO reconstruction, good
-recovery was achieved up to a PSS of 75 \%.
+recovery was achieved up to a PSS of 75.2 \%.
+With CSNet, it increases further up to 83.3 \%.
