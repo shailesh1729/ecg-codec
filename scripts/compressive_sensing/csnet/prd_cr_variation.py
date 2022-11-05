@@ -1,3 +1,7 @@
+# Configure JAX for 64-bit computing
+from jax.config import config
+config.update("jax_enable_x64", True)
+
 # std imports
 import time
 import click
@@ -57,6 +61,8 @@ class Row(NamedTuple):
     "overhead of header bits"
     cr: float
     "compression ratio"
+    pms: float
+    "percentage measurement savings"
     pss: float
     "percentage space savings"
     snr: float
@@ -83,15 +89,16 @@ class Row(NamedTuple):
 @click.option('-d', default=4, help='Ones in sensing matrix')
 @click.option('-q', default=1, help='Quantization nmse factor')
 @click.option('-c', default=2, help='Clipping nmse factor')
-@click.option('-w', default=16, help='Windows per frame')
+@click.option('-r', default=2, help='nmse threshold exponent')
+@click.option('-w', default=64, help='Windows per frame')
 @click.option("--dry", is_flag=True, 
     show_default=True, default=False, help="Dry run with small samples")
-def main(n, d, q, c, w, dry):
+def main(n, d, q, c, r, w, dry):
 
-    ratios = np.arange(10, 85, 5)
-    destination = f'codec_b_csnet_n-{n}_d-{d}_q-{q}_c-{c}-prd-cr-stats.csv'
-    q_nmse_limit = Decimal((0, (q,), -2))
-    c_nmse_limit = Decimal((0, (c,), -2))
+    pms_vals = np.arange(5, 95, 5)
+    destination = f'codec_b_csnet_n-{n}_d-{d}_q-{q}_c-{c}-r-{r}-prd-cr-stats.csv'
+    q_nmse_limit = Decimal((0, (q,), -r))
+    c_nmse_limit = Decimal((0, (c,), -r))
 
     mit_bih_dir = get_db_dir()
     record_nums = MIT_BIH['record_nums']
@@ -103,6 +110,9 @@ def main(n, d, q, c, w, dry):
     else:
         sampto=None
 
+    models_dir = 'models'
+    models_dir = os.path.abspath(models_dir)
+
     for rci, record_num in enumerate(record_nums):
         click.echo(f'Processing record: {record_num}')
         path = f'{mit_bih_dir}/{record_num}'
@@ -111,21 +121,26 @@ def main(n, d, q, c, w, dry):
             , sampfrom=sampfrom, sampto=sampto, physical=False)
         # data
         ecg = np.squeeze(record.d_signal) - int(record.baseline[0])
-        for ri, ratio in enumerate(ratios):
-            print(f'At measurement ratio: {ratio} %')
-            m = math.ceil(n * ratio / 100)
+        for ri, pms in enumerate(pms_vals):
+            print(f'At PMS: {pms} %')
+            # measurement ratio as percentage
+            mr = 100 - pms
+            # number of measurements
+            m = math.ceil(n * mr / 100)
             params = codec.EncoderParams(key=crn.KEY0, 
                 n=n, m=m, d=d, w=w, adaptive=True,
                 q=0, q_nmse_limit=q_nmse_limit, c_nmse_limit=c_nmse_limit)
             # compression
             coded_ecg = codec.encode(params, ecg)
             # CS-NET reconstruction wrapper
-            file_path_base = f'model_n-{n}_m-{m}_d-{d}_q-{q}_c-{c}'
-            try:
-                reconstructor = model.Reconstructor(file_path_base, params)
-            except:
-                click.echo(f'Could not open the model: {file_path_base}.mdl')
+            ckpt_dir_name = f'n-{n}_pms-{pms}_d-{d}_q-{q}_c-{c}_r-{r}_w-{w}'
+            ckpt_dir_path = os.path.join(models_dir, ckpt_dir_name)
+            if not os.path.exists(ckpt_dir_path):
+                click.echo(f'There is no checkpoint for PMS={pms}. Skipping.')
                 continue
+            # print(f'Check-point directory: {ckpt_dir_name}')
+            config = model.get_config(ckpt_dir=ckpt_dir_path)
+            reconstructor = model.Reconstructor(config, params)
             # decompression
             decoded_ecg = codec.decode_general(coded_ecg.bits, 
                 reconstructor=reconstructor)
@@ -147,7 +162,7 @@ def main(n, d, q, c, w, dry):
                 overhead=info.total_overhead,
                 u_bits=stats.u_bits,
                 c_bits=stats.c_bits,
-                cr=stats.cr, pss=stats.pss,
+                cr=stats.cr, pms=pms, pss=stats.pss,
                 bpm=stats.bpm, bps=stats.bps,
                 snr=stats.snr, prd=stats.prd, 
                 nmse=stats.nmse, rtime=stats.rtime,
