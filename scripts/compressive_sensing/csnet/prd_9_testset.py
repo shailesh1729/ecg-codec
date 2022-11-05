@@ -101,7 +101,7 @@ def main(n, d, q, c, r, w, dry):
             , sampfrom=sampfrom, sampto=sampto, physical=False)
         # data
         ecg = np.squeeze(record.d_signal) - int(record.baseline[0])
-        pms = optimal_pms + 6
+        pms = optimal_pms + 2
         CURRENT_PRD = 100
         while CURRENT_PRD > TARGET_PRD:
             # decrease pms
