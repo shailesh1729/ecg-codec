@@ -291,23 +291,24 @@ with BSBL-BO algorithm}
 \label{fig-res-bsbl-pms-prd-boxplot-d4}
 \end{figure}
 
-\subsection{Reconstruction with CS-NET}
-For CS-NET, a window size of $n=256$ was chosen.
-
-\Cref{fig-res-csnet-pms-prd-errorbar} shows the variation
-of mean PRD with PMS for $d=4$ when CS-NET is used in the decoder.
-\Cref{fig-res-csnet-pms-prd-boxplot}  more detailed box plots
+\subsection{Reconstruction with CSNet}
+For CSNet, a window size of $n=256$ was chosen following \cite{zhang2021csnet}.
+We only trained and tested for a fixed binary sensing matrix with $d=4$.
+\Cref{fig-res-csnet-pms-prd-boxplot} shows detailed box plots
 for the variation of PRD with PMS across the 48 records.
-We note that CS-NET can reconstruct well up to 80\% PMS
-with 7\% additional space savings.
+We note that CSNet can reconstruct well up to 80\% PMS
+with 7\% additional space savings (mean PSS being 87\%).
+Reconstruction quality degrades far more slowly for CSNet
+with mean PRD being 16.5 \% for a PMS of 90 \%
+and mean PSS being 93.4\%. 
 
-\begin{figure}
-\centering
-\includegraphics[width=0.95\linewidth]{images/csnet/pms-vs-prd-errorbar.png}
-\caption{Error bars for variation of mean PRD with PMS at $d=4$ for reconstruction with
-CS-NET.}
-\label{fig-res-csnet-pms-prd-errorbar}
-\end{figure}
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.95\linewidth]{images/csnet/pms-vs-prd-errorbar.png}
+% \caption{Error bars for variation of mean PRD with PMS at $d=4$ for reconstruction with
+% CS-NET.}
+% \label{fig-res-csnet-pms-prd-errorbar}
+% \end{figure}
 
 \begin{figure}
 \centering
