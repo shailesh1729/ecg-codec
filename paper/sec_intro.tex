@@ -59,7 +59,6 @@ Let $\bx$ be an ECG signal and $\by$ be the corresponding
 stream of compressive measurements. Our goal is to
 transform $\by$ into a bitstream $\bs$ with as few bits
 as possible without losing the signal reconstruction quality.
-
 A primary constraint in our design is that the encoder
 should avoid any floating point arithmetic.
 
@@ -80,7 +79,6 @@ which is deployed inside the sensor device. They don't
 employ any quantization of the measurements.
 The codebook is fixed. It cannot adapt to differing signal
 statistics.
-
 Simulation-based studies generally send the floating point compressive
 measurements to their decoder modules.
 They don't consider the issue of
@@ -92,7 +90,6 @@ $\frac{n}{m}$ \cite{zhang2012compressed},
 $\frac{n-m}{n} \times 100$ \cite{zhang2021csnet}}.
 The underlying assumption is that the measurements are
 encoded using the same number of bits as the original digital samples.
-
 Huffman codes have frequently been used in ECG data
 compression for non-CS methods \cite{luo2014dynamic,chouakri2013wavelet}
 for entropy coding.
@@ -112,7 +109,7 @@ coding of compressive measurements.
 In this paper, we present an adaptive quantization and
 entropy coding scheme for digital compressive measurements.
 The adaptive quantization scheme has been designed
-to ensure bounded quantization noise.
+to guarantee a norm-bounded quantization noise.
 A quantized Gaussian probability model of the measurements
 is estimated directly from the data
 and the parameters for this model are used
@@ -123,8 +120,8 @@ of the quantized and clipped measurements.
 Our encoding scheme doesn't require a fixed codebook
 for entropy coding.
 The encoder can be implemented entirely using integer arithmetic.
-Our implementation is available as part of
-reproducible research on GitHub \cite{kumar2022ecgcodec}.
+% Our implementation is available as part of
+% reproducible research on GitHub \cite{kumar2022ecgcodec}.
 
 \subsection{Paper Organization}
 The rest of the paper is organized as follows.

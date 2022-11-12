@@ -18,7 +18,6 @@ This section describes a codec architecture
 for digital signals involving digital
 compressive sensing, quantization and entropy
 coding steps.
-
 \Cref{fig-cs-encoder}
 and \cref{fig-cs-decoder}
 depict high-level block diagrams of the encoder
@@ -46,7 +45,6 @@ the digital signal are further grouped into
 frames of $w$ windows each. The
 last frame may have less than $w$
 windows.
-
 The encoder compresses the digital signal
 frame by frame into a bitstream.
 It first sends
@@ -56,7 +54,6 @@ Then for each frame of the digital signal,
 it sends a frame header (see \cref{tbl:header:frame})
 followed by a frame payload consisting of the
 quantized and entropy-coded measurements for the frame.
-
 The decoder initializes itself by reading
 the stream header from the incoming bitstream. 
 Then, it reconstructs the digital signal
@@ -74,27 +71,34 @@ $m \times n$.
 Each column of $\Phi$ consists of exactly $d$ ones and
 $m-d$ zeros, where the position of ones has been randomly
 selected in each column.
-
-Such sensing matrices can be treated as adjacency 
+Sparse binary sensing matrices can be treated as adjacency 
 matrix representations of bipartite graphs.
 In the equation $\by = \Phi \bx$, let $\bx$
 and $\by$ represent node sets $U$ and $V$
 respectively where each node in the node-set
 correspond to a component of the corresponding vector.
-Consider the bipartite graph $G (\Phi)$ such that
-an edge $(i, j)$ belongs to $G$ if and only if
+Consider the bipartite graph $G (\Phi) = (U, V, E)$
+\footnote{$U$ and $V$ are left and right nodes of $G$
+and $E$ is the set of edges between the left and right nodes.}
+such that
+an edge $(i, j)$ belongs to $E$ if and only if
 $\Phi(j, i) = 1$. Informally, such a graph is
-an expander \cite{gilbert2010sparse} if each
-small subset of nodes in $U$ has many neighbors
+an expander \cite{gilbert2010sparse}
+if each small subset of nodes in $U$ has many neighbors
 in $V$. We refer to $U$ as the left part and $V$
 as the right part of the graph $G$.
 A bipartite graph is called left $d$-regular
 if every node in the left part has exactly
-$d$ neighbors in the right. This maps to having
+$d$ neighbors in the right part. This corresponds to having
 exactly $d$ ones in each column of $\Phi$.
+A bipartite left-$d$ regular graph $G = (U, V, E)$
+is called a $(k, d, \epsilon)$-expander if any
+set $S \subset U$ of at most $k$ left nodes has
+at least $(1-\epsilon)d|S|$ neighbors.
 
-Such sparse matrices cannot satisfy the standard RIP
-property, however, they do satisfy a generalized
+Sparse binary sensing matrices cannot satisfy the standard RIP
+property \cite{candes2008restricted},
+however, they do satisfy a generalized
 RIP-p property \cite{gilbert2010sparse}.
 An $m \times n$ matrix $\Phi$ is said to satisfy
 RIP ($p, k, \delta$) if for any $k$-sparse vector
@@ -116,14 +120,16 @@ can recover $\hat{\bx}$ such that
 $$
 \| \bx - \hat{\bx} \|_1 \leq c(\epsilon) \| \bx - \bx_{|k} \|_1
 $$
-where $\bx_{|k}$ is the best $k$-term approximation of $\bx$.
+where $\bx_{|k}$ is the best $k$-term approximation of $\bx$
+and $c(\epsilon)$ is a constant depending on $\epsilon$.
 These theoretical results are the foundation of our encoder
 design wherein a bounded quantization noise doesn't impact
 the reconstruction quality. 
 
 Mamaghanian et al. \cite{mamaghanian2011compressed}
 studied the variation of reconstruction SNR with $d$ for SPGL1
-algorithm. They chose a value of $d=12$ below which
+algorithm \cite{van2009probing}.
+They chose a value of $d=12$ below which
 SPGL1 recovery suffered. Zhang et al. \cite{zhang2012compressed}
 showed experimentally that the BSBL-BO algorithm can do good
 recovery for much lower values of $d$.
@@ -192,7 +198,7 @@ $\tilde{\by} = 2^q \bar{\by}$.
 If adaptive quantization has been specified, then we vary
 the quantization parameter $q$ from a value $q_{\max}=6$
 down to a value $q_{\min}$
-till we reach a limit on $\nrmse$ between $\by$ and $\tilde{\by}$
+till we reach a limit on $\nrmse$ \eqref{eq:n-rmse} between $\by$ and $\tilde{\by}$
 as specified by the parameter $\rho$ in the stream header.
 
 \subsubsection{Entropy Model}
@@ -255,6 +261,14 @@ for adaptive quantization and clipping steps under integer arithmetic.
 ANS entropy coding is fully implemented using integer arithmetic.
 The proposed encoder can be fully implemented using integer arithmetic.
 
+\subsubsection{Bounded Quantization Noise}
+$\nrmse$ values of $\rho$ and $\gamma$ limit
+the amount of noise introduced by the quantization
+and clipping steps respectively.
+From \eqref{eq:snr} we can see that $\snr = -20 \log_{10}(\nrmse)$.
+Our typical values are $\rho=0.01$ and $\gamma=0.02$.
+They correspond to 40 dB of noise for quantization
+and 34 dB of noise for the clipping step.
 
 \subsection{Decoding}
 Decoding of a frame starts by reading the frame header

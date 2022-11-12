@@ -54,6 +54,7 @@ Similarly, we can define \emph{bits per measurement} ($\bpm$) as:
 \end{equation}
 The \emph{normalized root mean square error} is defined as
 \begin{equation}
+\label{eq:n-rmse}
 \nrmse (\bx, \tilde{\bx}) \triangleq \frac{\| \bx - \tilde{\bx}\|_2}{\| \bx \|_2}
 \end{equation}
 where $\bx$ is the original ECG signal and $\tilde{\bx}$
@@ -62,10 +63,12 @@ A popular metric to measure the quality of reconstruction
 of ECG signals is
 \emph{percentage root mean square difference} ($\prd$):
 \begin{equation}
+\label{eq:prd}
 \prd(\bx, \tilde{\bx}) \triangleq \nrmse(\bx, \tilde{\bx}) \times 100
 \end{equation}
 The \emph{signal to noise ratio} ($\snr$) is related to $\prd$ as
 \begin{equation}
+\label{eq:snr}
 \snr \triangleq -20 \log_{10}(0.01 \prd).
 \end{equation}
 Zigel et al. \cite{zigel2000weighted} established 
