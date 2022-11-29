@@ -9,7 +9,7 @@ The wearable sensor nodes are often battery-operated.
 It is necessary to reduce energy consumption as
 much as possible.
 It is desirable that a low-complexity encoder
-is used for the compression of ECG data from wearable
+be used for the compression of ECG data from wearable
 devices.
 Compressive sensing (CS) \cite{donoho2006compressed,baraniuk2007compressive,
 candes2006compressive, candes2008introduction, candes2006near}
@@ -17,7 +17,7 @@ provides a very good solution to implement low-complexity encoders
 and has been extensively studied for ECG data
 compression \cite{craven2014compressed,kumar2022review}.
 It uses a sub-Nyquist sampling method by acquiring a small number
-of incoherent measurements which are sufficient to reconstruct
+of incoherent measurements which are adequate to reconstruct
 the signal if the signal is sufficiently sparse in some
 basis.
 For a sparse signal $\bx \in \RR^n$, one would make
@@ -107,10 +107,19 @@ coding of compressive measurements.
 
 \subsection{Contributions}
 In this paper, we present an adaptive quantization and
-entropy coding scheme for digital compressive measurements.
-The adaptive quantization scheme has been designed
-to guarantee a norm-bounded quantization noise.
-A quantized Gaussian probability model of the measurements
+entropy coding scheme with a
+norm-bounded quantization noise
+for digital compressive measurements.
+A quantized Gaussian probability model
+\footnote{A quantized Gaussian distribution is
+a quantized version of Gaussian distribution over
+bins of size 1 centered at integer values.
+It is defined by taking a Gaussian distribution with
+the specified mean and standard deviation, clipping
+it to an interval, renormalizing it to account for
+the clipped-off tails and then integrating the
+probability density over the bins \cite{bamler2022constriction}.}
+of the measurements
 is estimated directly from the data
 and the parameters for this model are used
 for the entropy coding of the measurements.  

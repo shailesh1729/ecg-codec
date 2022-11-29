@@ -76,7 +76,7 @@ matrix representations of bipartite graphs.
 In the equation $\by = \Phi \bx$, let $\bx$
 and $\by$ represent node sets $U$ and $V$
 respectively where each node in the node-set
-correspond to a component of the corresponding vector.
+corresponds to a component of the vector.
 Consider the bipartite graph $G (\Phi) = (U, V, E)$
 \footnote{$U$ and $V$ are left and right nodes of $G$
 and $E$ is the set of edges between the left and right nodes.}
@@ -185,6 +185,7 @@ This parameter is either fixed for the whole stream
 or varies from frame to frame (under adaptive quantization).
 It is given by:
 \begin{equation}
+\label{eq-enc-quantization}
 \bar{\by} = \left \lfloor \frac{1}{2^q} \by \right \rfloor.
 \end{equation}
 For integer measurement values, quantized values are also
@@ -301,8 +302,9 @@ Once each window has been reconstructed, they are flattened
 to form the sequence of reconstructed samples.
 
 \subsection{BSBL-BO}
-Most natural signals have richer structures beyond
-sparsity. A common structure is natural signals
+Natural signals tend to have richer structures beyond
+sparsity.
+A common structure in natural signals
 is a block/group structure \cite{eldar2010block}. 
 We introduce the block/group structure on $\bx$ as
 \begin{equation}
@@ -320,14 +322,24 @@ We can rewrite the sensing equation as:
 \by = \sum_{i=1}^g \Phi_i \bx_i + \be
 \end{equation}
 by splitting the sensing matrix into blocks of columns appropriately.
+$\be$ denotes the measurement error.
 
-Under the sparse Bayesian framework, each block
-is assumed to satisfy a parametrized multivariate
+Under the sparse Bayesian framework \cite{zhang2013extension},
+each block is assumed to satisfy a parametrized multivariate
 Gaussian distribution:
 \begin{equation}
 \PP(\bx_i ; \gamma_i, \bB_i) 
-= \NNN(\bzero, \gamma_i \bB_i), \Forall i=1,\dots,g.
+= \NNN(\bzero, \gamma_i \bB_i), \Forall i=1,\dots,g
 \end{equation}
+with the unknown parameters $\gamma_i$ and $\bB_i$.
+$\gamma_i$ is a non-negative parameter controlling the
+block sparsity of $\bx$. When the block sparse Bayesian
+model for $\bx$ is estimated, most $\gamma_i$ tend to
+be zero due to automatic relevance determination
+\cite{tipping2001sparse} promoting block sparsity.
+$\bB_i \in \RR^{b \times b}$ is a positive definite
+matrix, capturing the correlation structure of the $i$-th
+block.
 We further assume that the blocks are mutually uncorrelated.
 The prior of $\bx$ can then be written as
 \begin{equation}
@@ -350,7 +362,8 @@ r^{b-1} & r^{b-2} & \dots & 1
 \end{bmatrix}
 \end{equation}
 where $r$ is the AR-1 model coefficient.
-This constraint significantly reduces the model parameters to be learned.
+This constraint significantly reduces
+the number of model parameters to be learned.
 
 Measurement error is modeled as an independent zero-mean Gaussian
 noise $\PP(\be; \lambda) \sim \NNN(\bzero, \lambda \bI)$.

@@ -14,13 +14,14 @@ design is to model the measurement values as
 being sampled from a quantized Gaussian distribution.
 \Cref{fig-cs-codec:y:hist:200} shows the histograms of measurement
 values for 6 different records.
-Gaussian distribution is not a very bad approximation visually.
+Visually, the quantized Gaussian distribution approximation
+appears to be quite reasonable.
 
 The best compression can be achieved by using the empirical
 probabilities of different values in $\by$ in an entropy model.
 However, doing so would require us to transmit the empirical
 probabilities as side information. This may be expensive.
-We can estimate the improvement in compression overhead
+We can estimate the loss in compression overhead
 by use of the quantized Gaussian approximation.
 Let $\PP$ denote the empirical probability distribution
 of data and let $\QQ$ denote the corresponding
@@ -45,6 +46,8 @@ in the database. Hence using a single fixed empirical distribution
 (e.g. the Huffman codebook preloaded into the device in
 \cite{mamaghanian2011compressed})
 may lead to lower compression.
+The simple adaptive quantization approach proposed here
+provides an effective alternative yielding superior performance.
 
 \begin{figure}
 \centering % <-- added
@@ -95,12 +98,12 @@ The quantization step is a key contributor to compression
 savings. This can be studied better under the fixed
 quantization mode. In the first experiment, we compress
 the data from record 100 at different values of
-the quantization parameter $q$ and PMS.
+the quantization parameter $q$ \eqref{eq-enc-quantization} and PMS.
 The results are shown in \cref{fig-cs-codec-100-q-mr-stats}.
 The number of measurements ($m$) has been chosen to vary from
 $20\%$ to $60\%$ of the window size ($n$).
 $q$ varies from $0$ to $7$.
-(a) shows that reconstruction quality doesn't
+ \Cref{fig-cs-codec-100-q-mr-stats} (a) shows that reconstruction quality doesn't
 change much from $q=0$ till $q=4$ after which it starts degrading.
 As expected, the PRD degrades as $m$ is reduced.
 (b) shows that PSS (percentage space saving) increases linearly
@@ -108,12 +111,12 @@ with $q$. As $q$ increases, the size of the alphabet for
 entropy coding reduces and this leads to increased space savings.
 (c) shows the variation of PSS with PMS at different values of $q$.
 PSS increases linearly with PMS. Also, PSS is much higher
-than PMS at higher quantization levels.
+than PMS at higher values of $q$.
 
 Increasing quantization linearly increases the PSS.
 Since up to $q=4$, there is no noticeable
-impact on PRD, as seen in panel (a), it is safe
-to enjoy these savings in bit rate. 
+impact on PRD, as seen in \cref{fig-cs-codec-100-q-mr-stats} (a),
+it is safe to enjoy these savings in bit rate. 
 At $40\%$ PMS, one can attain up to $69.3\%$ PSS without
 losing any reconstruction quality.
 
