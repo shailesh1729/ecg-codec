@@ -15,7 +15,7 @@ The basic model can be expressed as:
 \end{equation}
 where $\bx \in \RR^n$ is a signal to compress
 (of length $n$). $\Phi \in \RR^{m \times n}$
-is a sensing matrix which compresses $\bx$
+is a sensing matrix that compresses $\bx$
 via linear measurements. Each row of $\Phi$
 represents one linear measurement as a linear
 functional on $\bx$. $\by$ is a measurement
@@ -26,9 +26,9 @@ is linearly independent. $\be \in \RR^m$ is the
 error/noise introduced during the measurement process.
 In our digital CS paradigm, the noise is introduced
 by the quantization step in our encoder.
-In our case $\bx$ is a window of a raw ECG record
+In our case, $\bx$ is a window of a raw ECG record
 from one channel/lead. 
-Often $\bx$ is not sparse by itself, but is sparse
+Often $\bx$ is not sparse by itself but is sparse
 in some orthonormal basis $\Psi$ expressed as
 $\bx = \Phi \alpha$ and the representation $\alpha$
 is sparse. ECG signals exhibit sparsity in wavelet
@@ -86,7 +86,7 @@ r^{b-1} & r^{b-2} & \dots & 1
 where $r$ is the AR-1 model coefficient.
 This constraint significantly reduces the model parameters to be learned.
 
-Measurement error is modeled as independent zero mean Gaussian
+Measurement error is modeled as independent zero-mean Gaussian
 noise $\PP(\be; \lambda) \sim \NNN(\bzero, \lambda \bI)$.
 BSBL doesn't require us to provide the value of noise variance
 as input.
@@ -119,7 +119,7 @@ since it encodes each symbol using an integral
 number of bits. It is not capable of encoding symbols using
 fractional number of bits.
 
-In contrast, stream codes can achieve near optimal
+In contrast, stream codes can achieve near-optimal
 compression for any probability distribution.
 Arithmetic Coding (AC) \cite{rissanen1979arithmetic,witten1987arithmetic}
 encodes the entire message of symbols into a single (large) integer

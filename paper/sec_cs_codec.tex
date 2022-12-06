@@ -99,7 +99,7 @@ at least $(1-\epsilon)d|S|$ neighbors.
 Sparse binary sensing matrices cannot satisfy the standard RIP
 property \cite{candes2008restricted},
 however, they do satisfy a generalized
-RIP-p property \cite{gilbert2010sparse}.
+RIP-p property \cite{berinde2008combining,gilbert2010sparse}.
 An $m \times n$ matrix $\Phi$ is said to satisfy
 RIP ($p, k, \delta$) if for any $k$-sparse vector
 $\bx$, we have
@@ -122,6 +122,14 @@ $$
 $$
 where $\bx_{|k}$ is the best $k$-term approximation of $\bx$
 and $c(\epsilon)$ is a constant depending on $\epsilon$.
+Stable recovery guarantees are also available.
+Berinde et al. show in \cite{berinde2008practical} that
+for $k$-sparse $\bx$ and the measurements $\by = \Phi \bx + \be$
+where the measurement noise $\be$ has an $\ell_1$ bound,
+there exists an algorithm that recovers a $k$-sparse $\hat{\bx}$
+such that $\| \bx - \hat{\bx} \|_1 = \bigO{\| \be \|_1 / d}$
+if $\Phi$ is a matrix induced by a $(s,d, \epsilon)$-expander
+$G$ where $s = \bigO{k}$. 
 These theoretical results are the foundation of our encoder
 design wherein a bounded quantization noise doesn't impact
 the reconstruction quality. 
@@ -271,6 +279,18 @@ Our typical values are $\rho=0.01$ and $\gamma=0.02$.
 They correspond to 40 dB of noise for quantization
 and 34 dB of noise for the clipping step.
 
+
+\subsubsection{Encoder Computational Complexity}
+The encoding process is dominated by the matrix
+multiplication $\by  = \Phi \bx$. For a general
+sensing matrix, this operation is $\bigO{m n}$.
+A binary sensing matrix has a total of $n d$
+ones. Since $d$ is a small constant, hence
+the total number of lookup and addition operations
+is $\bigO{n}$. This significantly reduces the
+computational complexity of the encoder.
+
+
 \subsection{Decoding}
 Decoding of a frame starts by reading the frame header
 which provides the frame encoding parameters:
@@ -350,11 +370,12 @@ where
 \Sigma_0 = \text{diag}\{\gamma_1 \bB_1, \dots, \gamma_g \bB_g \}.
 \end{equation}
 We also model the correlation among the values
-within each active block as an AR-1 process.
+within each active block as an AR-1 process
+with a common model parameter.
 Under this assumption the matrices
 $\bB_i$ take the form of a Toeplitz matrix
 \begin{equation}
-\bB = \begin{bmatrix}
+\bB_i = \bB = \begin{bmatrix}
 1 & r & \dots & r^{b-1}\\
 r & 1 & \dots & r^{b-2}\\
 \vdots &  & \ddots & \vdots\\
