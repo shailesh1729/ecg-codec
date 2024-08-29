@@ -1,5 +1,5 @@
-\documentclass[journal, a4paper]{IEEEtran} %onecolumn, draftcls
-\usepackage{skieeetrans}
+\documentclass[preprint]{elsarticle} %onecolumn, draftcls
+\usepackage{skels}
 
 % TikZ libraries
 \usetikzlibrary{shapes,
@@ -17,29 +17,41 @@ matrix,
 fit,
 quotes
 }
-
+\journal{Digital Signal Processing}
 \begin{document}
+\begin{frontmatter}
 \title{A Compressive Sensing Codec Architecture for ECG Signals
 with Adaptive Quantization and Stream Entropy Coding}
 
+\author[inst1]{Shailesh~Kumar\corref{cor1}}
+\ead{bsz188670@dbst.iitd.ac.in}
 
-\author{Shailesh~Kumar,
-        Surendra~Prasad,~\IEEEmembership{Senior Member,~IEEE,}
-        and~Brejesh~Lall,~\IEEEmembership{Member,~IEEE}% <-this % stops a space
-\thanks{Shailesh~Kumar, Surendra~Prasad and Brejesh~Lall are with
-Department of Electrical Engineering and 
-Bharti School of Telecommunication Technology And Management, Indian Institute of Technology, Delhi,
-India.
-Surendra Prasad is Honorary Professor and INSA Senior Scientist at IIT Delhi.
-e-mail: (bsz188670@dbst.iitd.ac.in)}% <-this % stops a space
-\thanks{
-}}
+\author[inst1]{Surendra~Prasad\fnref{fn2}}
+\ead{sprasad@ee.iitd.ac.in}
 
-% make the title area
-\maketitle
+\author[inst1]{Brejesh~Lall}
+\ead{brejesh@ee.iitd.ac.in}
+
+\cortext[cor1]{Corresponding author at:
+Bharti School of Telecommunication Technology And Management,
+Department of Electrical Engineering,
+Indian Institute of Technology Delhi, 110016, India}
+\fntext[fn2]{Surendra Prasad is Honorary Professor and INSA Senior Scientist at IIT Delhi.}
+
+\affiliation[inst1]{organization={Department of Electrical Engineering, 
+Indian Institute of Technology Delhi},
+            addressline={Hauz Khas}, 
+            city={New Delhi},
+            postcode={110016}, 
+            state={Delhi},
+            country={India}}
 \input{abstract}
-
-\IEEEpeerreviewmaketitle
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+Electrocardiogram\sep Compressive Sensing \sep Entropy Coding
+\sep Wearable Devices
+\end{keyword}
+\end{frontmatter}
 
 \input{sec_intro}
 \input{sec_cs_codec}
@@ -52,24 +64,17 @@ e-mail: (bsz188670@dbst.iitd.ac.in)}% <-this % stops a space
 % \input{sec_theory}
 % \end{appendices}
 
+
+\section*{Declaration of Competing Interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
 % use section* for acknowledgement
 \section*{Acknowledgment}
 Shailesh Kumar would like to thank his employer Interra Systems Inc.
 for allowing him to pursue his research interests along with his regular job.
 
-
-
-
-% Can use something like this to put references on a page
-% by themselves when using endfloat and the captionsoff option.
-\ifCLASSOPTIONcaptionsoff
-  \newpage
-\fi
-
-
-\bibliographystyle{IEEEtran}
-% argument is your BibTeX string definitions and bibliography database(s)
-\bibliography{IEEEabrv,references}
+\bibliographystyle{elsarticle-num} 
+\bibliography{references}
 
 % that's all folks
 \end{document}

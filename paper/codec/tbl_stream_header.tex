@@ -1,5 +1,6 @@
 %!TEX root = ../paper_ecg_cs_codec.tex
 \begin{table}[ht]
+\footnotesize
 \centering
 \caption{Stream header}
 \begin{tabular}{llr}
@@ -9,7 +10,7 @@ Parameter & Description & Bits \\
 key & Pseudorandom generator key for $\Phi$ & 64 \\
 $n$ & Window size & 12 \\
 $m$ & Number of measurements per window & 12 \\
-$d$ & Number of ones per column in sensing matrix & 6 \\
+$d$ & Number of ones per column & 6 \\
 $w$ & Number of windows per frame & 8 \\
 adaptive & Adaptive or fixed quantization flag & 1 \\
 if (adaptive ) &  \\

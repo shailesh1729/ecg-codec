@@ -1,0 +1,142 @@
+\documentclass[journal, a4paper, onecolumn, draftcls]{IEEEtran} %onecolumn, draftcls
+\usepackage{skieeetrans}
+
+% TikZ libraries
+\usetikzlibrary{shapes,
+shapes.geometric, 
+arrows.meta,
+intersections, 
+positioning, 
+dsp, 
+chains,
+decorations.pathreplacing,
+scopes,
+fadings,
+calc,
+matrix,
+fit,
+quotes
+}
+
+\begin{document}
+\title{Stable Recovery Analysis}
+
+
+\maketitle
+
+\section{Sensing Matrix}
+
+Following \cite{mamaghanian2011compressed},
+we construct a sparse binary sensing matrix $\Phi$ of size
+$m \times n$.
+Each column of $\Phi$ consists of exactly $d$ ones and
+$m-d$ zeros, where the position of ones has been randomly
+selected in each column.
+Sparse binary sensing matrices can be treated as adjacency 
+matrix representations of bipartite graphs.
+In the equation $\by = \Phi \bx$, let $\bx$
+and $\by$ represent node sets $U$ and $V$
+respectively where each node in the node-set
+corresponds to a component of the vector.
+Consider the bipartite graph $G (\Phi) = (U, V, E)$
+\footnote{$U$ and $V$ are left and right nodes of $G$
+and $E$ is the set of edges between the left and right nodes.}
+such that
+an edge $(i, j)$ belongs to $E$ if and only if
+$\Phi(j, i) = 1$. Informally, such a graph is
+an expander \cite{gilbert2010sparse}
+if each small subset of nodes in $U$ has many neighbors
+in $V$. We refer to $U$ as the left part and $V$
+as the right part of the graph $G$.
+A bipartite graph is called left $d$-regular
+if every node in the left part has exactly
+$d$ neighbors in the right part. This corresponds to having
+exactly $d$ ones in each column of $\Phi$.
+A bipartite left-$d$ regular graph $G = (U, V, E)$
+is called a $(k, d, \epsilon)$-expander if any
+set $S \subset U$ of at most $k$ left nodes has
+at least $(1-\epsilon)d|S|$ neighbors.
+
+Sparse binary sensing matrices cannot satisfy the standard RIP
+property \cite{candes2008restricted},
+however, they do satisfy a generalized
+RIP-p property \cite{gilbert2010sparse}.
+An $m \times n$ matrix $\Phi$ is said to satisfy
+RIP ($p, k, \delta$) if for any $k$-sparse vector
+$\bx$, we have
+
+\begin{equation}
+\| \bx \|_p (1 - \delta) \leq \| \Phi \bx \|_p \leq \| \bx \|_p.
+\end{equation}
+The adjacency matrices of expander graphs have
+this property. Gilbert et al. show in \cite{gilbert2010sparse}
+that if $\Phi$ is the adjacency matrix of a $(k,d, \epsilon)$
+expander graph $G = (U, V, E)$, then the scaled matrix
+$\Phi / d$ satisfies RIP $(1,k, \delta)$ property for
+$\delta = 2 \epsilon$.
+They further show that for an expander matrix $\Phi$,
+for any signal $\bx$, given $\by = \Phi \bx$, we
+can recover $\hat{\bx}$ such that
+
+$$
+\| \bx - \hat{\bx} \|_1 \leq c(\epsilon) \| \bx - \bx_{|k} \|_1
+$$
+where $\bx_{|k}$ is the best $k$-term approximation of $\bx$
+and $c(\epsilon)$ is a constant depending on $\epsilon$.
+These theoretical results are the foundation of our encoder
+design wherein a bounded quantization noise doesn't impact
+the reconstruction quality. 
+
+Mamaghanian et al. \cite{mamaghanian2011compressed}
+studied the variation of reconstruction SNR with $d$ for SPGL1
+algorithm \cite{van2009probing}.
+They chose a value of $d=12$ below which
+SPGL1 recovery suffered. Zhang et al. \cite{zhang2012compressed}
+showed experimentally that the BSBL-BO algorithm can do good
+recovery for much lower values of $d$.
+In our experiments, we have reported results for both $d=12$
+as well as $d=4$.
+
+
+
+$$
+\err_q^k(\bx) = \min_{\bx' \in \Sigma_k} \| \bx - \bx' \|_q.
+$$
+
+Goal:
+$$
+\| \bx - \hat{\bx} \|_p \leq c \err_q^k(\bx).
+$$
+
+
+$G = (U, V, E)$. $E \subset U \times V$.
+$\Phi \in \RR^{m \times n}$. $|U| = n$, $|V| = m$.
+$U = \{ x_1, \dots, x_n \}$.
+$V = \{y_1, \dots, y_n \}$.
+$(i, j) \in G$ if and only if $\Phi(i, j) = 1$.
+
+
+$(k, d, \epsilon)$ expander: $S \subset U$ of at most $k$
+nodes has at least $(1 - \epsilon)d |S|$ nodes. 
+
+We need $|V| < d |U|$. Every column of $\Phi$
+as at most $d$ ones. Hence, we can reach at-most
+$d |U|$ nodes in $V$. If $|V| \geq d |U|$, 
+then the number of neighbors of all $U$ nodes
+is bounded by $d |U|$. Some nodes in $V$ may
+not be reachable at all.
+Assume that $|V| < d |U|$. Then the number of
+neighbors is bounded by:
+
+$$
+d | S | \leq | V|  < d |U|.
+$$
+
+
+
+
+\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+\bibliography{IEEEabrv,references}
+
+\end{document}
